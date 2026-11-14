@@ -172,6 +172,7 @@
     <div class="dlg" id="dlg">
       <button id="dlg-x" aria-label="Đóng hộp thoại">✕</button>
       <div class="d-icon" id="d-icon">⏰</div>
+      <canvas id="d-face" width="72" height="72" style="display:none;margin:2px auto 0;border-radius:50%;border:3px solid #f2b33d;background:#e8eefc"></canvas>
       <div class="d-time" id="d-time">05:00</div>
       <h3 id="d-title"></h3>
       <div class="d-text" id="d-text"></div>
@@ -406,7 +407,8 @@ var OBS=[
   {x:190,y:940,w:104,h:62,c:"#7ea6e0",emo:"🛏️"},{x:190,y:1020,w:54,h:30,c:"#6d4c41",emo:"🗄️"},
   {x:352,y:1012,w:32,h:40,c:"#cfd8dc",emo:"🧊"},
   {x:466,y:928,w:60,h:30,c:"#8d6e63",emo:"🖥️"},{x:420,y:1022,w:50,h:28,c:"#b08954",emo:"🍽️"},{x:448,y:1000,w:84,h:32,c:"#b39ddb",emo:"🛋️"},
-  {x:70,y:650,w:54,h:64,c:"#4e7a3a",emo:"🌳"},{x:600,y:650,w:54,h:64,c:"#4e7a3a",emo:"🌲"},{x:70,y:790,w:54,h:64,c:"#4e7a3a",emo:"🌳"}
+  {x:70,y:650,w:54,h:64,c:"#4e7a3a",emo:"🌳"},{x:600,y:650,w:54,h:64,c:"#4e7a3a",emo:"🌲"},{x:70,y:790,w:54,h:64,c:"#4e7a3a",emo:"🌳"},
+  {x:606,y:690,w:54,h:64,c:"#4e7a3a",emo:"🌲"},{x:556,y:986,w:54,h:64,c:"#4e7a3a",emo:"🌳"},{x:70,y:940,w:54,h:64,c:"#4e7a3a",emo:"🌳"}
 ];
 
 // Ánh xạ sprite cho từng vật thể trong OBS (theo đúng thứ tự)
@@ -427,14 +429,15 @@ var OBS_SPEC=[
  {s:"bed",m:"stretch"},{s:"cabinet",m:"c",z:40},
  {s:"cabinet",m:"c",z:1},
  {s:"table",m:"c",z:44},{s:"table",m:"c",z:40},{s:"sofa",m:"stretch"},
- {s:"tree1",m:"tree"},{s:"tree2",m:"tree"},{s:"apple",m:"tree"}
+ {s:"tree1",m:"tree"},{s:"tree2",m:"tree"},{s:"apple",m:"tree"},
+ {s:"tree2",m:"tree"},{s:"apple",m:"tree"},{s:"tree1",m:"tree"}
 ];
 var DECO=[{s:"rug",x:166,y:492,w:118,h:54},{s:"rug",x:440,y:994,w:100,h:50},{s:"hedge",x:60,y:614,w:120,h:22},{s:"hedge",x:520,y:614,w:120,h:22},
 {s:"wood",x:140,y:742,w:56,h:16},{s:"wood",x:470,y:742,w:56,h:16},{s:"bush",x:636,y:640,w:26,h:26},{s:"bush",x:368,y:252,w:24,h:24},
 {s:"book",x:116,y:166,w:14,h:14},{s:"book",x:256,y:206,w:14,h:14},{s:"book",x:300,y:540,w:20,h:20},{s:"bush",x:560,y:1000,w:28,h:28}];
 
 
-var EMO_DECO=[];
+var EMO_DECO=[{emo:"💐",x:228,y:118,s:22},{emo:"📚",x:225,y:524,s:20},{emo:"🍱",x:452,y:492,s:20},{emo:"🪴",x:560,y:208,s:20},{emo:"🌸",x:496,y:946,s:18}];
 var TOWN_GROUND=[{i:1,x:90,y:690},{i:1,x:560,y:700},{i:1,x:180,y:852},{i:1,x:520,y:852},{i:1,x:140,y:970},{i:1,x:565,y:955},{i:1,x:140,y:1030},
 {i:37,x:322,y:838},{i:37,x:354,y:838},{i:37,x:386,y:838}];
 var TOWN_DECO=[{i:83,x:428,y:846,w:20,h:26},{i:83,x:412,y:916,w:18,h:24}];
@@ -491,9 +494,9 @@ var NPCS=[
   {x:255,y:460,gv:1,v:1,subj:"📚 Thư viện",emo:"👩‍🏫"},
   {x:600,y:332,gv:1,v:0,subj:"🎓 Phòng Đào tạo",emo:"👨‍🏫"},
   {x:150,y:760,gv:1,v:0,subj:"🎽 Khoa GDTC",emo:"👨‍🏫"},
-  {x:500,y:402,emo:"🧑‍🍳",v:1},{x:604,y:556,emo:"👩‍🎓",v:5,w:1},
-  {x:300,y:332,emo:"🧑‍🎓",v:4,w:1},{x:250,y:800,emo:"🧑‍🎓",v:3,w:1},{x:480,y:820,emo:"👩‍🎓",v:2},
-  {x:398,y:982,emo:"🧑",v:2,w:1}
+  {x:500,y:402,emo:"🧑‍🍳",v:1},{x:604,y:556,emo:"👩‍🎓",v:5,w:1,wp:[[604,556],[604,466]]},
+  {x:300,y:332,emo:"🧑‍🎓",v:4,w:1,wp:[[300,332],[150,332],[545,332]]},{x:250,y:800,emo:"🧑‍🎓",v:3,w:1,wp:[[250,800],[520,800]]},{x:480,y:820,emo:"👩‍🎓",v:2},
+  {x:398,y:982,emo:"🧑",v:2,w:1,wp:[[398,982],[486,982]]}
 ];
 var EV_POS=[{x:312,y:1030},{x:600,y:830},{x:212,y:252},{x:205,y:142},{x:560,y:240},{x:520,y:498},{x:605,y:165},
   {x:220,y:330},{x:330,y:155},{x:406,y:1036},{x:496,y:972},{x:496,y:972},{x:312,y:1030}];
@@ -683,6 +686,17 @@ function update(dt){
       invulnT=1.6; sp.x=60+Math.random()*(W-120); sp.y=90; sp.t=0;
     }
   }
+  // NPC đi tuần giữa các điểm (tự né vật cản bằng collide)
+  for(var q=0;q<NPCS.length;q++){ var nn=NPCS[q]; if(!nn.wp) continue;
+    if(nn.wt===undefined){ nn.wt=0; nn.wk=0; nn.mv=false; }
+    var tg2=nn.wp[nn.wt], ddx=tg2[0]-nn.x, ddy=tg2[1]-nn.y, dd=Math.hypot(ddx,ddy);
+    if(dd<6){ nn.wt=(nn.wt+1)%nn.wp.length; nn.mv=false; }
+    else { var spd=44*dt; var cc=collide(nn.x+ddx/dd*spd, nn.y+ddy/dd*spd);
+      var moved=Math.hypot(cc.x-nn.x, cc.y-nn.y); nn.x=cc.x; nn.y=cc.y; nn.mv=moved>0.05;
+      if(nn.mv){ nn.wk+=moved*0.055; nn.dir=Math.abs(ddx)>Math.abs(ddy)?(ddx>0?"right":"left"):(ddy>0?"down":"up"); }
+      if(moved<spd*0.25){ nn.st=(nn.st||0)+dt; if(nn.st>0.8){ nn.wt=(nn.wt+1)%nn.wp.length; nn.st=0; } } else nn.st=0;
+    }
+  }
   // Tới điểm sự kiện
   if(Math.hypot(beacon.x-player.x, beacon.y-player.y)<48) openScene(cur);
 }
@@ -766,15 +780,37 @@ function render(t){
   ctx.fillStyle="#8a6b45"; rr(205,914,26,20,2); ctx.fill(); rr(239,914,26,20,2); ctx.fill();
   ctx.fillStyle="#ffd9e8"; ctx.fillRect(209,918,18,12); ctx.fillStyle="#bfe3f2"; ctx.fillRect(243,918,18,12);
   for(var ti=0;ti<4;ti++){ var tx=412+ti*40; ctx.fillStyle="#aeb9c2"; rr(tx,376,30,10,3); ctx.fill(); ctx.fillStyle=["#e2703a","#f2b33d","#7fbf5a","#d43a2f","#f28c28","#8e5ea2"][ti]; ctx.beginPath(); ctx.arc(tx+15,374,6,0,6.29); ctx.fill(); }
+  // Bảng thực đơn căn-tin
+  ctx.fillStyle="#37474f"; rr(640,428,24,70,4); ctx.fill();
+  ctx.strokeStyle="#f2b33d"; ctx.lineWidth=1.5; rr(640,428,24,70,4); ctx.stroke();
+  ctx.save(); ctx.translate(652,463); ctx.rotate(-Math.PI/2);
+  ctx.fillStyle="#ffe9a8"; ctx.font="bold 10.5px 'Segoe UI',sans-serif"; ctx.textAlign="center"; ctx.fillText("THỰC ĐƠN", 0, 3.5);
+  ctx.restore(); ctx.textAlign="left";
+  // Cánh hoa / giấy màu bay nhẹ trên sân trường
+  var petC=["#f7a8c4","#ffd76e","#a8d97c","#ffffff"];
+  for(var pk2=0;pk2<22;pk2++){
+    var ppx=60+((pk2*167)%600)+Math.sin(t*1.3+pk2*1.7)*9;
+    var ppy=615+((t*13+pk2*47)%248);
+    ctx.save(); ctx.translate(ppx,ppy); ctx.rotate(t*1.7+pk2); ctx.globalAlpha=0.75;
+    ctx.fillStyle=petC[pk2%4]; ctx.fillRect(-3,-2,6,4); ctx.restore();
+  }
+  ctx.globalAlpha=1;
+  // Cột đèn sân trường
+  var LAMPS=[[330,700],[390,700],[140,790],[580,790],[300,852],[420,852]];
+  for(var li=0;li<LAMPS.length;li++){ var lp=LAMPS[li];
+    ctx.fillStyle="#5a4632"; ctx.fillRect(lp[0]-2, lp[1]-14, 4, 16);
+    ctx.fillStyle="#ffe9a8"; ctx.beginPath(); ctx.arc(lp[0], lp[1]-18, 4.5, 0, 7); ctx.fill();
+    ctx.strokeStyle="#8a6b45"; ctx.lineWidth=1; ctx.stroke();
+  }
   // NPC bằng sprite nhân vật
   ctx.textAlign="center";
   for(i=0;i<NPCS.length;i++){ var n=NPCS[i], bobY=Math.sin(t*2+i*1.3)*2.5;
     var nx=n.x, ny=n.y;
-    if(n.w){ nx+=Math.sin(t*0.35+i*2.1)*22; ny+=Math.cos(t*0.28+i*1.7)*10; }
+    if(n.w && !n.wp){ nx+=Math.sin(t*0.35+i*2.1)*22; ny+=Math.cos(t*0.28+i*1.7)*10; }
     if(useImg){
       ctx.fillStyle="rgba(0,0,0,.2)"; ctx.beginPath(); ctx.ellipse(nx, ny+12, 13, 5, 0, 0, 7); ctx.fill();
       if(n.gv){ ctx.drawImage(IMG, n.v*128+32, 32, 32, 32, nx-24, ny-26+bobY, 48, 48); }
-      else { var v=(n.v!=null?n.v:(i%4)+2); ctx.drawImage(IMG, v*128+32, 32, 32, 32, nx-20, ny-22+bobY, 40, 40); }
+      else { var v=(n.v!=null?n.v:(i%4)+2); if(n.wp){ var fr2=n.mv?Math.floor((n.wk||0)*2.4)%4:1; var rw2=DIR_ROW[n.dir||"down"]||0; ctx.drawImage(IMG, v*128+fr2*32, 32+rw2*32, 32, 32, nx-20, ny-22+(n.mv?Math.abs(Math.sin((n.wk||0)*6))*2:bobY), 40, 40); } else { ctx.drawImage(IMG, v*128+32, 32, 32, 32, nx-20, ny-22+bobY, 40, 40); } }
       if(n.emo==="😴"){ ctx.font="17px sans-serif"; ctx.fillText("💤", nx+16, ny-24+bobY); }
       if(n.gv && n.subj) chipLight(n.subj, nx, ny-54+bobY);
     } else { ctx.font="27px sans-serif"; ctx.fillText(n.emo||"🧑", nx, ny+bobY); }
@@ -820,6 +856,17 @@ function render(t){
   } else if(cur===8 && mode!=="start"){
     ctx.fillStyle="rgba(255,140,50,0.10)"; ctx.fillRect(0,0,W,H);
   }
+  // Đèn sân trường phát sáng về đêm
+  if(cur>=9 && mode!=="start"){
+    ctx.save(); ctx.globalCompositeOperation="lighter";
+    var LAMPS2=[[330,700],[390,700],[140,790],[580,790],[300,852],[420,852]];
+    for(var li2=0;li2<LAMPS2.length;li2++){ var lp2=LAMPS2[li2];
+      var lg=ctx.createRadialGradient(lp2[0],lp2[1]-18,4, lp2[0],lp2[1]-18,52);
+      lg.addColorStop(0,"rgba(255,196,86,0.30)"); lg.addColorStop(1,"rgba(255,196,86,0)");
+      ctx.fillStyle=lg; ctx.beginPath(); ctx.arc(lp2[0],lp2[1]-18,52,0,7); ctx.fill();
+    }
+    ctx.restore();
+  }
   // Biển tên khu — vẽ sau lớp phủ tối để luôn đọc rõ
   chip("🏫 PHÒNG HỌC", 64, 98); chip("🗄️ VĂN PHÒNG KHOA", 424, 60); chip("🚶 HÀNH LANG", 64, 308);
   chip("📚 THƯ VIỆN", 60, 552); chip("🍚 CĂN-TIN", 548, 376); chip("🌳 SÂN TRƯỜNG", 52, 620); chip("🏠 NHÀ Ở", 112, 898);
@@ -827,6 +874,13 @@ function render(t){
   ctx.strokeStyle="#e8e8f2"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(250,806); ctx.lineTo(250,752); ctx.stroke();
   ctx.fillStyle="#d43a2f"; ctx.beginPath(); ctx.moveTo(250,752); ctx.lineTo(274,759); ctx.lineTo(250,767); ctx.closePath(); ctx.fill();
   ctx.fillStyle="#f7c948"; ctx.font="9px sans-serif"; ctx.textAlign="center"; ctx.fillText("★", 257, 763); ctx.textAlign="left";
+  // Băng-rôn chào mừng 20/11 treo ngang cổng (2 cột ở mép khe cổng x=320..400)
+  ctx.fillStyle="#7a4a21"; ctx.fillRect(322,818,6,56); ctx.fillRect(392,818,6,56);
+  ctx.fillStyle="#c62828"; rr(288,786,144,32,6); ctx.fill();
+  ctx.strokeStyle="#f2b33d"; ctx.lineWidth=2; rr(288,786,144,32,6); ctx.stroke();
+  ctx.fillStyle="#ffe9a8"; ctx.font="bold 13.5px 'Segoe UI',sans-serif"; ctx.textAlign="center";
+  ctx.fillText("🎉 CHÀO MỪNG 20/11 🎉", 360, 807);
+  ctx.font="15px sans-serif"; ctx.fillText("🌸", 300, 838); ctx.fillText("🌸", 420, 838); ctx.textAlign="left";
   // Joystick
   if(joy.on){
     ctx.fillStyle="rgba(255,255,255,.16)"; ctx.beginPath(); ctx.arc(joy.bx,joy.by,58,0,7); ctx.fill();
@@ -863,6 +917,8 @@ function fillDlg(icon, time, title, text, choices, onPick){
   document.getElementById('d-icon').textContent=icon;
   document.getElementById('d-time').textContent=time;
   document.getElementById('d-title').textContent=title;
+  var fc=document.getElementById('d-face');
+  if(fc){ if(ready()){ var fg=fc.getContext('2d'); fg.imageSmoothingEnabled=false; fg.clearRect(0,0,72,72); fg.drawImage(IMG, T.charV*128+36, 34, 24, 24, 0, 0, 72, 72); fc.style.display="block"; } else fc.style.display="none"; }
   document.getElementById('d-text').innerHTML=text;
   document.getElementById('dlg').scrollTop=0;
   var box=document.getElementById('d-choices'); box.innerHTML="";
