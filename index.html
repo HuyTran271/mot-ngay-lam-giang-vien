@@ -128,6 +128,7 @@ var flagMesh=null, lampLights=[];
 var toastTimer=null;
 var cur=0, pendingNext=null, collapseUsed=false, inCollapse=false, invulnT=0;
 var pickups=[], spirit=null;
+var guideArrow=null;
 
 function box(w,h,d,color,x,y,z,parent,shadow){
   var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshStandardMaterial({color:color, roughness:.85}));
@@ -268,6 +269,16 @@ function buildWorld(){
   var deskPos=[[-12.5,-39.8],[-5,-39.8],[-12.5,-37.6],[-5,-37.6],[-12.5,-35.4],[-5,-35.4]];
   for(var di=0; di<deskPos.length; di++){ var dp=deskPos[di]; box(1.9,0.75,1, 0xa8763e, dp[0],0.38,dp[1]); solid(dp[0]-0.95,dp[1]-0.5, dp[0]+0.95,dp[1]+0.5); }
   var clk=makeIcon('🕐',0.9); clk.position.set(-8.5,2.7,-42.2); scene.add(clk);
+  // Học sinh ngồi học tại 6 bàn (em ở bàn cuối phía đông đang gục ngủ — đúng cảnh 07:30)
+  var stuCols=[0x4a3421, 0x191919, 0x5a3a22, 0x2b2b30, 0x6b4a2a, 0x333333];
+  for(var sti=0; sti<deskPos.length; sti++){
+    var sdp=deskPos[sti];
+    var stu=makePerson({suit:0xffffff, cloth:0x27364f, hair:stuCols[sti]});
+    stu.position.set(sdp[0], -0.55, sdp[1]+0.85); stu.rotation.y=Math.PI; stu.scale.setScalar(0.95);
+    if(sti===5){ stu.rotation.x=0.45; var zz=makeIcon('💤',1); zz.position.set(sdp[0]+0.7, 1.7, sdp[1]+0.7); scene.add(zz); }
+    scene.add(stu);
+  }
+  var sign=makeLabel('🎓 TRƯỜNG ĐẠI HỌC', 7.5); sign.position.set(0,2.3,-32.6); scene.add(sign);
   // Trong VĂN PHÒNG KHOA: 2 bàn làm việc, tủ hồ sơ, bàn họp
   box(2.4,0.9,1.1, 0x8a5a28, 5.5,0.45,-40.5); solid(4.3,-41.05, 6.7,-39.95);
   box(2.4,0.9,1.1, 0x8a5a28, 11,0.45,-40.5); solid(9.8,-41.05, 12.2,-39.95);
@@ -300,16 +311,36 @@ function buildWorld(){
   box(3,0.8,1.4, 0xa8763e, -25,0.4,-33.5); solid(-26.5,-34.2, -23.5,-32.8);
   var lb2=makeLabel('📚 THƯ VIỆN', 9.5); lb2.position.set(-25,5.8,-34); scene.add(lb2);
 
-  // ===== NHÀ Ở =====
-  box(15,5,8, 0xf7ead2, 0,2.5,45);
-  box(16,0.45,9, 0x3f6fb5, 0,5.2,45);
-  box(12.5,1.7,6.4, 0x3f6fb5, 0,6.25,45);
-  box(13,0.4,7, 0x33507e, 0,7.25,45);
-  solid(-7.5,41, 7.5,49);
-  box(2.3,3.3,0.2, 0x6d4c41, 0,1.65,40.9, scene, false);
-  box(1.9,1.4,0.16, 0x33507e, -4.6,3.1,40.92, scene, false);
-  box(1.9,1.4,0.16, 0x33507e, 4.6,3.1,40.92, scene, false);
-  var lb3=makeLabel('🏠 NHÀ Ở', 9.5); lb3.position.set(0,9,45); scene.add(lb3);
+  // ===== NHÀ Ở: có phòng khách/bàn ăn, bàn làm việc, phòng ngủ =====
+  box(15,0.14,8, 0xe8dcc8, 0,0.07,45, scene, false);
+  var homeC=0xf7ead2;
+  box(15,2.7,0.45, homeC, 0,1.35,48.8); solid(-7.5,48.58, 7.5,49);
+  box(0.45,2.7,8, homeC, -7.3,1.35,45); solid(-7.5,41, -7.08,49);
+  box(0.45,2.7,8, homeC, 7.3,1.35,45); solid(7.08,41, 7.5,49);
+  box(6.3,2.7,0.45, homeC, -4.35,1.35,41.2); solid(-7.5,40.98, -1.2,41.43);
+  box(6.3,2.7,0.45, homeC, 4.35,1.35,41.2); solid(1.2,40.98, 7.5,41.43);
+  box(2.4,0.5,0.5, 0x6d4c41, 0,2.45,41.2, scene, false);
+  box(16,0.3,1, 0x3f6fb5, 0,2.9,48.8, scene, false);
+  box(16,0.3,1, 0x3f6fb5, 0,2.9,41.2, scene, false);
+  box(1,0.3,8.5, 0x3f6fb5, -7.5,2.9,45, scene, false);
+  box(1,0.3,8.5, 0x3f6fb5, 7.5,2.9,45, scene, false);
+  box(0.4,2.2,4.5, 0xe8dcc0, 1.8,1.1,46.75); solid(1.6,44.5, 2,49); // vách ngăn phòng ngủ
+  // Giường ngủ (phòng ngủ, phía đông sau vách)
+  box(2.2,0.55,3.2, 0x8e2f3c, 5.6,0.28,47); solid(4.5,45.4, 6.7,48.6);
+  box(1.8,0.25,0.7, 0xffffff, 5.6,0.62,45.85, scene, false);
+  // Bàn làm việc + laptop
+  box(2.4,0.85,1.1, 0x8a5a28, 5,0.43,42.3); solid(3.8,41.75, 6.2,42.85);
+  var lap=makeIcon('💻',0.85); lap.position.set(5,1.15,42.3); scene.add(lap);
+  // Bàn ăn + sofa + TV + kệ sách + thảm + mèo (phía tây)
+  box(2.6,0.75,1.4, 0xa8763e, -3.8,0.38,46.5); solid(-5.1,45.8, -2.5,47.2);
+  box(3,0.8,1.1, 0x3a6ea5, -4,0.4,42.6); solid(-5.5,42.05, -2.5,43.15);
+  box(2.4,1.4,0.12, 0x22242c, -4,1.7,41.55, scene, false);
+  box(1.8,1.8,0.5, 0x7a5a38, -6.1,0.9,44); solid(-7,43.75, -5.2,44.25);
+  var rug=new THREE.Mesh(new THREE.PlaneGeometry(5,3.4), new THREE.MeshLambertMaterial({color:0xc96f4a}));
+  rug.rotation.x=-Math.PI/2; rug.position.set(-3.8,0.035,44.6); rug.receiveShadow=true; scene.add(rug);
+  var cat=makeIcon('🐱',0.8); cat.position.set(-5.6,0.5,44.9); scene.add(cat);
+  var pl2=makeIcon('🪴',1); pl2.position.set(6.9,0.7,41.9); scene.add(pl2);
+  var lb3=makeLabel('🏠 NHÀ Ở', 9.5); lb3.position.set(0,5.6,45); scene.add(lb3);
 
   // ===== Rào + cổng + băng-rôn =====
   box(27,1.15,0.35, 0xb07a3f, -16.5,0.58,24); box(27,1.15,0.35, 0xb07a3f, 16.5,0.58,24);
@@ -382,12 +413,20 @@ function buildWorld(){
   bpole.position.set(22.5, 1.1, 30.6); scene.add(bpole);
   var bsign=makeIcon('🚏', 1.6); bsign.position.set(22.5, 2.6, 30.6); scene.add(bsign);
   // 13 điểm sự kiện theo kịch bản (cảnh 12 lặp lại điểm cảnh 1 ở nhà)
-  var BEACON_POS=[[0,40.2],[24,29],[-8.75,-34.6],[-8.5,-39.6],[11,-38.5],[17,-5],[8,-34.3],[-10.7,-31.3],[-3.2,-37.5],[5.5,38.8],[13.6,43.2],[13.6,43.2],[0,40.2]];
+  var BEACON_POS=[[0,40.2],[24,29],[-8.75,-34.6],[-8.5,-39.2],[11,-38.5],[17,-5],[8,-34.3],[-10.7,-31.3],[-3.2,-37.5],[-1.6,45.2],[5,43.6],[5,43.6],[3.9,47]];
   var BEACON_ICONS=['⏰','🚌','😴','❓','📩','🍚','🗂️','📄','🌤️','🍽️','💬','📝','🌙'];
   for(var bi=0; bi<BEACON_POS.length; bi++){
     var bc3=beacon(BEACON_POS[bi][0], BEACON_POS[bi][1], BEACON_ICONS[bi]);
     bc3.grp.visible=(bi===0); beacons.push(bc3);
   }
+
+  // Mũi tên chỉ đường nằm trên mặt đất, dưới chân người chơi
+  var aShape=new THREE.Shape();
+  aShape.moveTo(0,0.95); aShape.lineTo(0.55,-0.45); aShape.lineTo(0.2,-0.45); aShape.lineTo(0.2,-0.9);
+  aShape.lineTo(-0.2,-0.9); aShape.lineTo(-0.2,-0.45); aShape.lineTo(-0.55,-0.45); aShape.lineTo(0,0.95);
+  var aGeo=new THREE.ShapeGeometry(aShape); aGeo.rotateX(-Math.PI/2);
+  guideArrow=new THREE.Mesh(aGeo, new THREE.MeshBasicMaterial({color:0xffd76e, transparent:true, opacity:0.9, side:THREE.DoubleSide}));
+  guideArrow.position.set(0,0.07,33); scene.add(guideArrow);
 
   targetRing=new THREE.Mesh(new THREE.RingGeometry(0.45,0.65,28), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.85, side:THREE.DoubleSide}));
   targetRing.rotation.x=-Math.PI/2; targetRing.position.y=0.05; targetRing.visible=false; scene.add(targetRing);
@@ -806,6 +845,18 @@ function animate(){
     animPerson(st.p, true, dt, t);
   }
   // Mũi tên chỉ đường tới điểm sự kiện
+  // Mũi tên đất dưới chân: nằm trước mặt người chơi, chỉ về điểm sự kiện
+  if(guideArrow){
+    if(mode==='play' && cur<DLGS.length){
+      var gb=beacons[cur], gdx=gb.x-player.position.x, gdz=gb.z-player.position.z, gd=Math.hypot(gdx,gdz);
+      if(gd>2.4){
+        guideArrow.visible=true;
+        var ga=Math.atan2(gdx,gdz), gOff=1.7+Math.sin(t*3)*0.25;
+        guideArrow.position.set(player.position.x+Math.sin(ga)*gOff, 0.07, player.position.z+Math.cos(ga)*gOff);
+        guideArrow.rotation.y=ga+Math.PI;
+      } else guideArrow.visible=false;
+    } else guideArrow.visible=false;
+  }
   var nvEl=document.getElementById('navi');
   if(mode==='play' && cur<DLGS.length){
     var nb=beacons[cur], ndx=nb.x-player.position.x, ndz=nb.z-player.position.z, nd=Math.hypot(ndx,ndz);
