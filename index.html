@@ -7,48 +7,93 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
 <style>
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+
   html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#0e1420;font-family:'Segoe UI',system-ui,sans-serif}
+
   #app{position:fixed;inset:0}
+
   canvas{display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+
   .panel{background:rgba(13,20,40,.82);color:#fff;border:1.5px solid rgba(242,179,61,.7);border-radius:14px;backdrop-filter:blur(3px)}
+
   #hud{position:absolute;top:10px;left:10px;padding:8px 12px;font-size:13px;line-height:1.5;pointer-events:none;z-index:5}
+
   #hud b{color:#ffd76e}
+
   #objective{position:absolute;top:88px;left:10px;right:10px;padding:8px 14px;font-size:14px;text-align:center;z-index:5;pointer-events:none}
+
   #toast{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(20,90,50,.93);color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;display:none;z-index:6;text-align:center;max-width:92vw}
+
   #hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);color:#dfe8ff;background:rgba(13,20,40,.65);padding:5px 12px;border-radius:10px;font-size:12.5px;z-index:5;pointer-events:none;text-align:center;max-width:94vw}
+
   #joy{position:absolute;width:116px;height:116px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);display:none;z-index:7;pointer-events:none}
+
   #nub{position:absolute;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.8);display:none;z-index:7;pointer-events:none}
-  .overlay{position:absolute;inset:0;background:rgba(10,14,26,.72);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
-  .card{background:linear-gradient(160deg,#fffdf6,#fdf3d8);border-radius:20px;padding:22px 20px;max-width:430px;width:100%;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.5);border:2px solid #f2b33d}
-  .card h1{margin:4px 0 2px;font-size:24px;color:#20304f;letter-spacing:.5px}
-  .card .sub{color:#8a6d1f;font-weight:600;font-size:13.5px;margin-bottom:8px}
-  .card p{color:#3c4658;font-size:14.5px;line-height:1.55;margin:8px 0}
-  .btn{background:linear-gradient(180deg,#f7c948,#f2b33d);border:none;color:#20304f;font-weight:700;font-size:16.5px;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:0 5px 0 #c78f1f;margin-top:10px}
-  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c78f1f}
-  #dlg{position:absolute;left:0;right:0;bottom:0;z-index:15;background:linear-gradient(180deg,#fffdf6,#fdf6e0);border-top:3px solid #f2b33d;border-radius:20px 20px 0 0;padding:30px 16px 12px;cursor:pointer;transform:translateY(110%);transition:transform .3s ease;max-height:62vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
-  #dlg.show{transform:translateY(0)}
-  #d-face{width:56px;height:56px;border-radius:50%;border:3px solid #f2b33d;background:#e8eefc;flex:0 0 auto}
-  #d-text{flex:1;color:#2f3a4f;font-size:15.5px;line-height:1.65;min-height:76px}
-  .btn.navy{background:linear-gradient(180deg,#33507e,#20304f);color:#fff;box-shadow:0 5px 0 #141f33}
-  #err{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);background:#7c1f1f;color:#fff;padding:14px 18px;border-radius:12px;z-index:50;display:none;max-width:90vw;font-size:14px;text-align:center}
+
 
 #hud-clock,#hud-phase{white-space:nowrap}
-#screen-end p{text-align:left}
+
 #copy-ok{color:#1e7d46;font-size:13px;min-height:16px;margin-top:4px}
 
+
 #navi{position:absolute;top:150px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:rgba(13,20,40,.85);color:#fff;padding:7px 14px;border-radius:999px;font-size:14px;z-index:5;pointer-events:none;white-space:nowrap}
+
 #navi-arrow{display:inline-block;color:#ffd76e;font-size:17px;transition:transform .12s linear}
+50%{opacity:1}
+</style>
+<style>
+
+  .overlay{position:absolute;inset:0;background:rgba(10,14,26,.72);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+
+  .card{background:linear-gradient(160deg,#fffdf6,#fdf3d8);border-radius:20px;padding:22px 20px;max-width:430px;width:100%;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.5);border:2px solid #f2b33d}
+
+  .card h1{margin:4px 0 2px;font-size:24px;color:#20304f;letter-spacing:.5px}
+
+  .card .sub{color:#8a6d1f;font-weight:600;font-size:13.5px;margin-bottom:8px}
+
+  .card p{color:#3c4658;font-size:14.5px;line-height:1.55;margin:8px 0}
+
+  .btn{background:linear-gradient(180deg,#f7c948,#f2b33d);border:none;color:#20304f;font-weight:700;font-size:16.5px;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:0 5px 0 #c78f1f;margin-top:10px}
+
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c78f1f}
+
+  .btn.navy{background:linear-gradient(180deg,#33507e,#20304f);color:#fff;box-shadow:0 5px 0 #141f33}
+
+  #err{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);background:#7c1f1f;color:#fff;padding:14px 18px;border-radius:12px;z-index:50;display:none;max-width:90vw;font-size:14px;text-align:center}
+
+#screen-end p{text-align:left}
+</style>
+<style>
+
+  #dlg{position:absolute;left:0;right:0;bottom:0;z-index:15;background:linear-gradient(180deg,#fffdf6,#fdf6e0);border-top:3px solid #f2b33d;border-radius:20px 20px 0 0;padding:30px 16px 12px;cursor:pointer;transform:translateY(110%);transition:transform .3s ease;max-height:62vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
+
+  #dlg.show{transform:translateY(0)}
+
+  #d-face{width:56px;height:56px;border-radius:50%;border:3px solid #f2b33d;background:#e8eefc;flex:0 0 auto}
+
+  #d-text{flex:1;color:#2f3a4f;font-size:15.5px;line-height:1.65;min-height:76px}
+
 
 #d-plate{position:absolute;top:-15px;left:14px;background:#20304f;color:#ffe9a8;border:2px solid #f2b33d;border-radius:999px;padding:5px 14px;font-weight:700;font-size:14.5px;display:flex;gap:8px;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:2}
+
 #d-plate #d-time{color:#ffd76e;font-size:12.5px}
+
 #dlg-main{display:flex;gap:11px;align-items:flex-start}
+
 #d-fx{color:#1c7c3c;font-weight:700;font-size:14px;margin-top:6px}
+
 #d-badge{color:#8a6d1a;font-weight:700;font-size:14px}
+
 #d-next{text-align:right;color:#8a6d1f;font-size:12.5px;font-weight:700;animation:vnblink 1.1s infinite;margin-top:2px}
-@keyframes vnblink{0%,100%{opacity:.25}50%{opacity:1}}
+
+@keyframes vnblink{0%,100%{opacity:.25}
+
 #choices{position:absolute;inset:0;z-index:14;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;background:rgba(10,14,28,.45);padding:20px}
+
 #choices.show{display:flex}
+
 .vn-choice{width:min(88%,430px);background:rgba(24,34,58,.96);color:#fff;border:2px solid #f2b33d;border-radius:14px;padding:13px 16px;font-size:15.5px;cursor:pointer;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);font-family:inherit}
+
 .vn-choice:active{background:#2e4470}
 </style>
 </head>
@@ -128,6 +173,7 @@ var toastTimer=null;
 var cur=0, pendingNext=null, collapseUsed=false, inCollapse=false, invulnT=0;
 var pickups=[], spirit=null;
 var guideArrow=null;
+var seated=[];
 
 function box(w,h,d,color,x,y,z,parent,shadow){
   var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshStandardMaterial({color:color, roughness:.85}));
@@ -151,6 +197,34 @@ function makeIcon(emo, s){
   var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx, transparent:true}));
   sp.scale.set(s||2.2, s||2.2, 1); return sp;
+}
+</script>
+<script>
+"use strict";
+function tree(x,z,s){
+  var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s||1);
+  var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,1.6,7), new THREE.MeshStandardMaterial({color:0x8a5a28, roughness:.9}));
+  trunk.position.y=0.8; trunk.castShadow=true; g.add(trunk);
+  var c1=new THREE.Mesh(new THREE.SphereGeometry(1.5,10,8), new THREE.MeshStandardMaterial({color:0x4e7a3a, roughness:.9}));
+  c1.position.y=2.6; c1.castShadow=true; g.add(c1);
+  var c2=new THREE.Mesh(new THREE.SphereGeometry(1.05,10,8), new THREE.MeshStandardMaterial({color:0x5d8a44, roughness:.9}));
+  c2.position.set(0.7,3.4,0.3); c2.castShadow=true; g.add(c2);
+  scene.add(g); solid(x-0.55, z-0.55, x+0.55, z+0.55);
+}
+function lamp(x,z){
+  var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.09,3.1,6), new THREE.MeshStandardMaterial({color:0x5a4632}));
+  pole.position.set(x,1.55,z); pole.castShadow=true; scene.add(pole);
+  var bulb=new THREE.Mesh(new THREE.SphereGeometry(0.24,10,8), new THREE.MeshStandardMaterial({color:0xffe9a8, emissive:0xffca55, emissiveIntensity:.7}));
+  bulb.position.set(x,3.2,z); scene.add(bulb);
+  solid(x-0.2, z-0.2, x+0.2, z+0.2);
+}
+function beacon(x, z, emo){
+  var grp=new THREE.Group(); grp.position.set(x, 0, z);
+  var ring=new THREE.Mesh(new THREE.RingGeometry(1.05, 1.45, 36), new THREE.MeshBasicMaterial({color:0xf2b33d, transparent:true, opacity:.9, side:THREE.DoubleSide}));
+  ring.rotation.x=-Math.PI/2; ring.position.y=0.06; grp.add(ring);
+  var icon=makeIcon(emo, 2.1); icon.position.y=2.6; grp.add(icon);
+  scene.add(grp);
+  return {grp:grp, ring:ring, icon:icon, x:x, z:z};
 }
 </script>
 <script>
@@ -192,36 +266,27 @@ function faceToward(p, dx, dz, dt){
   while(diff>Math.PI) diff-=Math.PI*2; while(diff<-Math.PI) diff+=Math.PI*2;
   p.rotation.y=cur+diff*Math.min(1, dt*12);
 }
+
+// Tạo nhân vật chính + các NPC trong khuôn viên
+function buildPeople(){
+  // Người
+  player=makePerson({suit:0x27364f, cloth:0x3a3f4a, hair:0x2b2b30, tie:true});
+  player.position.set(0,0,35); player.rotation.y=Math.PI; scene.add(player);
+  var st1=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x4a3421});
+  st1.position.set(8,0,-6); st1.rotation.y=-0.7; scene.add(st1);
+  var stLabel=makeLabel('Sinh viên', 4.6, 40); stLabel.position.set(8,3.4,-6); scene.add(stLabel);
+  var st2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x191919});
+  st2.position.set(6,0,-10); scene.add(st2);
+  students.push({p:st2, a:{x:6,z:-10}, b:{x:6,z:10}, t:0, dir:1, speed:2.3});
+  var gv=makePerson({suit:0x8e2f3c, cloth:0xffffff, hair:0x5a3a22, long:true, longHair:true});
+  gv.position.set(-21.5,0,-27.6); gv.rotation.y=0.4; scene.add(gv);
+  var gvLabel=makeLabel('💻 Khoa CNTT', 5.2, 40); gvLabel.position.set(-21.5,3.5,-27.6); scene.add(gvLabel);
+}
 </script>
 <script>
 "use strict";
-function tree(x,z,s){
-  var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s||1);
-  var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,1.6,7), new THREE.MeshStandardMaterial({color:0x8a5a28, roughness:.9}));
-  trunk.position.y=0.8; trunk.castShadow=true; g.add(trunk);
-  var c1=new THREE.Mesh(new THREE.SphereGeometry(1.5,10,8), new THREE.MeshStandardMaterial({color:0x4e7a3a, roughness:.9}));
-  c1.position.y=2.6; c1.castShadow=true; g.add(c1);
-  var c2=new THREE.Mesh(new THREE.SphereGeometry(1.05,10,8), new THREE.MeshStandardMaterial({color:0x5d8a44, roughness:.9}));
-  c2.position.set(0.7,3.4,0.3); c2.castShadow=true; g.add(c2);
-  scene.add(g); solid(x-0.55, z-0.55, x+0.55, z+0.55);
-}
-function lamp(x,z){
-  var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.09,3.1,6), new THREE.MeshStandardMaterial({color:0x5a4632}));
-  pole.position.set(x,1.55,z); pole.castShadow=true; scene.add(pole);
-  var bulb=new THREE.Mesh(new THREE.SphereGeometry(0.24,10,8), new THREE.MeshStandardMaterial({color:0xffe9a8, emissive:0xffca55, emissiveIntensity:.7}));
-  bulb.position.set(x,3.2,z); scene.add(bulb);
-  solid(x-0.2, z-0.2, x+0.2, z+0.2);
-}
-function beacon(x, z, emo){
-  var grp=new THREE.Group(); grp.position.set(x, 0, z);
-  var ring=new THREE.Mesh(new THREE.RingGeometry(1.05, 1.45, 36), new THREE.MeshBasicMaterial({color:0xf2b33d, transparent:true, opacity:.9, side:THREE.DoubleSide}));
-  ring.rotation.x=-Math.PI/2; ring.position.y=0.06; grp.add(ring);
-  var icon=makeIcon(emo, 2.1); icon.position.y=2.6; grp.add(icon);
-  scene.add(grp);
-  return {grp:grp, ring:ring, icon:icon, x:x, z:z};
-}
-
-function buildWorld(){
+// Sân trường: nền, đường, tường rào, cổng, cột cờ, cây đèn
+function buildCampus(){
   // Nền
   var grass=new THREE.Mesh(new THREE.PlaneGeometry(76,112), new THREE.MeshStandardMaterial({color:0x69a24b, roughness:1}));
   grass.rotation.x=-Math.PI/2; grass.receiveShadow=true; scene.add(grass);
@@ -241,105 +306,6 @@ function buildWorld(){
     if(Math.abs(fx)<4) fx+=7;
     f.position.set(fx, 0.035, fz); scene.add(f);
   }
-
-  // ===== TRƯỜNG HỌC: 2 phòng có cửa (Phòng học + Văn phòng khoa), hành lang phía trước =====
-  box(34,0.14,10, 0xe6dcc4, 0,0.07,-38, scene, false);
-  var wallC=0xf3e6c8;
-  box(34,2.9,0.5, wallC, 0,1.45,-42.75); solid(-17,-43, 17,-42.5);
-  box(0.5,2.9,9.5, wallC, -16.75,1.45,-38); solid(-17,-42.5, -16.5,-33.5);
-  box(0.5,2.9,9.5, wallC, 16.75,1.45,-38); solid(16.5,-42.5, 17,-33.5);
-  box(0.5,2.9,9.5, 0xe8dcc0, 0,1.45,-38); solid(-0.25,-42.5, 0.25,-33.5);
-  box(5,2.9,0.5, wallC, -14.5,1.45,-33.25); solid(-17,-33.5, -12,-33);
-  box(18.8,2.9,0.5, wallC, 0,1.45,-33.25); solid(-9.4,-33.5, 9.4,-33);
-  box(5,2.9,0.5, wallC, 14.5,1.45,-33.25); solid(12,-33.5, 17,-33);
-  box(2.6,0.55,0.56, 0x6d4c41, -10.7,2.62,-33.25, scene, false);
-  box(2.6,0.55,0.56, 0x6d4c41, 10.7,2.62,-33.25, scene, false);
-  box(35,0.35,1.1, 0xc0392b, 0,3.05,-42.75, scene, false);
-  box(35,0.35,1.1, 0xc0392b, 0,3.05,-33.25, scene, false);
-  box(1.1,0.35,10.6, 0xc0392b, -17,3.05,-38, scene, false);
-  box(1.1,0.35,10.6, 0xc0392b, 17,3.05,-38, scene, false);
-  var corr=new THREE.Mesh(new THREE.PlaneGeometry(34.6,3.6), new THREE.MeshLambertMaterial({color:0xbfb49a}));
-  corr.rotation.x=-Math.PI/2; corr.position.set(0,0.028,-31.3); corr.receiveShadow=true; scene.add(corr);
-  // Trong PHÒNG HỌC: bảng đen, bàn giảng viên, 6 bàn sinh viên
-  box(7,2,0.15, 0x2e4a3a, -8.5,1.7,-42.35, scene, false);
-  box(2.2,1.4,0.1, 0x33507e, -13.5,1.9,-42.42, scene, false);
-  box(2.2,1.4,0.1, 0x33507e, -3.5,1.9,-42.42, scene, false);
-  box(2.2,0.9,1, 0x8a5a28, -8.5,0.45,-40.6); solid(-9.6,-41.1, -7.4,-40.1);
-  var deskPos=[[-12.5,-39.8],[-5,-39.8],[-12.5,-37.6],[-5,-37.6],[-12.5,-35.4],[-5,-35.4]];
-  for(var di=0; di<deskPos.length; di++){ var dp=deskPos[di]; box(1.9,0.75,1, 0xa8763e, dp[0],0.38,dp[1]); solid(dp[0]-0.95,dp[1]-0.5, dp[0]+0.95,dp[1]+0.5); }
-  var clk=makeIcon('🕐',0.9); clk.position.set(-8.5,2.7,-42.2); scene.add(clk);
-  // Học sinh ngồi học tại 6 bàn (em ở bàn cuối phía đông đang gục ngủ — đúng cảnh 07:30)
-  var stuCols=[0x4a3421, 0x191919, 0x5a3a22, 0x2b2b30, 0x6b4a2a, 0x333333];
-  for(var sti=0; sti<deskPos.length; sti++){
-    var sdp=deskPos[sti];
-    var stu=makePerson({suit:0xffffff, cloth:0x27364f, hair:stuCols[sti]});
-    stu.position.set(sdp[0], -0.55, sdp[1]+0.85); stu.rotation.y=Math.PI; stu.scale.setScalar(0.95);
-    if(sti===5){ stu.rotation.x=0.45; var zz=makeIcon('💤',1); zz.position.set(sdp[0]+0.7, 1.7, sdp[1]+0.7); scene.add(zz); }
-    scene.add(stu);
-  }
-  var sign=makeLabel('🎓 TRƯỜNG ĐẠI HỌC', 7.5); sign.position.set(0,2.3,-32.6); scene.add(sign);
-  // Trong VĂN PHÒNG KHOA: 2 bàn làm việc, tủ hồ sơ, bàn họp
-  box(2.4,0.9,1.1, 0x8a5a28, 5.5,0.45,-40.5); solid(4.3,-41.05, 6.7,-39.95);
-  box(2.4,0.9,1.1, 0x8a5a28, 11,0.45,-40.5); solid(9.8,-41.05, 12.2,-39.95);
-  box(3,2,0.7, 0x7a5a38, 14.5,1,-42.1); solid(13,-42.45, 16,-41.75);
-  box(3.4,0.8,1.6, 0xa8763e, 8,0.4,-36); solid(6.3,-36.8, 9.7,-35.2);
-  var bk=makeIcon('📚',0.85); bk.position.set(5.5,1.25,-40.5); scene.add(bk);
-  var pl=makeIcon('🪴',1.1); pl.position.set(1.8,0.8,-41.6); scene.add(pl);
-  var lb1=makeLabel('🏫 TRƯỜNG HỌC', 12); lb1.position.set(0,5.4,-38); scene.add(lb1);
-  var lb1a=makeLabel('📖 PHÒNG HỌC', 6); lb1a.position.set(-8.5,4.3,-38); scene.add(lb1a);
-  var lb1b=makeLabel('🗂️ VĂN PHÒNG KHOA', 6); lb1b.position.set(8.5,4.3,-38); scene.add(lb1b);
-
-  // ===== THƯ VIỆN: phòng đọc có cửa, kệ sách, bàn đọc =====
-  box(12,0.14,9, 0xd8c9a8, -25,0.07,-34, scene, false);
-  var libC=0xe8dcc0;
-  box(12,2.7,0.5, libC, -25,1.35,-38.25); solid(-31,-38.5, -19,-38);
-  box(0.5,2.7,8.5, libC, -30.75,1.35,-34); solid(-31,-38, -30.5,-30);
-  box(0.5,2.7,8.5, libC, -19.25,1.35,-34); solid(-19.5,-38, -19,-30);
-  box(4.8,2.7,0.5, libC, -28.6,1.35,-29.75); solid(-31,-30, -26.2,-29.5);
-  box(5.2,2.7,0.5, libC, -21.4,1.35,-29.75); solid(-23.8,-30, -19,-29.5);
-  box(2.4,0.5,0.56, 0x6d4c41, -25,2.45,-29.75, scene, false);
-  box(13,0.3,1, 0x8a5a28, -25,2.85,-38.25, scene, false);
-  box(13,0.3,1, 0x8a5a28, -25,2.85,-29.75, scene, false);
-  box(1,0.3,9.5, 0x8a5a28, -31,2.85,-34, scene, false);
-  box(1,0.3,9.5, 0x8a5a28, -19,2.85,-34, scene, false);
-  var shelfX=[-28.5,-25,-21.5], bookCols=[0xc0392b,0x33507e,0x2e7d46];
-  for(var si2=0; si2<3; si2++){
-    box(2.6,2,0.6, 0x7a5a38, shelfX[si2],1,-37.6); solid(shelfX[si2]-1.3,-37.9, shelfX[si2]+1.3,-37.3);
-    for(var bj=0; bj<3; bj++) box(0.5,0.8,0.1, bookCols[(si2+bj)%3], shelfX[si2]-0.7+bj*0.7, 1.35,-37.24, scene, false);
-  }
-  box(3,0.8,1.4, 0xa8763e, -25,0.4,-33.5); solid(-26.5,-34.2, -23.5,-32.8);
-  var lb2=makeLabel('📚 THƯ VIỆN', 9.5); lb2.position.set(-25,5.8,-34); scene.add(lb2);
-
-  // ===== NHÀ Ở: có phòng khách/bàn ăn, bàn làm việc, phòng ngủ =====
-  box(15,0.14,8, 0xe8dcc8, 0,0.07,45, scene, false);
-  var homeC=0xf7ead2;
-  box(15,2.7,0.45, homeC, 0,1.35,48.8); solid(-7.5,48.58, 7.5,49);
-  box(0.45,2.7,8, homeC, -7.3,1.35,45); solid(-7.5,41, -7.08,49);
-  box(0.45,2.7,8, homeC, 7.3,1.35,45); solid(7.08,41, 7.5,49);
-  box(6.3,2.7,0.45, homeC, -4.35,1.35,41.2); solid(-7.5,40.98, -1.2,41.43);
-  box(6.3,2.7,0.45, homeC, 4.35,1.35,41.2); solid(1.2,40.98, 7.5,41.43);
-  box(2.4,0.5,0.5, 0x6d4c41, 0,2.45,41.2, scene, false);
-  box(16,0.3,1, 0x3f6fb5, 0,2.9,48.8, scene, false);
-  box(16,0.3,1, 0x3f6fb5, 0,2.9,41.2, scene, false);
-  box(1,0.3,8.5, 0x3f6fb5, -7.5,2.9,45, scene, false);
-  box(1,0.3,8.5, 0x3f6fb5, 7.5,2.9,45, scene, false);
-  box(0.4,2.2,4.5, 0xe8dcc0, 1.8,1.1,46.75); solid(1.6,44.5, 2,49); // vách ngăn phòng ngủ
-  // Giường ngủ (phòng ngủ, phía đông sau vách)
-  box(2.2,0.55,3.2, 0x8e2f3c, 5.6,0.28,47); solid(4.5,45.4, 6.7,48.6);
-  box(1.8,0.25,0.7, 0xffffff, 5.6,0.62,45.85, scene, false);
-  // Bàn làm việc + laptop
-  box(2.4,0.85,1.1, 0x8a5a28, 5,0.43,42.3); solid(3.8,41.75, 6.2,42.85);
-  var lap=makeIcon('💻',0.85); lap.position.set(5,1.15,42.3); scene.add(lap);
-  // Bàn ăn + sofa + TV + kệ sách + thảm + mèo (phía tây)
-  box(2.6,0.75,1.4, 0xa8763e, -3.8,0.38,46.5); solid(-5.1,45.8, -2.5,47.2);
-  box(3,0.8,1.1, 0x3a6ea5, -4,0.4,42.6); solid(-5.5,42.05, -2.5,43.15);
-  box(2.4,1.4,0.12, 0x22242c, -4,1.7,41.55, scene, false);
-  box(1.8,1.8,0.5, 0x7a5a38, -6.1,0.9,44); solid(-7,43.75, -5.2,44.25);
-  var rug=new THREE.Mesh(new THREE.PlaneGeometry(5,3.4), new THREE.MeshLambertMaterial({color:0xc96f4a}));
-  rug.rotation.x=-Math.PI/2; rug.position.set(-3.8,0.035,44.6); rug.receiveShadow=true; scene.add(rug);
-  var cat=makeIcon('🐱',0.8); cat.position.set(-5.6,0.5,44.9); scene.add(cat);
-  var pl2=makeIcon('🪴',1); pl2.position.set(6.9,0.7,41.9); scene.add(pl2);
-  var lb3=makeLabel('🏠 NHÀ Ở', 9.5); lb3.position.set(0,5.6,45); scene.add(lb3);
 
   // ===== Rào + cổng + băng-rôn =====
   // Tường rào bao quanh trường (tường xây có trụ + nắp, chừa cổng chính x -3..3)
@@ -385,6 +351,132 @@ function buildWorld(){
   lamp(-3.4,-14); lamp(3.4,-14); lamp(-3.4,6); lamp(3.4,6); lamp(-3.4,20); lamp(3.4,20);
   var lb5=makeLabel('🌳 SÂN TRƯỜNG', 10); lb5.position.set(13,6.8,-2); scene.add(lb5);
 
+  // Đường nhựa + điểm xe buýt trước cổng
+  var road=new THREE.Mesh(new THREE.PlaneGeometry(76, 5), new THREE.MeshLambertMaterial({color:0x8a8f98}));
+  road.rotation.x=-Math.PI/2; road.position.set(0, 0.008, 28.75); scene.add(road);
+  var bpole=new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 2.2, 6), new THREE.MeshLambertMaterial({color:0x666666}));
+  bpole.position.set(22.5, 1.1, 30.6); scene.add(bpole);
+  var bsign=makeIcon('🚏', 1.6); bsign.position.set(22.5, 2.6, 30.6); scene.add(bsign);
+
+  // Chi tiết sinh động: ghế đá sân trường, bụi cây, chỗ để xe gần cổng
+  box(2.4,0.14,0.65, 0x8a5a28, -14,0.55,-18, scene, false);
+  box(2.4,0.55,0.12, 0x8a5a28, -14,0.9,-17.68, scene, false);
+  box(2.4,0.14,0.65, 0x8a5a28, 14,0.55,-18, scene, false);
+  box(2.4,0.55,0.12, 0x8a5a28, 14,0.9,-17.68, scene, false);
+  var bushPos=[[-18,-16.5],[-12,-16.5],[12,-16.5],[18,-16.5],[-24,-16.5],[24,-16.5],[-11,50.5],[11,50.5]];
+  for(var bui=0; bui<bushPos.length; bui++){
+    var bush=new THREE.Mesh(new THREE.SphereGeometry(0.62,9,7), new THREE.MeshStandardMaterial({color:0x4e7a3a, roughness:.95}));
+    bush.position.set(bushPos[bui][0],0.5,bushPos[bui][1]); bush.castShadow=true; scene.add(bush);
+  }
+  box(3.2,0.5,0.8, 0x666c75, -26,0.25,20.5, scene, false);
+  var bike=makeIcon('🚲',1.1); bike.position.set(-26.8,0.95,20.5); scene.add(bike);
+  var moto=makeIcon('🛵',1.1); moto.position.set(-25.2,0.95,20.5); scene.add(moto);
+}
+</script>
+<script>
+"use strict";
+// Tòa trường: Phòng học (có học sinh) + Văn phòng khoa + hành lang
+function buildSchool(){
+  // ===== TRƯỜNG HỌC: 2 phòng có cửa (Phòng học + Văn phòng khoa), hành lang phía trước =====
+  box(34,0.14,10, 0xe6dcc4, 0,0.07,-38, scene, false);
+  var wallC=0xf3e6c8;
+  box(34,2.9,0.5, wallC, 0,1.45,-42.75); solid(-17,-43, 17,-42.5);
+  box(0.5,2.9,9.5, wallC, -16.75,1.45,-38); solid(-17,-42.5, -16.5,-33.5);
+  box(0.5,2.9,9.5, wallC, 16.75,1.45,-38); solid(16.5,-42.5, 17,-33.5);
+  box(0.5,2.9,9.5, 0xe8dcc0, 0,1.45,-38); solid(-0.25,-42.5, 0.25,-33.5);
+  box(5,2.9,0.5, wallC, -14.5,1.45,-33.25); solid(-17,-33.5, -12,-33);
+  box(18.8,2.9,0.5, wallC, 0,1.45,-33.25); solid(-9.4,-33.5, 9.4,-33);
+  box(5,2.9,0.5, wallC, 14.5,1.45,-33.25); solid(12,-33.5, 17,-33);
+  box(2.6,0.55,0.56, 0x6d4c41, -10.7,2.62,-33.25, scene, false);
+  box(2.6,0.55,0.56, 0x6d4c41, 10.7,2.62,-33.25, scene, false);
+  box(35,0.35,1.1, 0xc0392b, 0,3.05,-42.75, scene, false);
+  box(35,0.35,1.1, 0xc0392b, 0,3.05,-33.25, scene, false);
+  box(1.1,0.35,10.6, 0xc0392b, -17,3.05,-38, scene, false);
+  box(1.1,0.35,10.6, 0xc0392b, 17,3.05,-38, scene, false);
+  var corr=new THREE.Mesh(new THREE.PlaneGeometry(34.6,3.6), new THREE.MeshLambertMaterial({color:0xbfb49a}));
+  corr.rotation.x=-Math.PI/2; corr.position.set(0,0.028,-31.3); corr.receiveShadow=true; scene.add(corr);
+  // Trong PHÒNG HỌC: bảng đen, bàn giảng viên, 6 bàn sinh viên
+  box(7,2,0.15, 0x2e4a3a, -8.5,1.7,-42.35, scene, false);
+  box(2.2,1.4,0.1, 0x33507e, -13.5,1.9,-42.42, scene, false);
+  box(2.2,1.4,0.1, 0x33507e, -3.5,1.9,-42.42, scene, false);
+  box(2.2,0.9,1, 0x8a5a28, -8.5,0.45,-40.6); solid(-9.6,-41.1, -7.4,-40.1);
+  var deskPos=[[-12.5,-39.8],[-5,-39.8],[-12.5,-37.6],[-5,-37.6],[-12.5,-35.4],[-5,-35.4]];
+  for(var di=0; di<deskPos.length; di++){ var dp=deskPos[di]; box(1.9,0.75,1, 0xa8763e, dp[0],0.38,dp[1]); solid(dp[0]-0.95,dp[1]-0.5, dp[0]+0.95,dp[1]+0.5); }
+  var clk=makeIcon('🕐',0.9); clk.position.set(-8.5,2.7,-42.2); scene.add(clk);
+  // Học sinh ngồi học tại 6 bàn: có ghế, sách trên bàn, ngồi cao rõ người (em bàn cuối phía đông gục ngủ — cảnh 07:30)
+  var stuCols=[0x4a3421, 0x191919, 0x5a3a22, 0x2b2b30, 0x6b4a2a, 0x333333];
+  var bookCols=[0xd84a4a, 0x3a6ea5, 0x3f9e4d, 0xf2b33d, 0x8e44ad, 0xe2703a];
+  for(var sti=0; sti<deskPos.length; sti++){
+    var sdp=deskPos[sti];
+    box(0.85,0.5,0.8, 0x6b4a2a, sdp[0],0.25,sdp[1]+0.9, scene, false);
+    box(0.52,0.07,0.36, bookCols[sti], sdp[0]+0.28,0.8,sdp[1], scene, false);
+    var stu=makePerson({suit:0xffffff, cloth:0x27364f, hair:stuCols[sti]});
+    stu.position.set(sdp[0], -0.35, sdp[1]+0.85); stu.rotation.y=Math.PI; stu.scale.setScalar(0.95);
+    if(sti===5){ stu.rotation.x=0.45; var zz=makeIcon('💤',1); zz.position.set(sdp[0]+0.7, 1.8, sdp[1]+0.7); scene.add(zz); }
+    scene.add(stu);
+    seated.push({g:stu, ph:sti*1.13, base:-0.35});
+  }
+  // 2 sinh viên đứng trò chuyện ở lối đi trong lớp + 1 đồng nghiệp ngồi làm việc trong Văn phòng khoa
+  var chat1=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x191919});
+  chat1.position.set(-15,0,-36.8); chat1.rotation.y=1.9; scene.add(chat1);
+  var chat2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x6b4a2a});
+  chat2.position.set(-13.9,0,-35.8); chat2.rotation.y=-1.2; scene.add(chat2);
+  var chatLb=makeLabel('Sinh viên', 4.2, 40); chatLb.position.set(-14.5,3.2,-36.3); scene.add(chatLb);
+  var col=makePerson({suit:0x3a6ea5, cloth:0x3a3f4a, hair:0x2b2b30});
+  col.position.set(11,-0.35,-39.5); col.rotation.y=Math.PI; scene.add(col);
+  seated.push({g:col, ph:2.4, base:-0.35});
+  var lap2=makeIcon('💻',0.85); lap2.position.set(11,1.25,-40.5); scene.add(lap2);
+  // Tranh treo tường trong phòng học + bảng tin ở hành lang
+  var po1=makeIcon('📚',1); po1.position.set(-13.5,2.1,-42.35); scene.add(po1);
+  var po2=makeIcon('⭐',1); po2.position.set(-3.5,2.1,-42.35); scene.add(po2);
+  box(2.6,1.5,0.1, 0x8a5a28, -14.5,1.8,-32.92, scene, false);
+  var pin=makeIcon('📌',0.8); pin.position.set(-14.5,1.9,-32.75); scene.add(pin);
+  var sign=makeLabel('🎓 TRƯỜNG ĐẠI HỌC', 7.5); sign.position.set(0,2.3,-32.6); scene.add(sign);
+  // Trong VĂN PHÒNG KHOA: 2 bàn làm việc, tủ hồ sơ, bàn họp
+  box(2.4,0.9,1.1, 0x8a5a28, 5.5,0.45,-40.5); solid(4.3,-41.05, 6.7,-39.95);
+  box(2.4,0.9,1.1, 0x8a5a28, 11,0.45,-40.5); solid(9.8,-41.05, 12.2,-39.95);
+  box(3,2,0.7, 0x7a5a38, 14.5,1,-42.1); solid(13,-42.45, 16,-41.75);
+  box(3.4,0.8,1.6, 0xa8763e, 8,0.4,-36); solid(6.3,-36.8, 9.7,-35.2);
+  var bk=makeIcon('📚',0.85); bk.position.set(5.5,1.25,-40.5); scene.add(bk);
+  var pl=makeIcon('🪴',1.1); pl.position.set(1.8,0.8,-41.6); scene.add(pl);
+  var lb1=makeLabel('🏫 TRƯỜNG HỌC', 12); lb1.position.set(0,5.4,-38); scene.add(lb1);
+  var lb1a=makeLabel('📖 PHÒNG HỌC', 6); lb1a.position.set(-8.5,4.3,-38); scene.add(lb1a);
+  var lb1b=makeLabel('🗂️ VĂN PHÒNG KHOA', 6); lb1b.position.set(8.5,4.3,-38); scene.add(lb1b);
+}
+</script>
+<script>
+"use strict";
+// Thư viện (phòng đọc) + Căn-tin
+function buildLibrary(){
+  // ===== THƯ VIỆN: phòng đọc có cửa, kệ sách, bàn đọc =====
+  box(12,0.14,9, 0xd8c9a8, -25,0.07,-34, scene, false);
+  var libC=0xe8dcc0;
+  box(12,2.7,0.5, libC, -25,1.35,-38.25); solid(-31,-38.5, -19,-38);
+  box(0.5,2.7,8.5, libC, -30.75,1.35,-34); solid(-31,-38, -30.5,-30);
+  box(0.5,2.7,8.5, libC, -19.25,1.35,-34); solid(-19.5,-38, -19,-30);
+  box(4.8,2.7,0.5, libC, -28.6,1.35,-29.75); solid(-31,-30, -26.2,-29.5);
+  box(5.2,2.7,0.5, libC, -21.4,1.35,-29.75); solid(-23.8,-30, -19,-29.5);
+  box(2.4,0.5,0.56, 0x6d4c41, -25,2.45,-29.75, scene, false);
+  box(13,0.3,1, 0x8a5a28, -25,2.85,-38.25, scene, false);
+  box(13,0.3,1, 0x8a5a28, -25,2.85,-29.75, scene, false);
+  box(1,0.3,9.5, 0x8a5a28, -31,2.85,-34, scene, false);
+  box(1,0.3,9.5, 0x8a5a28, -19,2.85,-34, scene, false);
+  var shelfX=[-28.5,-25,-21.5], bookCols=[0xc0392b,0x33507e,0x2e7d46];
+  for(var si2=0; si2<3; si2++){
+    box(2.6,2,0.6, 0x7a5a38, shelfX[si2],1,-37.6); solid(shelfX[si2]-1.3,-37.9, shelfX[si2]+1.3,-37.3);
+    for(var bj=0; bj<3; bj++) box(0.5,0.8,0.1, bookCols[(si2+bj)%3], shelfX[si2]-0.7+bj*0.7, 1.35,-37.24, scene, false);
+  }
+  box(3,0.8,1.4, 0xa8763e, -25,0.4,-33.5); solid(-26.5,-34.2, -23.5,-32.8);
+  var lb2=makeLabel('📚 THƯ VIỆN', 9.5); lb2.position.set(-25,5.8,-34); scene.add(lb2);
+
+  // Sinh viên ngồi đọc sách tại bàn đọc
+  box(0.85,0.5,0.8, 0x6b4a2a, -25,0.25,-31.85, scene, false);
+  var rd1=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x5a3a22});
+  rd1.position.set(-25,-0.35,-31.9); rd1.rotation.y=Math.PI; scene.add(rd1);
+  seated.push({g:rd1, ph:0.7, base:-0.35});
+  var bk2=makeIcon('📖',0.8); bk2.position.set(-25,1.05,-33.4); scene.add(bk2);
+}
+function buildCanteen(){
   // ===== CĂN-TIN: mái che viền, quầy bán, bàn ăn =====
   var canFloor=new THREE.Mesh(new THREE.PlaneGeometry(16,12.5), new THREE.MeshLambertMaterial({color:0xd9c9a3}));
   canFloor.rotation.x=-Math.PI/2; canFloor.position.set(17.5,0.028,-5); canFloor.receiveShadow=true; scene.add(canFloor);
@@ -405,25 +497,66 @@ function buildWorld(){
   var fd4=makeIcon('🍜',0.8); fd4.position.set(13.5,1.05,-3.5); scene.add(fd4);
   var lb6=makeLabel('🍚 CĂN-TIN', 6.5); lb6.position.set(17.5,4.4,-5); scene.add(lb6);
 
-  // Người
-  player=makePerson({suit:0x27364f, cloth:0x3a3f4a, hair:0x2b2b30, tie:true});
-  player.position.set(0,0,35); player.rotation.y=Math.PI; scene.add(player);
-  var st1=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x4a3421});
-  st1.position.set(8,0,-6); st1.rotation.y=-0.7; scene.add(st1);
-  var stLabel=makeLabel('Sinh viên', 4.6, 40); stLabel.position.set(8,3.4,-6); scene.add(stLabel);
-  var st2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x191919});
-  st2.position.set(6,0,-10); scene.add(st2);
-  students.push({p:st2, a:{x:6,z:-10}, b:{x:6,z:10}, t:0, dir:1, speed:2.3});
-  var gv=makePerson({suit:0x8e2f3c, cloth:0xffffff, hair:0x5a3a22, long:true, longHair:true});
-  gv.position.set(-21.5,0,-27.6); gv.rotation.y=0.4; scene.add(gv);
-  var gvLabel=makeLabel('💻 Khoa CNTT', 5.2, 40); gvLabel.position.set(-21.5,3.5,-27.6); scene.add(gvLabel);
-
-  // Đường nhựa + điểm xe buýt trước cổng
-  var road=new THREE.Mesh(new THREE.PlaneGeometry(76, 5), new THREE.MeshLambertMaterial({color:0x8a8f98}));
-  road.rotation.x=-Math.PI/2; road.position.set(0, 0.008, 28.75); scene.add(road);
-  var bpole=new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 2.2, 6), new THREE.MeshLambertMaterial({color:0x666666}));
-  bpole.position.set(22.5, 1.1, 30.6); scene.add(bpole);
-  var bsign=makeIcon('🚏', 1.6); bsign.position.set(22.5, 2.6, 30.6); scene.add(bsign);
+  // Sinh viên ngồi ăn tại 2 bàn
+  box(0.85,0.5,0.8, 0x6b4a2a, 13.5,0.25,-2.5, scene, false);
+  var eat1=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x4a3421});
+  eat1.position.set(13.5,-0.35,-2.55); eat1.rotation.y=Math.PI; scene.add(eat1);
+  seated.push({g:eat1, ph:1.9, base:-0.35});
+  box(0.85,0.5,0.8, 0x6b4a2a, 21.5,0.25,-2.5, scene, false);
+  var eat2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x333333});
+  eat2.position.set(21.5,-0.35,-2.55); eat2.rotation.y=Math.PI; scene.add(eat2);
+  seated.push({g:eat2, ph:3.1, base:-0.35});
+}
+</script>
+<script>
+"use strict";
+// Nhà của giảng viên: phòng khách/bàn ăn, bàn làm việc, phòng ngủ + sân vườn
+function buildHouse(){
+  // ===== NHÀ Ở: có phòng khách/bàn ăn, bàn làm việc, phòng ngủ =====
+  box(15,0.14,8, 0xe8dcc8, 0,0.07,45, scene, false);
+  var homeC=0xf7ead2;
+  box(15,2.7,0.45, homeC, 0,1.35,48.8); solid(-7.5,48.58, 7.5,49);
+  box(0.45,2.7,8, homeC, -7.3,1.35,45); solid(-7.5,41, -7.08,49);
+  box(0.45,2.7,8, homeC, 7.3,1.35,45); solid(7.08,41, 7.5,49);
+  box(6.3,2.7,0.45, homeC, -4.35,1.35,41.2); solid(-7.5,40.98, -1.2,41.43);
+  box(6.3,2.7,0.45, homeC, 4.35,1.35,41.2); solid(1.2,40.98, 7.5,41.43);
+  box(2.4,0.5,0.5, 0x6d4c41, 0,2.45,41.2, scene, false);
+  box(16,0.3,1, 0x3f6fb5, 0,2.9,48.8, scene, false);
+  box(16,0.3,1, 0x3f6fb5, 0,2.9,41.2, scene, false);
+  box(1,0.3,8.5, 0x3f6fb5, -7.5,2.9,45, scene, false);
+  box(1,0.3,8.5, 0x3f6fb5, 7.5,2.9,45, scene, false);
+  box(0.4,2.2,4.5, 0xe8dcc0, 1.8,1.1,46.75); solid(1.6,44.5, 2,49); // vách ngăn phòng ngủ
+  // Giường ngủ (phòng ngủ, phía đông sau vách)
+  box(2.2,0.55,3.2, 0x8e2f3c, 5.6,0.28,47); solid(4.5,45.4, 6.7,48.6);
+  box(1.8,0.25,0.7, 0xffffff, 5.6,0.62,45.85, scene, false);
+  // Bàn làm việc + laptop
+  box(2.4,0.85,1.1, 0x8a5a28, 5,0.43,42.3); solid(3.8,41.75, 6.2,42.85);
+  var lap=makeIcon('💻',0.85); lap.position.set(5,1.15,42.3); scene.add(lap);
+  // Bàn ăn + sofa + TV + kệ sách + thảm + mèo (phía tây)
+  box(2.6,0.75,1.4, 0xa8763e, -3.8,0.38,46.5); solid(-5.1,45.8, -2.5,47.2);
+  box(3,0.8,1.1, 0x3a6ea5, -4,0.4,42.6); solid(-5.5,42.05, -2.5,43.15);
+  box(2.4,1.4,0.12, 0x22242c, -4,1.7,41.55, scene, false);
+  box(1.8,1.8,0.5, 0x7a5a38, -6.1,0.9,44); solid(-7,43.75, -5.2,44.25);
+  var rug=new THREE.Mesh(new THREE.PlaneGeometry(5,3.4), new THREE.MeshLambertMaterial({color:0xc96f4a}));
+  rug.rotation.x=-Math.PI/2; rug.position.set(-3.8,0.035,44.6); rug.receiveShadow=true; scene.add(rug);
+  var cat=makeIcon('🐱',0.8); cat.position.set(-5.6,0.5,44.9); scene.add(cat);
+  var pl2=makeIcon('🪴',1); pl2.position.set(6.9,0.7,41.9); scene.add(pl2);
+  var lb3=makeLabel('🏠 NHÀ Ở', 9.5); lb3.position.set(0,5.6,45); scene.add(lb3);
+}
+</script>
+<script>
+"use strict";
+// Ghép toàn bộ thế giới 3D từ các module con
+function buildWorld(){
+  buildCampus();
+  buildSchool();
+  buildLibrary();
+  buildCanteen();
+  buildHouse();
+  buildPeople();
+  buildBeacons();
+}
+function buildBeacons(){
   // 13 điểm sự kiện theo kịch bản (cảnh 12 lặp lại điểm cảnh 1 ở nhà)
   var BEACON_POS=[[0,40.2],[24,29],[-8.75,-34.6],[-8.5,-39.2],[11,-38.5],[17,-5],[8,-34.3],[-10.7,-31.3],[-3.2,-37.5],[-1.6,45.2],[5,43.6],[5,43.6],[3.9,47]];
   var BEACON_ICONS=['⏰','🚌','😴','❓','📩','🍚','🗂️','📄','🌤️','🍽️','💬','📝','🌙'];
@@ -441,8 +574,7 @@ function buildWorld(){
   guideArrow.position.set(0,0.07,33); scene.add(guideArrow);
 
   targetRing=new THREE.Mesh(new THREE.RingGeometry(0.45,0.65,28), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.85, side:THREE.DoubleSide}));
-  targetRing.rotation.x=-Math.PI/2; targetRing.position.y=0.05; targetRing.visible=false; scene.add(targetRing);
-}
+  targetRing.rotation.x=-Math.PI/2; targetRing.position.y=0.05; targetRing.visible=false; scene.add(targetRing);}
 </script>
 <script>
 "use strict";
@@ -584,6 +716,10 @@ function loadUnlocked(){ try{ return JSON.parse(localStorage.getItem('mot-ngay-l
 function saveUnlocked(id){ var u=loadUnlocked(); if(u.indexOf(id)<0){ u.push(id); try{ localStorage.setItem('mot-ngay-lam-thay-endings', JSON.stringify(u)); }catch(e){} } return u; }
 
 // ================= LUỒNG CHƠI =================
+</script>
+<script>
+"use strict";
+// Giao diện hộp thoại kiểu visual novel: đoạn thoại chạy chữ, chạm để tiếp, lựa chọn giữa màn hình
 function fxText(fx){
   var names={en:"⚡", he:"❤️", fi:"🔥"}, parts=[];
   ["en","he","fi"].forEach(function(k){ if(fx[k]) parts.push((fx[k]>0?"+":"−")+Math.abs(fx[k])+" "+names[k]); });
@@ -668,6 +804,10 @@ function advanceDlg(){
     else { dlgPhase='choice'; showChoices(); }
   } else if(dlgPhase==='response'){ goNext(); }
 }
+</script>
+<script>
+"use strict";
+// Luồng truyện: mở cảnh, vật phẩm nhặt được, ma deadline, kết thúc
 function setEvent(i){
   cur=i;
   for(var j=0;j<beacons.length;j++) beacons[j].grp.visible=(j===i);
@@ -887,6 +1027,8 @@ function animate(){
     faceToward(st.p, (st.b.x-st.a.x)*st.dir, (st.b.z-st.a.z)*st.dir, dt);
     animPerson(st.p, true, dt, t);
   }
+  // Nhân vật ngồi (học sinh trong lớp, người đọc sách, người ăn, đồng nghiệp): nhấp nhô nhẹ
+  for(var sdi=0; sdi<seated.length; sdi++){ var sdo=seated[sdi]; sdo.g.position.y=sdo.base+Math.sin(t*1.7+sdo.ph)*0.03; }
   // Mũi tên chỉ đường tới điểm sự kiện
   // Mũi tên đất dưới chân: nằm trước mặt người chơi, chỉ về điểm sự kiện
   if(guideArrow){
