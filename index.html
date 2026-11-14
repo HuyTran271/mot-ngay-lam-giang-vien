@@ -46,7 +46,6 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
 #navi{position:absolute;top:150px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:rgba(13,20,40,.85);color:#fff;padding:7px 14px;border-radius:999px;font-size:14px;z-index:5;pointer-events:none;white-space:nowrap}
 
 #navi-arrow{display:inline-block;color:#ffd76e;font-size:17px}
-50%{opacity:1}
 </style>
 <style>
 
@@ -96,7 +95,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
 
 #d-next{text-align:right;color:#8a6d1f;font-size:12.5px;font-weight:700;animation:vnblink 1.1s infinite;margin-top:2px}
 
-@keyframes vnblink{0%,100%{opacity:.25}
+@keyframes vnblink{0%,100%{opacity:.25}50%{opacity:1}}
 
 #choices{position:absolute;inset:0;z-index:14;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;background:rgba(10,14,28,.45);padding:20px}
 
@@ -124,7 +123,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
       <div class="sub">BẢN 3D · TRỌN CÂU CHUYỆN 13 CẢNH · CODE THE THANKS 2026</div>
       <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề — và quyết định 1 trong 4 kết thúc.</p>
       <p>📖 Câu chuyện hư cấu — mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
-      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button>
+      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 00:01 15/11</div>
     </div>
   </div>
 
