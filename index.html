@@ -6,10 +6,10 @@
 <title>Demo 3D — Một Ngày Làm Giảng Viên</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
 <style>
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#0e1420;font-family:'Segoe UI',system-ui,sans-serif}
   #app{position:fixed;inset:0}
-  canvas{display:block}
+  canvas{display:block;touch-action:none;user-select:none;-webkit-user-select:none}
   .panel{background:rgba(13,20,40,.82);color:#fff;border:1.5px solid rgba(242,179,61,.7);border-radius:14px;backdrop-filter:blur(3px)}
   #hud{position:absolute;top:10px;left:10px;padding:8px 12px;font-size:13px;line-height:1.5;pointer-events:none;z-index:5}
   #hud b{color:#ffd76e}
@@ -127,6 +127,9 @@ function makeIcon(emo, s){
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx, transparent:true}));
   sp.scale.set(s||2.2, s||2.2, 1); return sp;
 }
+</script>
+<script>
+"use strict";
 function makePerson(o){
   var g=new THREE.Group();
   var suit=new THREE.MeshStandardMaterial({color:o.suit, roughness:.8});
@@ -164,6 +167,9 @@ function faceToward(p, dx, dz, dt){
   while(diff>Math.PI) diff-=Math.PI*2; while(diff<-Math.PI) diff+=Math.PI*2;
   p.rotation.y=cur+diff*Math.min(1, dt*12);
 }
+</script>
+<script>
+"use strict";
 function tree(x,z,s){
   var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s||1);
   var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,1.6,7), new THREE.MeshStandardMaterial({color:0x8a5a28, roughness:.9}));
@@ -294,7 +300,9 @@ function buildWorld(){
   targetRing=new THREE.Mesh(new THREE.RingGeometry(0.45,0.65,28), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.85, side:THREE.DoubleSide}));
   targetRing.rotation.x=-Math.PI/2; targetRing.position.y=0.05; targetRing.visible=false; scene.add(targetRing);
 }
-
+</script>
+<script>
+"use strict";
 var DLGS=[
   { icon:'⏰', time:'05:00', title:'Chuông báo thức', obj:'🎯 Tới cổng trường — vào lớp thôi',
     text:'5 giờ sáng. Chuông reo lần thứ ba, bạn với tay tắt rồi ngồi dậy. Ngoài trời còn tối, bếp chưa ấm, mà bài giảng hôm nay thì chưa soạn xong phần cuối…<br><br>Một ngày làm giảng viên bắt đầu như thế — trước cả khi mặt trời mọc.',
@@ -357,7 +365,54 @@ function closeDlg(){
   if(beaconStep<beacons.length){ beacons[beaconStep].grp.visible=true; mode='play'; }
   else { mode='play'; showToast('🎉 Hết demo 3D! Cảm ơn bạn đã đi dạo khuôn viên — bản 2D đầy đủ 13 cảnh vẫn là bản chính nhé.', 5200); }
 }
-
+</script>
+<script>
+"use strict";
+var raycaster, groundPlane;
+function pointerGround(e){
+  var nx=(e.clientX/innerWidth)*2-1, ny=-(e.clientY/innerHeight)*2+1;
+  raycaster.setFromCamera({x:nx, y:ny}, camera);
+  var out=new THREE.Vector3();
+  return raycaster.ray.intersectPlane(groundPlane, out) ? out : null;
+}
+function bindInput(){
+  var el=renderer.domElement;
+  raycaster=new THREE.Raycaster(); groundPlane=new THREE.Plane(new THREE.Vector3(0,1,0), 0);
+  el.style.touchAction='none';
+  el.addEventListener('pointerdown', function(e){
+    if(e.cancelable) e.preventDefault();
+    if(mode!=='play') return;
+    if(e.clientX<innerWidth/2){
+      joy.on=true; joy.id=e.pointerId; joy.bx=e.clientX; joy.by=e.clientY; joy.dx=0; joy.dy=0; target=null; targetRing.visible=false;
+      var j=document.getElementById('joy'), n=document.getElementById('nub');
+      j.style.display='block'; j.style.left=(joy.bx-58)+'px'; j.style.top=(joy.by-58)+'px';
+      n.style.display='block'; n.style.left=(joy.bx-26)+'px'; n.style.top=(joy.by-26)+'px';
+    } else {
+      var p=pointerGround(e);
+      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z); }
+    }
+  });
+  window.addEventListener('pointermove', function(e){
+    if(!joy.on || e.pointerId!==joy.id) return;
+    var dx=e.clientX-joy.bx, dy=e.clientY-joy.by, d=Math.hypot(dx,dy), max=52;
+    if(d>max){ dx=dx/d*max; dy=dy/d*max; }
+    joy.dx=dx/max; joy.dy=dy/max;
+    var n=document.getElementById('nub');
+    n.style.left=(joy.bx+dx-26)+'px'; n.style.top=(joy.by+dy-26)+'px';
+  });
+  function end(e){ if(joy.on && e.pointerId===joy.id){ joy.on=false; joy.dx=0; joy.dy=0;
+    document.getElementById('joy').style.display='none'; document.getElementById('nub').style.display='none'; } }
+  window.addEventListener('pointerup', end); window.addEventListener('pointercancel', end);
+  document.addEventListener('keydown', function(e){ keys[e.key.toLowerCase()]=true; });
+  document.addEventListener('keyup', function(e){ keys[e.key.toLowerCase()]=false; });
+  window.addEventListener('resize', function(){
+    camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+}
+</script>
+<script>
+"use strict";
 function init(){
   scene=new THREE.Scene();
   scene.background=new THREE.Color(0x9fd3f5);
@@ -379,47 +434,6 @@ function init(){
   buildWorld();
   clock=new THREE.Clock();
   animate();
-}
-
-var raycaster, groundPlane;
-function pointerGround(e){
-  var nx=(e.clientX/innerWidth)*2-1, ny=-(e.clientY/innerHeight)*2+1;
-  raycaster.setFromCamera({x:nx, y:ny}, camera);
-  var out=new THREE.Vector3();
-  return raycaster.ray.intersectPlane(groundPlane, out) ? out : null;
-}
-function bindInput(){
-  var el=renderer.domElement;
-  raycaster=new THREE.Raycaster(); groundPlane=new THREE.Plane(new THREE.Vector3(0,1,0), 0);
-  el.addEventListener('pointerdown', function(e){
-    if(mode!=='play') return;
-    if(e.clientX<innerWidth/2){
-      joy.on=true; joy.id=e.pointerId; joy.bx=e.clientX; joy.by=e.clientY; joy.dx=0; joy.dy=0; target=null; targetRing.visible=false;
-      var j=document.getElementById('joy'), n=document.getElementById('nub');
-      j.style.display='block'; j.style.left=(joy.bx-58)+'px'; j.style.top=(joy.by-58)+'px';
-      n.style.display='block'; n.style.left=(joy.bx-26)+'px'; n.style.top=(joy.by-26)+'px';
-    } else {
-      var p=pointerGround(e);
-      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z); }
-    }
-  });
-  el.addEventListener('pointermove', function(e){
-    if(!joy.on || e.pointerId!==joy.id) return;
-    var dx=e.clientX-joy.bx, dy=e.clientY-joy.by, d=Math.hypot(dx,dy), max=52;
-    if(d>max){ dx=dx/d*max; dy=dy/d*max; }
-    joy.dx=dx/max; joy.dy=dy/max;
-    var n=document.getElementById('nub');
-    n.style.left=(joy.bx+dx-26)+'px'; n.style.top=(joy.by+dy-26)+'px';
-  });
-  function end(e){ if(joy.on && e.pointerId===joy.id){ joy.on=false; joy.dx=0; joy.dy=0;
-    document.getElementById('joy').style.display='none'; document.getElementById('nub').style.display='none'; } }
-  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
-  document.addEventListener('keydown', function(e){ keys[e.key.toLowerCase()]=true; });
-  document.addEventListener('keyup', function(e){ keys[e.key.toLowerCase()]=false; });
-  window.addEventListener('resize', function(){
-    camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-  });
 }
 
 function animate(){
