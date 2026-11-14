@@ -25,29 +25,31 @@
   .card p{color:#3c4658;font-size:14.5px;line-height:1.55;margin:8px 0}
   .btn{background:linear-gradient(180deg,#f7c948,#f2b33d);border:none;color:#20304f;font-weight:700;font-size:16.5px;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:0 5px 0 #c78f1f;margin-top:10px}
   .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c78f1f}
-  #dlg{position:absolute;left:0;right:0;bottom:0;z-index:15;background:linear-gradient(180deg,#fffdf6,#fdf6e0);border-top:3px solid #f2b33d;border-radius:20px 20px 0 0;padding:14px 18px 18px;transform:translateY(110%);transition:transform .3s ease;max-height:62vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
+  #dlg{position:absolute;left:0;right:0;bottom:0;z-index:15;background:linear-gradient(180deg,#fffdf6,#fdf6e0);border-top:3px solid #f2b33d;border-radius:20px 20px 0 0;padding:30px 16px 12px;cursor:pointer;transform:translateY(110%);transition:transform .3s ease;max-height:62vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
   #dlg.show{transform:translateY(0)}
-  #dlg .d-icon{text-align:center;font-size:2rem}
-  #d-face{display:block;margin:2px auto 0;border-radius:50%;border:3px solid #f2b33d;background:#e8eefc}
-  #dlg .d-time{text-align:center;color:#8a6d1f;font-weight:700;font-size:13px}
-  #dlg h3{text-align:center;margin:4px 0 6px;color:#20304f;font-size:19px}
-  #dlg .d-text{color:#3c4658;font-size:15px;line-height:1.6}
-  .choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #d8c795;border-radius:12px;padding:11px 14px;font-size:15px;margin-top:9px;cursor:pointer;color:#20304f}
-  .choice:active{background:#fdf3d8}
-  #resp{display:none;margin-top:10px}
-  #resp.show{display:block}
-  #resp p{color:#3c4658;font-size:15px;line-height:1.6;margin:6px 0}
-  #resp-fx{color:#1c7c3c;font-weight:700;font-size:14px}
+  #d-face{width:56px;height:56px;border-radius:50%;border:3px solid #f2b33d;background:#e8eefc;flex:0 0 auto}
+  #d-text{flex:1;color:#2f3a4f;font-size:15.5px;line-height:1.65;min-height:76px}
   .btn.navy{background:linear-gradient(180deg,#33507e,#20304f);color:#fff;box-shadow:0 5px 0 #141f33}
   #err{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);background:#7c1f1f;color:#fff;padding:14px 18px;border-radius:12px;z-index:50;display:none;max-width:90vw;font-size:14px;text-align:center}
 
-#resp-badge{color:#8a6d1a;font-weight:700;margin-top:4px}
 #hud-clock,#hud-phase{white-space:nowrap}
 #screen-end p{text-align:left}
 #copy-ok{color:#1e7d46;font-size:13px;min-height:16px;margin-top:4px}
 
 #navi{position:absolute;top:150px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:rgba(13,20,40,.85);color:#fff;padding:7px 14px;border-radius:999px;font-size:14px;z-index:5;pointer-events:none;white-space:nowrap}
 #navi-arrow{display:inline-block;color:#ffd76e;font-size:17px;transition:transform .12s linear}
+
+#d-plate{position:absolute;top:-15px;left:14px;background:#20304f;color:#ffe9a8;border:2px solid #f2b33d;border-radius:999px;padding:5px 14px;font-weight:700;font-size:14.5px;display:flex;gap:8px;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:2}
+#d-plate #d-time{color:#ffd76e;font-size:12.5px}
+#dlg-main{display:flex;gap:11px;align-items:flex-start}
+#d-fx{color:#1c7c3c;font-weight:700;font-size:14px;margin-top:6px}
+#d-badge{color:#8a6d1a;font-weight:700;font-size:14px}
+#d-next{text-align:right;color:#8a6d1f;font-size:12.5px;font-weight:700;animation:vnblink 1.1s infinite;margin-top:2px}
+@keyframes vnblink{0%,100%{opacity:.25}50%{opacity:1}}
+#choices{position:absolute;inset:0;z-index:14;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;background:rgba(10,14,28,.45);padding:20px}
+#choices.show{display:flex}
+.vn-choice{width:min(88%,430px);background:rgba(24,34,58,.96);color:#fff;border:2px solid #f2b33d;border-radius:14px;padding:13px 16px;font-size:15.5px;cursor:pointer;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);font-family:inherit}
+.vn-choice:active{background:#2e4470}
 </style>
 </head>
 <body>
@@ -71,19 +73,16 @@
     </div>
   </div>
 
+  <div id="choices"></div>
   <div id="dlg">
-    <div class="d-icon" id="d-icon">⏰</div>
-    <canvas id="d-face" width="72" height="72"></canvas>
-    <div class="d-time" id="d-time">05:00</div>
-    <h3 id="d-title"></h3>
-    <div class="d-text" id="d-text"></div>
-    <div id="d-choices"></div>
-    <div id="resp">
-      <p id="resp-text"></p>
-      <div id="resp-fx"></div>
-      <div id="resp-badge"></div>
-      <button class="btn navy" id="btn-next">Tiếp tục →</button>
+    <div id="d-plate"><span id="d-icon">⏰</span><span id="d-title"></span><span id="d-time">05:00</span></div>
+    <div id="dlg-main">
+      <canvas id="d-face" width="72" height="72"></canvas>
+      <div class="d-text" id="d-text"></div>
     </div>
+    <div id="d-fx"></div>
+    <div id="d-badge"></div>
+    <div id="d-next">▼ chạm để tiếp tục</div>
   </div>
   <div class="overlay" id="screen-end" style="display:none">
     <div class="card">
@@ -343,10 +342,23 @@ function buildWorld(){
   var lb3=makeLabel('🏠 NHÀ Ở', 9.5); lb3.position.set(0,5.6,45); scene.add(lb3);
 
   // ===== Rào + cổng + băng-rôn =====
-  box(27,1.15,0.35, 0xb07a3f, -16.5,0.58,24); box(27,1.15,0.35, 0xb07a3f, 16.5,0.58,24);
+  // Tường rào bao quanh trường (tường xây có trụ + nắp, chừa cổng chính x -3..3)
+  var twC=0xe3d7bd, twCap=0xb08954, twPil=0xcbb489;
+  box(27,2.2,0.4, twC, -16.5,1.1,24); box(27,2.2,0.4, twC, 16.5,1.1,24);
+  box(27.4,0.2,0.62, twCap, -16.5,2.3,24, scene, false); box(27.4,0.2,0.62, twCap, 16.5,2.3,24, scene, false);
   solid(-30,23.7, -3,24.3); solid(3,23.7, 30,24.3);
-  box(0.35,1.15,42, 0xb07a3f, -30,0.58,3); box(0.35,1.15,42, 0xb07a3f, 30,0.58,3);
+  box(0.4,2.2,42, twC, -30,1.1,3); box(0.4,2.2,42, twC, 30,1.1,3);
+  box(0.62,0.2,42.4, twCap, -30,2.3,3, scene, false); box(0.62,0.2,42.4, twCap, 30,2.3,3, scene, false);
   solid(-30.3,-18, -29.7,24); solid(29.7,-18, 30.3,24);
+  box(60.4,2.2,0.4, twC, 0,1.1,-47); box(60.8,0.2,0.62, twCap, 0,2.3,-47, scene, false);
+  solid(-30,-47.3, 30,-46.7);
+  var pilX=[-30,-22.5,-15,-7.5,7.5,15,22.5,30];
+  for(var pli=0; pli<pilX.length; pli++) box(0.72,2.55,0.72, twPil, pilX[pli],1.27,24, scene, false);
+  var pilZ=[-18,-11,-4,3,10,17];
+  for(var plz=0; plz<pilZ.length; plz++){ box(0.72,2.55,0.72, twPil, -30,1.27,pilZ[plz], scene, false); box(0.72,2.55,0.72, twPil, 30,1.27,pilZ[plz], scene, false); }
+  var pilN=[-30,-15,0,15,30];
+  for(var pln=0; pln<pilN.length; pln++) box(0.72,2.55,0.72, twPil, pilN[pln],1.27,-47, scene, false);
+  var schName=makeLabel('🏫 TRƯỜNG ĐẠI HỌC TÂY NGUYÊN', 8.5); schName.position.set(10.5,1.85,23.6); scene.add(schName);
   var post1=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,4.8,8), new THREE.MeshStandardMaterial({color:0x7a4a21}));
   post1.position.set(-3.4,2.4,24); post1.castShadow=true; scene.add(post1);
   var post2=post1.clone(); post2.position.x=3.4; scene.add(post2);
@@ -597,33 +609,64 @@ function drawFace(){
   fg.fillStyle='#27364f'; fg.fillRect(16,42,40,30);
   fg.fillStyle='#d43a2f'; fg.fillRect(33,44,6,16);
 }
+var dlgSegs=[], dlgIdx=0, dlgPhase='story', dlgChoices=null, dlgOnPick=null, typeTimer=null, typing=false, typeFull='';
+function typeSeg(txt){
+  var el=document.getElementById('d-text');
+  typeFull=txt; typing=true; el.textContent='';
+  var i=0;
+  if(typeTimer) clearInterval(typeTimer);
+  typeTimer=setInterval(function(){
+    i+=3;
+    el.innerHTML=typeFull.slice(0,i).replace(/\n/g,'<br>');
+    if(i>=typeFull.length){ clearInterval(typeTimer); typeTimer=null; typing=false; }
+  }, 16);
+}
+function finishType(){
+  if(typeTimer){ clearInterval(typeTimer); typeTimer=null; }
+  typing=false;
+  document.getElementById('d-text').innerHTML=typeFull.replace(/\n/g,'<br>');
+}
 function fillDlg(icon, time, title, text, choices, onPick){
   joy.on=false; joy.dx=0; joy.dy=0; target=null; if(targetRing) targetRing.visible=false;
   document.getElementById('d-icon').textContent=icon;
   document.getElementById('d-time').textContent=time;
   document.getElementById('d-title').textContent=title;
-  document.getElementById('d-text').innerHTML=text.replace(/\n/g,"<br>");
   drawFace();
-  var box=document.getElementById('d-choices'); box.innerHTML="";
-  document.getElementById('resp').classList.remove('show');
-  choices.forEach(function(ch){
-    var b=document.createElement('button'); b.className="choice"; b.textContent=ch.t;
-    b.addEventListener('click', function(){ onPick(ch); });
+  document.getElementById('d-fx').textContent='';
+  document.getElementById('d-badge').textContent='';
+  document.getElementById('choices').classList.remove('show');
+  dlgSegs=text.split('\n\n'); dlgIdx=0; dlgPhase='story'; dlgChoices=choices; dlgOnPick=onPick;
+  document.getElementById('dlg').classList.add('show');
+  typeSeg(dlgSegs[0]);
+}
+function showChoices(){
+  var box=document.getElementById('choices'); box.innerHTML='';
+  dlgChoices.forEach(function(ch){
+    var b=document.createElement('button'); b.className='vn-choice'; b.textContent=ch.t;
+    b.addEventListener('click', function(){ pickChoice(ch); });
     box.appendChild(b);
   });
-  document.getElementById('dlg').classList.add('show');
+  box.classList.add('show');
 }
-function applyChoice(ch){
+function pickChoice(ch){
+  document.getElementById('choices').classList.remove('show');
   var fx=ch.fx||{};
   S.en+=fx.en||0; S.he+=fx.he||0; S.fi+=fx.fi||0; clampStat();
   if(ch.set){ for(var k in ch.set) S.flags[k]=ch.set[k]; }
   if(ch.badge && S.badges.indexOf(ch.badge)<0) S.badges.push(ch.badge);
   syncStats();
-  document.getElementById('d-choices').innerHTML="";
-  document.getElementById('resp-text').textContent=ch.res;
-  document.getElementById('resp-fx').textContent=fxText(fx);
-  document.getElementById('resp-badge').textContent= ch.badge ? "🏅 Dấu ấn: "+ch.badge : "";
-  document.getElementById('resp').classList.add('show');
+  if(dlgOnPick) dlgOnPick(ch);
+  document.getElementById('d-fx').textContent=fxText(fx);
+  document.getElementById('d-badge').textContent= ch.badge ? '🏅 Dấu ấn: '+ch.badge : '';
+  dlgPhase='response';
+  typeSeg(ch.res);
+}
+function advanceDlg(){
+  if(typing){ finishType(); return; }
+  if(dlgPhase==='story'){
+    if(dlgIdx<dlgSegs.length-1){ dlgIdx++; typeSeg(dlgSegs[dlgIdx]); }
+    else { dlgPhase='choice'; showChoices(); }
+  } else if(dlgPhase==='response'){ goNext(); }
 }
 function setEvent(i){
   cur=i;
@@ -637,13 +680,13 @@ function openScene(i){
   mode='dialog'; inCollapse=false;
   var sc=DLGS[i];
   fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
-    applyChoice(ch); pendingNext=i+1;
+    pendingNext=i+1;
   });
 }
 function openCollapse(savedNext){
   inCollapse=true; mode='dialog';
   fillDlg(COLLAPSE.icon, COLLAPSE.time, COLLAPSE.title, COLLAPSE.text, COLLAPSE.choices, function(ch){
-    applyChoice(ch); pendingNext=savedNext;
+    pendingNext=savedNext;
   });
 }
 function goNext(){
@@ -890,7 +933,7 @@ document.addEventListener('DOMContentLoaded', function(){
     setEvent(0);
     showToast('📍 Đi tới vòng sáng ⏰ ở cửa Nhà ở!', 3200);
   });
-  document.getElementById('btn-next').addEventListener('click', goNext);
+  document.getElementById('dlg').addEventListener('click', function(){ if(mode==='dialog') advanceDlg(); });
   document.getElementById('btn-again').addEventListener('click', function(){ location.reload(); });
   document.getElementById('btn-copy').addEventListener('click', function(){
     var txt="Nhân ngày 20/11, em xin gửi lời cảm ơn chân thành nhất tới thầy cô. Cảm ơn thầy cô đã dạy dỗ, đã kiên nhẫn và đã luôn tin tưởng chúng em — kể cả những lúc chúng em chưa tin vào chính mình. Chúc thầy cô luôn mạnh khỏe và giữ mãi ngọn lửa với nghề. — Từ game 3D “Một Ngày Làm Giảng Viên” (CODE THE THANKS 2026)";
