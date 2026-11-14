@@ -316,10 +316,10 @@ function buildWorld(){
 
   // Đường nhựa + điểm xe buýt trước cổng
   var road=new THREE.Mesh(new THREE.PlaneGeometry(76, 5), new THREE.MeshLambertMaterial({color:0x8a8f98}));
-  road.rotation.x=-Math.PI/2; road.position.set(0, 0.008, 28.75); world.add(road);
+  road.rotation.x=-Math.PI/2; road.position.set(0, 0.008, 28.75); scene.add(road);
   var bpole=new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 2.2, 6), new THREE.MeshLambertMaterial({color:0x666666}));
-  bpole.position.set(22.5, 1.1, 30.6); world.add(bpole);
-  var bsign=makeIcon('🚏', 1.6); bsign.position.set(22.5, 2.6, 30.6); world.add(bsign);
+  bpole.position.set(22.5, 1.1, 30.6); scene.add(bpole);
+  var bsign=makeIcon('🚏', 1.6); bsign.position.set(22.5, 2.6, 30.6); scene.add(bsign);
   // 13 điểm sự kiện theo kịch bản (cảnh 12 lặp lại điểm cảnh 1 ở nhà)
   var BEACON_POS=[[0,40.2],[24,29],[-14.8,-28.8],[-6,-31.2],[20,-30],[16,-4.2],[24.5,-37.5],[-14,-21],[3.5,-31.2],[5.5,38.8],[13.6,43.2],[13.6,43.2],[0,40.2]];
   var BEACON_ICONS=['⏰','🚌','😴','❓','📩','🍚','🗂️','📄','🌤️','🍽️','💬','📝','🌙'];
