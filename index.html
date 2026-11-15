@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Demo 3D: Một Ngày Làm Giảng Viên</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"}}
 </script>
@@ -62,6 +63,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
   .btn{background:linear-gradient(180deg,#f7c948,#f2b33d);border:none;color:#20304f;font-weight:700;font-size:16.5px;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:0 5px 0 #c78f1f;margin-top:10px}
 
   .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c78f1f}
+  .btn:disabled{opacity:.55;cursor:wait}
 
   .btn.navy{background:linear-gradient(180deg,#33507e,#20304f);color:#fff;box-shadow:0 5px 0 #141f33}
 
@@ -123,7 +125,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
       <div class="sub">BẢN 3D · TRỌN CÂU CHUYỆN 13 CẢNH · CODE THE THANKS 2026</div>
       <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề, và quyết định 1 trong 4 kết thúc.</p>
       <p>📖 Câu chuyện hư cấu, mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
-      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 12:00 15/11</div>
+      <button class="btn" id="btn-start" disabled>⏳ Đang tải game...</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 15:48 15/11</div>
     </div>
   </div>
 
@@ -1236,7 +1238,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var _booted=false;
   function boot(){
     if(_booted) return; _booted=true;
-    try { init(); bindInput(); }
+    try { init(); bindInput(); var bs=document.getElementById('btn-start'); if(bs){ bs.disabled=false; bs.textContent='▶ Bắt đầu ngày mới'; } }
     catch(err){ var d=document.getElementById('err'); d.style.display='block'; d.textContent='⚠️ Thiết bị/trình duyệt này không chạy được WebGL 3D: '+err.message; }
   }
   if(window.__threeReady){
