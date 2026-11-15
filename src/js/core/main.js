@@ -71,7 +71,7 @@ function animate(){
       if(spirit.t<=0){ spirit.tx=-40+Math.random()*80; spirit.tz=-54+Math.random()*102; spirit.t=3+Math.random()*3; }
       var sgx=spirit.tx-spirit.sp.position.x, sgz=spirit.tz-spirit.sp.position.z, sgl=Math.hypot(sgx,sgz);
       if(sgl>0.4){ var snx=spirit.sp.position.x+sgx/sgl*3.4*dt, snz=spirit.sp.position.z+sgz/sgl*3.4*dt;
-        var sc2=collideXZ(snx, snz, spirit.sp.position.x, spirit.sp.position.z, 0.7);
+        var sc2=collideXZ(snx, snz, 0.7);
         spirit.sp.position.x=sc2.x; spirit.sp.position.z=sc2.z; }
       spirit.sp.position.y=1.7+Math.sin(t*2)*0.15;
       if(invulnT>0) invulnT-=dt;
@@ -99,7 +99,7 @@ function animate(){
   // Mũi tên chỉ đường tới điểm sự kiện
   // Mũi tên đất dưới chân: nằm trước mặt người chơi, chỉ về điểm sự kiện
   if(guideArrow){
-    if(mode==='play' && cur<DLGS.length){
+    if(mode==='play' && cur<DLGS.length && beacons[cur]){
       var gb=beacons[cur], gdx=gb.x-player.position.x, gdz=gb.z-player.position.z, gd=Math.hypot(gdx,gdz);
       if(gd>2.4){
         guideArrow.visible=true;
@@ -110,7 +110,7 @@ function animate(){
     } else guideArrow.visible=false;
   }
   if(!_nvEl){ _nvEl=document.getElementById('navi'); _nvArrow=document.getElementById('navi-arrow'); _nvTxt=document.getElementById('navi-txt'); }
-  if(mode==='play' && cur<DLGS.length){
+  if(mode==='play' && cur<DLGS.length && beacons[cur]){
     var nb=beacons[cur], ndx=nb.x-player.position.x, ndz=nb.z-player.position.z, nd=Math.hypot(ndx,ndz);
     if(nd>2.4){
       if(_nvEl.style.display!=='flex') _nvEl.style.display='flex';
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function boot(){
     if(_booted) return; _booted=true;
     try { init(); bindInput(); var bs=document.getElementById('btn-start'); if(bs){ bs.disabled=false; bs.textContent='▶ Bắt đầu ngày mới'; } }
-    catch(err){ var d=document.getElementById('err'); d.style.display='block'; d.textContent='⚠️ Thiết bị/trình duyệt này không chạy được WebGL 3D: '+err.message; }
+    catch(err){ var d=document.getElementById('err'); if(d){ d.style.display='block'; d.textContent='⚠️ Thiết bị/trình duyệt này không chạy được WebGL 3D: '+err.message; } }
   }
   if(window.__threeReady){
     Promise.race([ window.__threeReady.then(function(){ return loadModels(); }),

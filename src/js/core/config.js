@@ -68,10 +68,12 @@ function updateLabels(){
     var pxH=ud.h/(2*dc*tanF)*H, pxW=pxH*(ud.w/ud.h);
     var sx=(_lv.x*0.5+0.5)*W, sy=(-_lv.y*0.5+0.5)*H;
     var r={x1:sx-pxW/2, y1:sy-pxH/2, x2:sx+pxW/2, y2:sy+pxH/2};
+    if(r.x2<0 || r.x1>W || r.y2<0 || r.y1>H){ if(sp.visible) sp.visible=false; continue; }
+    var th=sp.visible?0.34:0.22;
     var bad=false;
     for(var j=0;j<kept.length;j++){ var k=kept[j];
       var ox=Math.min(r.x2,k.x2)-Math.max(r.x1,k.x1), oy=Math.min(r.y2,k.y2)-Math.max(r.y1,k.y1);
-      if(ox>0 && oy>0){ var mine=(r.x2-r.x1)*(r.y2-r.y1); if(mine>0 && (ox*oy)>mine*0.28){ bad=true; break; } }
+      if(ox>0 && oy>0){ var mine=(r.x2-r.x1)*(r.y2-r.y1); if(mine>0 && (ox*oy)>mine*th){ bad=true; break; } }
     }
     if(bad){ if(sp.visible) sp.visible=false; continue; }
     sp.visible=true; kept.push(r);
