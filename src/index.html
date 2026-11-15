@@ -14,6 +14,14 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.resolve();
 </script>
+<script>
+window.BUILD_V='__VER__';
+(function(){ function chk(){ try{ fetch('version.txt?x='+Date.now(), {cache:'no-store'}).then(function(r){ return r.ok? r.text() : null; }).then(function(v){ if(v){ v=v.trim(); if(v && v!==window.BUILD_V) location.reload(); } }).catch(function(){}); }catch(e){} }
+var _t1=setTimeout(chk, 4000); if(_t1 && _t1.unref) _t1.unref();
+var _t2=setInterval(chk, 60000); if(_t2 && _t2.unref) _t2.unref();
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) chk(); });
+})();
+</script>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/screens.css">
 <link rel="stylesheet" href="css/dialog.css">
