@@ -33,6 +33,7 @@ function box(w,h,d,color,x,y,z,parent,shadow){
   m.position.set(x,y,z); if(shadow!==false){ m.castShadow=true; m.receiveShadow=true; }
   (parent||scene).add(m); return m;
 }
+var LABELS=[]; var _lblT=0, _lv=null;
 function makeLabel(text, w, fs){
   var c=document.createElement('canvas'); c.width=512; c.height=112;
   var g=c.getContext('2d');
@@ -42,8 +43,41 @@ function makeLabel(text, w, fs){
   g.fillText(text, 256, 58);
   var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx, transparent:true}));
-  sp.scale.set(w||11, (w||11)*0.219, 1); return sp;
+  sp.scale.set(w||11, (w||11)*0.219, 1);
+  sp.userData={w:sp.scale.x, h:sp.scale.y, prio:(w||11), tag:(fs===40)}; LABELS.push(sp); return sp;
 }
+
+function updateLabels(){
+  if(!camera || !player || typeof THREE==='undefined' || !THREE.Vector3 || !THREE.MathUtils) return;
+  if(!_lv) _lv=new THREE.Vector3();
+  if(!_lv.project) return;
+  var hideAll=(mode!=='play');
+  var W=window.innerWidth||1, H=window.innerHeight||1;
+  var tanF=Math.tan(THREE.MathUtils.degToRad(camera.fov*0.5));
+  var list=LABELS.slice().sort(function(a,b){ return b.userData.prio-a.userData.prio; });
+  var kept=[];
+  for(var i=0;i<list.length;i++){
+    var sp=list[i], ud=sp.userData;
+    if(hideAll){ if(sp.visible) sp.visible=false; continue; }
+    var dx=sp.position.x-player.position.x, dz=sp.position.z-player.position.z;
+    var maxD=ud.tag?26:64;
+    if(dx*dx+dz*dz>maxD*maxD){ if(sp.visible) sp.visible=false; continue; }
+    _lv.copy(sp.position); _lv.project(camera);
+    if(_lv.z>1 || _lv.z<-1){ if(sp.visible) sp.visible=false; continue; }
+    var dc=camera.position.distanceTo(sp.position)||1;
+    var pxH=ud.h/(2*dc*tanF)*H, pxW=pxH*(ud.w/ud.h);
+    var sx=(_lv.x*0.5+0.5)*W, sy=(-_lv.y*0.5+0.5)*H;
+    var r={x1:sx-pxW/2, y1:sy-pxH/2, x2:sx+pxW/2, y2:sy+pxH/2};
+    var bad=false;
+    for(var j=0;j<kept.length;j++){ var k=kept[j];
+      var ox=Math.min(r.x2,k.x2)-Math.max(r.x1,k.x1), oy=Math.min(r.y2,k.y2)-Math.max(r.y1,k.y1);
+      if(ox>0 && oy>0){ var mine=(r.x2-r.x1)*(r.y2-r.y1); if(mine>0 && (ox*oy)>mine*0.28){ bad=true; break; } }
+    }
+    if(bad){ if(sp.visible) sp.visible=false; continue; }
+    sp.visible=true; kept.push(r);
+  }
+}
+
 function makeIcon(emo, s){
   var c=document.createElement('canvas'); c.width=c.height=128;
   var g=c.getContext('2d'); g.font='92px serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(emo, 64, 70);
