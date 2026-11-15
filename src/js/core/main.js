@@ -134,6 +134,7 @@ function animate(){
   _camWant.set(player.position.x, 23, player.position.z+16.5);
   camera.position.lerp(_camWant, Math.min(1, dt*4.5));
   camera.lookAt(player.position.x, 1.4, player.position.z-2);
+  if(t-_lblT>0.18){ _lblT=t; updateLabels(); }
   renderer.render(scene, camera);
 }
 
