@@ -12,7 +12,9 @@ function buildWorld(){
 }
 function buildBeacons(){
   // 13 điểm sự kiện theo kịch bản (cảnh 12 lặp lại điểm cảnh 1 ở nhà)
-  var BEACON_POS=[[0,40.2],[24,29],[-8.75,-34.6],[-8.5,-39.2],[11,-38.5],[17,-5],[8,-34.3],[-10.7,-31.3],[-3.2,-37.5],[-1.6,45.2],[5,43.6],[5,43.6],[3.9,47]];
+  // Tọa độ mới theo layout-final.md: cảnh 2,3,4,6,7,8 dời theo khối trường (dx=-16, dz=-4);
+  // cảnh 1 ở cổng chính phía Tây, cảnh 5 ở căn-tin mới, các cảnh ở nhà giữ nguyên
+  var BEACON_POS=[[0,40.2],[-36.5,-9],[-24.75,-38.6],[-24.5,-43.2],[-5,-42.5],[-3,-13],[-8,-38.3],[-26.7,-35.3],[-19.2,-41.5],[-1.6,45.2],[5,43.6],[5,43.6],[3.9,47]];
   var BEACON_ICONS=['⏰','🚌','😴','❓','📩','🍚','🗂️','📄','🌤️','🍽️','💬','📝','🌙'];
   for(var bi=0; bi<BEACON_POS.length; bi++){
     var bc3=beacon(BEACON_POS[bi][0], BEACON_POS[bi][1], BEACON_ICONS[bi]);

@@ -43,12 +43,12 @@ function buildPeople(){
   player=makePerson({suit:0x27364f, cloth:0x3a3f4a, hair:0x2b2b30, tie:true});
   player.position.set(0,0,35); player.rotation.y=Math.PI; scene.add(player);
   var st1=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x4a3421});
-  st1.position.set(8,0,-6); st1.rotation.y=-0.7; scene.add(st1);
-  var stLabel=makeLabel('Sinh viên', 4.6, 40); stLabel.position.set(8,3.4,-6); scene.add(stLabel);
+  st1.position.set(-24,0,-32); st1.rotation.y=-0.7; scene.add(st1);
+  var stLabel=makeLabel('Sinh viên', 4.6, 40); stLabel.position.set(-24,3.4,-32); scene.add(stLabel);
   var st2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x191919});
-  st2.position.set(6,0,-10); scene.add(st2);
-  students.push({p:st2, a:{x:6,z:-10}, b:{x:6,z:10}, t:0, dir:1, speed:2.3});
+  st2.position.set(-32,0,-25); scene.add(st2);
+  students.push({p:st2, a:{x:-32,z:-25}, b:{x:-32,z:-44}, t:0, dir:1, speed:2.3});
   var gv=makePerson({suit:0x8e2f3c, cloth:0xffffff, hair:0x5a3a22, long:true, longHair:true});
-  gv.position.set(-21.5,0,-27.6); gv.rotation.y=0.4; scene.add(gv);
-  var gvLabel=makeLabel('💻 Khoa CNTT', 5.2, 40); gvLabel.position.set(-21.5,3.5,-27.6); scene.add(gvLabel);
+  gv.position.set(-13,0,-20); gv.rotation.y=0.4; scene.add(gv);
+  var gvLabel=makeLabel('💻 Khoa CNTT', 5.2, 40); gvLabel.position.set(-13,3.5,-20); scene.add(gvLabel);
 }
