@@ -14,9 +14,17 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.resolve();
 </script>
-<link rel="stylesheet" href="src/css/base.css">
-<link rel="stylesheet" href="src/css/screens.css">
-<link rel="stylesheet" href="src/css/dialog.css">
+<script>
+window.BUILD_V='9a711a5cb2eb';
+(function(){ function chk(){ try{ fetch('version.txt?x='+Date.now(), {cache:'no-store'}).then(function(r){ return r.ok? r.text() : null; }).then(function(v){ if(v){ v=v.trim(); if(v && v!==window.BUILD_V) location.reload(); } }).catch(function(){}); }catch(e){} }
+var _t1=setTimeout(chk, 4000); if(_t1 && _t1.unref) _t1.unref();
+var _t2=setInterval(chk, 60000); if(_t2 && _t2.unref) _t2.unref();
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) chk(); });
+})();
+</script>
+<link rel="stylesheet" href="src/css/base.css?v=9a711a5cb2eb">
+<link rel="stylesheet" href="src/css/screens.css?v=9a711a5cb2eb">
+<link rel="stylesheet" href="src/css/dialog.css?v=9a711a5cb2eb">
 </head>
 <body>
 <div id="app">
@@ -65,22 +73,22 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
 </div>
 
 <script>
-var MODEL_DATA={treeOak:"src/assets/tree-oak.glb",treePine:"src/assets/tree-pine.glb",treeDetailed:"src/assets/tree-detailed.glb",rock:"src/assets/rock-large.glb",bush:"src/assets/bush-large.glb",flower:"src/assets/flower-red.glb"};
+var MODEL_DATA={treeOak:"src/assets/tree-oak.glb?v=9a711a5cb2eb",treePine:"src/assets/tree-pine.glb?v=9a711a5cb2eb",treeDetailed:"src/assets/tree-detailed.glb?v=9a711a5cb2eb",rock:"src/assets/rock-large.glb?v=9a711a5cb2eb",bush:"src/assets/bush-large.glb?v=9a711a5cb2eb",flower:"src/assets/flower-red.glb?v=9a711a5cb2eb"};
 </script>
-<script src="src/js/world/models.js"></script>
-<script src="src/js/core/config.js"></script>
-<script src="src/js/world/props.js"></script>
-<script src="src/js/world/people.js"></script>
-<script src="src/js/world/campus.js"></script>
-<script src="src/js/world/school.js"></script>
-<script src="src/js/world/library.js"></script>
-<script src="src/js/world/house.js"></script>
-<script src="src/js/world/expand.js"></script>
-<script src="src/js/world/world.js"></script>
-<script src="src/js/story/dialogs.js"></script>
-<script src="src/js/story/dialog-ui.js"></script>
-<script src="src/js/story/flow.js"></script>
-<script src="src/js/core/input.js"></script>
-<script src="src/js/core/main.js"></script>
+<script src="src/js/world/models.js?v=9a711a5cb2eb"></script>
+<script src="src/js/core/config.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/props.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/people.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/campus.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/school.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/library.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/house.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/expand.js?v=9a711a5cb2eb"></script>
+<script src="src/js/world/world.js?v=9a711a5cb2eb"></script>
+<script src="src/js/story/dialogs.js?v=9a711a5cb2eb"></script>
+<script src="src/js/story/dialog-ui.js?v=9a711a5cb2eb"></script>
+<script src="src/js/story/flow.js?v=9a711a5cb2eb"></script>
+<script src="src/js/core/input.js?v=9a711a5cb2eb"></script>
+<script src="src/js/core/main.js?v=9a711a5cb2eb"></script>
 </body>
 </html>
