@@ -78,7 +78,7 @@ function animate(){
       if(Math.hypot(player.position.x-spirit.sp.position.x, player.position.z-spirit.sp.position.z)<1.9 && invulnT<=0){
         S.en=Math.max(0,S.en-5); syncStats();
         showToast('👻 Deadline dí! −5 ⚡', 1500); invulnT=1.6;
-        spirit.sp.position.set(24, 1.7, -24); spirit.t=0;
+        spirit.sp.position.set(12, 1.7, -24); spirit.t=0;
       }
     }
   }
@@ -127,7 +127,7 @@ function animate(){
     var sc=1+0.12*Math.sin(t*3.2); bc2.ring.scale.set(sc,sc,1);
     bc2.icon.position.y=2.6+Math.sin(t*2.2+j)*0.22;
   }
-  if(flagMesh){ flagMesh.rotation.y=Math.sin(t*2.6)*0.16; flagMesh.position.x=-10.55+Math.sin(t*2.6)*0.08; }
+  if(flagMesh){ flagMesh.rotation.y=Math.sin(t*2.6)*0.16; flagMesh.position.x=-19.05+Math.sin(t*2.6)*0.08; }
   if(targetRing && targetRing.visible){ var tr=1+0.18*Math.sin(t*6); targetRing.scale.set(tr,tr,1); }
   // Camera bám theo
   if(!_camWant) _camWant=new THREE.Vector3();
