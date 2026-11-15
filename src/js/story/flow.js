@@ -73,7 +73,8 @@ function spawnPickups(n){
   }
 }
 function spawnSpirit(){
-  if(spirit){ spirit.sp.position.set(24, 1.7, -24); spirit.t=0; return; }
-  var sp=makeIcon("👻", 2); sp.position.set(24, 1.7, -24); scene.add(sp);
+  // Hồn deadline xuất hiện ở đầu Đông đường C, sát bờ Nam hồ nước (map mới)
+  if(spirit){ spirit.sp.position.set(12, 1.7, -24); spirit.t=0; return; }
+  var sp=makeIcon("👻", 2); sp.position.set(12, 1.7, -24); scene.add(sp);
   spirit={sp:sp, tx:0, tz:0, t:0};
 }
