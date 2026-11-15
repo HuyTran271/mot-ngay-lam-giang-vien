@@ -32,10 +32,9 @@ Kiểm tra nhanh bằng lệnh `node tests/harness.js`, chương trình sẽ gi�
 - `src/js/story`: kịch bản 13 cảnh, hộp thoại và luồng chơi.
 - `src/assets`: model 3D định dạng glb và giấy phép đi kèm.
 - `tests`: chương trình kiểm tra tự động.
-- `docs`: thuyết minh dự thi và mẫu thông tin nộp bài.
 
 ## Công nghệ và ghi công
 
 Game viết bằng JavaScript với thư viện Three.js (giấy phép MIT). Model cây, đá, bụi cây và hoa thuộc bộ Nature Kit của Kenney (kenney.nl), giấy phép CC0. Quá trình lập trình có sự hỗ trợ của trợ lý AI Muse (Meta) theo chỉ đạo của tác giả.
 
-Tác giả: Trần Huy, Trường Đại học Tây Nguyên.
+Tác giả: Trần Huy và Lê Tấn Thanh, Trường Đại học Tây Nguyên.
