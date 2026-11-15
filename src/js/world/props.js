@@ -19,6 +19,49 @@ function lamp(x,z){
   bulb.position.set(x,3.2,z); scene.add(bulb);
   solid(x-0.2, z-0.2, x+0.2, z+0.2);
 }
+// Mặt đứng nhà học dùng chung: canvas vẽ 1 lần (nền kem + lưới cửa sổ xanh xám có khung),
+// dùng cho các khối nhà trang trí (giảng đường, ký túc xá, nhà điều hành) giống nhà khoa thật:
+// tường kem nhiều tầng, cửa sổ đều, mái ngói cam đỏ dốc 2 phía với đầu hồi màu kem.
+var _facadeTex=null;
+function facadeTexture(){
+  if(_facadeTex) return _facadeTex;
+  var c=document.createElement('canvas'); c.width=256; c.height=256;
+  var g=c.getContext('2d');
+  g.fillStyle='#f3e6c8'; g.fillRect(0,0,256,256);
+  g.fillStyle='#e0cda1'; g.fillRect(0,0,256,12);
+  var cols=4, rows=3, ww=34, wh=40, gx=(256-cols*ww)/(cols+1), gy=(256-rows*wh)/(rows+1);
+  for(var r=0;r<rows;r++) for(var ci=0;ci<cols;ci++){
+    var x=gx+ci*(ww+gx), y=gy+r*(wh+gy);
+    g.fillStyle='#d8c9a3'; g.fillRect(x-3,y-3,ww+6,wh+6);
+    g.fillStyle='#33507e'; g.fillRect(x,y,ww,wh);
+    g.fillStyle='rgba(255,255,255,.28)'; g.fillRect(x,y,ww,11);
+    g.strokeStyle='#f3e6c8'; g.lineWidth=3;
+    g.beginPath(); g.moveTo(x+ww/2,y); g.lineTo(x+ww/2,y+wh); g.moveTo(x,y+wh/2); g.lineTo(x+ww,y+wh/2); g.stroke();
+  }
+  var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
+  tx.wrapS=tx.wrapT=THREE.RepeatWrapping;
+  _facadeTex=tx; return tx;
+}
+function decoBuilding(w,h,d,x,z,roofColor){
+  var tex=facadeTexture();
+  function wm(repX){
+    var t=tex.clone(); t.needsUpdate=true; t.wrapS=t.wrapT=THREE.RepeatWrapping;
+    t.repeat.set(Math.max(1,Math.round(repX)),1);
+    return new THREE.MeshStandardMaterial({map:t, roughness:.9});
+  }
+  var sideM=wm(d/8), frontM=wm(w/8);
+  var plainM=new THREE.MeshStandardMaterial({color:0xf3e6c8, roughness:.95});
+  var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), [sideM,sideM,plainM,plainM,frontM,frontM]);
+  m.position.set(x,h/2,z); m.castShadow=true; m.receiveShadow=true; scene.add(m);
+  var rise=(d/2+0.5)*0.55;
+  var shape=new THREE.Shape();
+  shape.moveTo(-(d/2+0.5),0); shape.lineTo(d/2+0.5,0); shape.lineTo(0,rise); shape.closePath();
+  var rg=new THREE.ExtrudeGeometry(shape, {depth:w+0.8, bevelEnabled:false});
+  rg.rotateY(Math.PI/2);
+  var rm=new THREE.Mesh(rg, [plainM, new THREE.MeshStandardMaterial({color:roofColor, roughness:.85})]);
+  rm.position.set(x-(w+0.8)/2, h, z); rm.castShadow=true; rm.receiveShadow=true; scene.add(rm);
+  return m;
+}
 function beacon(x, z, emo){
   var grp=new THREE.Group(); grp.position.set(x, 0, z);
   var ring=new THREE.Mesh(new THREE.RingGeometry(1.05, 1.45, 36), new THREE.MeshBasicMaterial({color:0xf2b33d, transparent:true, opacity:.9, side:THREE.DoubleSide}));

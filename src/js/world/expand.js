@@ -22,13 +22,9 @@ function buildExpansion(){
   box(0.12,0.5,10.4, fenceC, 16.1,0.25,-17, scene, false); solid(15.98,-22.2, 16.22,-11.8);
   var lbT=makeLabel('🎾 SÂN TENNIS', 9); lbT.position.set(11,5.2,-17); scene.add(lbT);
 
-  // ===== GIẢNG ĐƯỜNG ĐÔNG: 2 khối mái đỏ, không vào trong =====
-  box(12,4.6,6, wallC, 29,2.3,-32); box(13,0.35,7, roofRed, 29,4.85,-32, scene, false); solid(23,-35, 35,-29);
-  box(10,4.6,6, wallC, 30,2.3,-16); box(11,0.35,7, roofRed, 30,4.85,-16, scene, false); solid(25,-19, 35,-13);
-  var winE1=[25.5,29,32.5];
-  for(var we1=0; we1<winE1.length; we1++) box(1.6,1.2,0.12, 0xbfe3ff, winE1[we1],2.6,-28.93, scene, false);
-  var winE2=[27,30,33];
-  for(var we2=0; we2<winE2.length; we2++) box(1.6,1.2,0.12, 0xbfe3ff, winE2[we2],2.6,-12.93, scene, false);
+  // ===== GIẢNG ĐƯỜNG ĐÔNG: 2 khối nhà khoa nhiều tầng (tường kem + lưới cửa sổ + mái ngói dốc), không vào trong =====
+  decoBuilding(12,6.5,6, 29,-32, roofRed); solid(23,-35, 35,-29);
+  decoBuilding(10,6.5,6, 30,-16, roofRed); solid(25,-19, 35,-13);
   var lbE=makeLabel('🏫 GIẢNG ĐƯỜNG', 9); lbE.position.set(29.5,6.4,-24); scene.add(lbE);
 
   // ===== VƯỜN THỰC NGHIỆM: x 23..40, z -24..-4, lưới ô đất 4x3 (ô đất thấp, không đặt solid) =====
@@ -38,7 +34,7 @@ function buildExpansion(){
   var bedX=[25.2,29.5,33.9,38.2], bedZ=[-22.2,-10.6,-6.2];
   for(var bx2=0; bx2<bedX.length; bx2++) for(var bz2=0; bz2<bedZ.length; bz2++){
     box(3,0.18,3.6, 0x8a6d4a, bedX[bx2],0.09,bedZ[bz2], scene, false);
-    box(1.9,0.5,0.4, 0x4e7a3a, bedX[bx2],0.32,bedZ[bz2], scene, false);
+    // (Đã bỏ các hộp mầm cây nhỏ trên luống để giữ ngân sách vật thể cho hàng cây mới)
   }
   var lbG=makeLabel('🌱 VƯỜN THỰC NGHIỆM', 10); lbG.position.set(31.5,5.6,-7); scene.add(lbG);
 
@@ -68,15 +64,15 @@ function buildExpansion(){
   }
   var lbF=makeLabel('⚽ SÂN BÓNG ĐÁ', 10); lbF.position.set(5,6.4,16); scene.add(lbF);
 
-  // ===== KÝ TÚC XÁ: 3 khối mái đỏ phía Đông Nam, cửa hướng Tây =====
+  // ===== KÝ TÚC XÁ: 3 khối nhà nhiều tầng phía Đông Nam (cùng kiểu mặt đứng nhà khoa), cửa hướng Tây =====
   var dormZ=[8,15,22];
   for(var di2=0; di2<3; di2++){
     var dz2=dormZ[di2];
-    box(14,4.2,5, wallC, 27,2.1,dz2); box(15,0.35,6, roofRed, 27,4.4,dz2, scene, false); solid(20,dz2-2.5, 34,dz2+2.5);
+    decoBuilding(14,6,5, 27,dz2, roofRed); solid(20,dz2-2.5, 34,dz2+2.5);
     box(0.14,2.2,1.4, 0x6d4c41, 19.93,1.1,dz2, scene, false);
-    box(0.12,1.1,1.2, 0xbfe3ff, 19.94,2.8,dz2-1.7, scene, false);
-    box(0.12,1.1,1.2, 0xbfe3ff, 19.94,2.8,dz2+1.7, scene, false);
   }
-  var lbD=makeLabel('🛏️ KÝ TÚC XÁ', 10); lbD.position.set(27,6.2,15); scene.add(lbD);
+  var lbD=makeLabel('🛏️ KÝ TÚC XÁ', 10); lbD.position.set(27,8.8,15); scene.add(lbD);
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
+  // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
+  tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
 }

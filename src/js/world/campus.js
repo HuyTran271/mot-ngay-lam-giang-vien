@@ -30,6 +30,7 @@ function buildCampus(){
     var f=new THREE.Mesh(new THREE.CircleGeometry(0.45+((i*37)%40)/60, 10), new THREE.MeshBasicMaterial({color:flowerCols[i%4]}));
     f.rotation.x=-Math.PI/2; var fx=-40+((i*53)%80), fz=-52+((i*29)%100);
     if(Math.abs(fx)<4) fx+=7;
+    if(fx>2 && fx<22 && fz>-45 && fz<-27) fz+=13; // tránh chấm hoa rơi giữa hồ (trông như hoa sen)
     f.position.set(fx, 0.035, fz); scene.add(f);
   }
 
@@ -90,10 +91,18 @@ function buildCampus(){
   var bsign=makeIcon('🚏', 1.6); bsign.position.set(-39.2, 2.6, -5.6); scene.add(bsign);
 
   // ===== HỒ NƯỚC: tâm (12,-36), solid (3,-44)-(21,-28), chòi bờ Tây Bắc (0,-43) =====
-  var shore=new THREE.Mesh(new THREE.RingGeometry(8.4,10.1,36), new THREE.MeshStandardMaterial({color:0xd8c9a3, roughness:1}));
-  shore.rotation.x=-Math.PI/2; shore.scale.set(1.18,0.98,1); shore.position.set(12,0.02,-36); shore.receiveShadow=true; scene.add(shore);
-  var water=new THREE.Mesh(new THREE.CircleGeometry(9,36), new THREE.MeshStandardMaterial({color:0x3f7fbf, roughness:.35, metalness:.1}));
-  water.rotation.x=-Math.PI/2; water.scale.set(1.15,0.95,1); water.position.set(12,0.035,-36); water.receiveShadow=true; scene.add(water);
+  // Hồ thật có hình không đều và nước xanh đậm: dựng mặt hồ bằng 3 đĩa ellipse chồng nhau
+  // (hợp của chúng nằm trong hình chữ nhật solid), dưới là 3 đĩa bờ cát lớn hơn 1.12 lần.
+  function lakeDisc(cx,cz,rx,rz,color,y,rough){
+    var m=new THREE.Mesh(new THREE.CircleGeometry(1,36), new THREE.MeshStandardMaterial({color:color, roughness:rough}));
+    m.rotation.x=-Math.PI/2; m.scale.set(rx,rz,1); m.position.set(cx,y,cz); m.receiveShadow=true; scene.add(m); return m;
+  }
+  lakeDisc(12,-36, 9*1.12, 7.5*1.12, 0xcbb98a, 0.02, 1);
+  lakeDisc(8,-32, 5*1.12, 4*1.12, 0xcbb98a, 0.02, 1);
+  lakeDisc(16,-40, 5*1.12, 4*1.12, 0xcbb98a, 0.02, 1);
+  lakeDisc(12,-36, 9, 7.5, 0x2f6f4e, 0.035, .35);
+  lakeDisc(8,-32, 5, 4, 0x2f6f4e, 0.035, .35);
+  lakeDisc(16,-40, 5, 4, 0x2f6f4e, 0.035, .35);
   solid(3,-44, 21,-28);
   box(3,0.18,3, 0xd8c9a8, 0,0.09,-43, scene, false);
   var pvXY=[[-1.3,-44.3],[1.3,-44.3],[-1.3,-41.7],[1.3,-41.7]];
@@ -105,21 +114,15 @@ function buildCampus(){
   var lbLake=makeLabel('🌊 HỒ NƯỚC', 10); lbLake.position.set(12,6.6,-36); scene.add(lbLake);
   var lbPav=makeLabel('⛩️ CHÒI NGHỈ', 4.5); lbPav.position.set(0,3.5,-43); scene.add(lbPav);
 
-  // ===== GIẢNG ĐƯỜNG BẮC: 2 dãy mái đỏ, không vào trong =====
-  box(16,4.6,6, wallC, -16,2.3,-50); box(17,0.35,7, roofRed, -16,4.85,-50, scene, false); solid(-24,-53, -8,-47);
-  box(18,4.6,6, wallC, 17,2.3,-51); box(19,0.35,7, roofRed, 17,4.85,-51, scene, false); solid(8,-54, 26,-48);
-  var winA=[-21,-17.7,-14.3,-11];
-  for(var wa=0; wa<winA.length; wa++) box(1.6,1.2,0.12, 0xbfe3ff, winA[wa],2.6,-46.93, scene, false);
-  var winB=[11,15,19,23];
-  for(var wb=0; wb<winB.length; wb++) box(1.6,1.2,0.12, 0xbfe3ff, winB[wb],2.6,-47.93, scene, false);
+  // ===== GIẢNG ĐƯỜNG BẮC: 2 dãy nhà khoa nhiều tầng (tường kem + lưới cửa sổ + mái ngói dốc), không vào trong =====
+  decoBuilding(16,6.5,6, -16,-50, roofRed); solid(-24,-53, -8,-47);
+  decoBuilding(18,6.5,6, 17,-51, roofRed); solid(8,-54, 26,-48);
   var lbLec=makeLabel('🏫 GIẢNG ĐƯỜNG', 10); lbLec.position.set(0,6.4,-50); scene.add(lbLec);
 
-  // ===== NHÀ ĐIỀU HÀNH: khối mái cam ngay trong cổng chính (-27,-8) =====
-  box(12,4.2,7, 0xf7ead2, -27,2.1,-8); box(13,0.35,8, 0xe2703a, -27,4.4,-8, scene, false); solid(-33,-11.5, -21,-4.5);
+  // ===== NHÀ ĐIỀU HÀNH: khối mái cam ngay trong cổng chính (-27,-8), cùng kiểu mặt đứng nhà khoa =====
+  decoBuilding(12,5,7, -27,-8, 0xe2703a); solid(-33,-11.5, -21,-4.5);
   box(1.6,2.4,0.14, 0x6d4c41, -27,1.2,-4.42, scene, false);
-  box(1.8,1.3,0.12, 0xbfe3ff, -31.5,2.6,-4.42, scene, false);
-  box(1.8,1.3,0.12, 0xbfe3ff, -22.5,2.6,-4.42, scene, false);
-  var lbAdm=makeLabel('🏛️ NHÀ ĐIỀU HÀNH', 10); lbAdm.position.set(-27,5.7,-8); scene.add(lbAdm);
+  var lbAdm=makeLabel('🏛️ NHÀ ĐIỀU HÀNH', 10); lbAdm.position.set(-27,8.6,-8); scene.add(lbAdm);
 
   // Cột cờ ở sân trước nhà điều hành
   var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.12,9.5,8), new THREE.MeshStandardMaterial({color:0xd8d8e2, metalness:.5, roughness:.4}));
@@ -132,6 +135,11 @@ function buildCampus(){
   box(2.6,0.5,0.8, 0x9a8a72, -1,0.45,-27); solid(-2.3,-27.4, 0.3,-26.6);
   tree(2,-27,1); tree(24,-27,1.1); tree(24,-45,1); tree(2,-46,0.95);
   tree(4,-13,1); tree(-20,-12.5,1.05); tree(-35,-48,1.1); tree(-30,20,1); tree(24,32,1.05);
+  // Hàng cây bên trong rào dọc đường Lê Duẩn (phía Tây, chừa khe cổng z -12..-6)
+  tree(-35.5,-52,1); tree(-35.5,-40,1.05); tree(-35.5,-30,0.95); tree(-35.5,-22,1);
+  tree(-35.5,2,1.05); tree(-35.5,12,0.95); tree(-35.5,22,1); tree(-35.5,30,1.05);
+  // Cụm cây bờ Bắc và bờ Đông hồ (ngoài hình chữ nhật solid của hồ)
+  tree(6,-46.5,1); tree(12,-47,1.1); tree(18,-46.5,0.95); tree(24,-38,1); tree(23.5,-41,1.05);
   lamp(-14,-11); lamp(10,-11); lamp(-28,-29); lamp(0,-29); lamp(-10,25); lamp(24,25);
   var lb5=makeLabel('🌳 SÂN TRƯỜNG', 10); lb5.position.set(0,6.8,-8); scene.add(lb5);
   var bushPos=[[-34,-14],[-34,2],[36,-2],[36,32],[-11,50.5],[11,50.5]];
