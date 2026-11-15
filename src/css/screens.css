@@ -12,6 +12,7 @@
   .btn{background:linear-gradient(180deg,#f7c948,#f2b33d);border:none;color:#20304f;font-weight:700;font-size:16.5px;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:0 5px 0 #c78f1f;margin-top:10px}
 
   .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c78f1f}
+  .btn:disabled{opacity:.55;cursor:wait}
 
   .btn.navy{background:linear-gradient(180deg,#33507e,#20304f);color:#fff;box-shadow:0 5px 0 #141f33}
 
