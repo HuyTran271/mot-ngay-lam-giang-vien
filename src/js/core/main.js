@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var _booted=false;
   function boot(){
     if(_booted) return; _booted=true;
-    try { init(); bindInput(); }
+    try { init(); bindInput(); var bs=document.getElementById('btn-start'); if(bs){ bs.disabled=false; bs.textContent='▶ Bắt đầu ngày mới'; } }
     catch(err){ var d=document.getElementById('err'); d.style.display='block'; d.textContent='⚠️ Thiết bị/trình duyệt này không chạy được WebGL 3D: '+err.message; }
   }
   if(window.__threeReady){
