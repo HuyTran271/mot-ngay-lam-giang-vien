@@ -38,7 +38,7 @@ function buildCampus(){
   for(var plz=0; plz<pilZ.length; plz++){ box(0.72,2.55,0.72, twPil, -42,1.27,pilZ[plz], scene, false); box(0.72,2.55,0.72, twPil, 42,1.27,pilZ[plz], scene, false); }
   var pilN=[-42,-28,-14,0,14,28,42];
   for(var pln=0; pln<pilN.length; pln++) box(0.72,2.55,0.72, twPil, pilN[pln],1.27,-56, scene, false);
-  var schName=makeLabel('🏫 TRƯỜNG ĐẠI HỌC TÂY NGUYÊN', 8.5); schName.position.set(10.5,1.85,23.6); scene.add(schName);
+  var schName=makeLabel('🏫 TRƯỜNG ĐẠI HỌC TÂY NGUYÊN', 8.5); schName.position.set(10.5,2.75,23.6); scene.add(schName);
   var post1=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,4.8,8), new THREE.MeshStandardMaterial({color:0x7a4a21}));
   post1.position.set(-3.4,2.4,24); post1.castShadow=true; scene.add(post1);
   var post2=post1.clone(); post2.position.x=3.4; scene.add(post2);
