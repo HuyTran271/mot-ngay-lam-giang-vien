@@ -1,7 +1,7 @@
 
-  #dlg{position:absolute;left:0;right:0;bottom:0;z-index:15;background:linear-gradient(180deg,#fffdf6,#fdf6e0);border-top:3px solid #f2b33d;border-radius:20px 20px 0 0;padding:30px 16px 12px;cursor:pointer;transform:translateY(110%);transition:transform .3s ease;max-height:62vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
+  #dlg{position:absolute;left:50%;right:auto;width:min(720px,100%);bottom:0;z-index:15;background:linear-gradient(180deg,#fffdf6,#fdf6e0);border-top:3px solid #f2b33d;border-radius:20px 20px 0 0;padding:30px 16px 12px;cursor:pointer;transform:translate(-50%,110%);transition:transform .3s ease;max-height:62vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
 
-  #dlg.show{transform:translateY(0)}
+  #dlg.show{transform:translate(-50%,0)}
 
   #d-face{width:56px;height:56px;border-radius:50%;border:3px solid #f2b33d;background:#e8eefc;flex:0 0 auto}
 
