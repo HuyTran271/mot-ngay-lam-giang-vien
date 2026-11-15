@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Demo 3D — Một Ngày Làm Giảng Viên</title>
+<title>Demo 3D: Một Ngày Làm Giảng Viên</title>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"}}
 </script>
@@ -109,7 +109,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
 <body>
 <div id="app">
   <div id="hud" class="panel">🎓 <b>BẢN 3D</b> · Một Ngày Làm Giảng Viên<br>⚡ <span id="st-en">70</span> · ❤️ <span id="st-he">70</span> · 🔥 <span id="st-fi">60</span> · <span id="hud-clock">🕔 05:00</span> · <span id="hud-phase">Buổi sáng</span></div>
-  <div id="objective" class="panel">🎯 Tới cửa Nhà ở — bắt đầu ngày mới</div>
+  <div id="objective" class="panel">🎯 Tới cửa Nhà ở, bắt đầu ngày mới</div>
   <div id="navi"><span id="navi-arrow">▲</span><span id="navi-txt"></span></div>
   <div id="toast"></div>
   <div id="hint">🕹️ Kéo nửa trái: joystick · Chạm nửa phải: tự đi tới · WASD/phím mũi tên</div>
@@ -121,9 +121,9 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
       <div style="font-size:2.6rem">🏫</div>
       <h1>MỘT NGÀY LÀM GIẢNG VIÊN</h1>
       <div class="sub">BẢN 3D · TRỌN CÂU CHUYỆN 13 CẢNH · CODE THE THANKS 2026</div>
-      <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề — và quyết định 1 trong 4 kết thúc.</p>
-      <p>📖 Câu chuyện hư cấu — mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
-      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 10:23 15/11</div>
+      <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề, và quyết định 1 trong 4 kết thúc.</p>
+      <p>📖 Câu chuyện hư cấu, mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
+      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 12:00 15/11</div>
     </div>
   </div>
 
@@ -158,8 +158,8 @@ var MODEL_DATA={treeOak:"data:model/gltf-binary;base64,Z2xURgIAAAA0OQAAaAcAAEpTT
 </script>
 <script>
 "use strict";
-// Model 3D thật (Kenney Nature Kit, CC0) — dữ liệu .glb được build.py nhúng vào biến MODEL_DATA.
-// Nếu model lỗi/không có, game tự dùng hình khối hộp dự phòng — không bao giờ vỡ game.
+// Model 3D thật (Kenney Nature Kit, CC0), dữ liệu .glb được build.py nhúng vào biến MODEL_DATA.
+// Nếu model lỗi/không có, game tự dùng hình khối hộp dự phòng, không bao giờ vỡ game.
 var MODELS={};
 function loadModels(){
   return new Promise(function(resolve){
@@ -190,7 +190,7 @@ function placeModel(name, x, z, targetH, rotY){
 </script>
 <script>
 "use strict";
-window.addEventListener('error', function(e){ var d=document.getElementById('err'); if(d){ d.style.display='block'; d.textContent='⚠️ Có lỗi khi chạy demo 3D: '+(e.message||'không rõ')+' — chụp màn hình gửi mình nhé!'; } });
+window.addEventListener('error', function(e){ var d=document.getElementById('err'); if(d){ d.style.display='block'; d.textContent='⚠️ Có lỗi khi chạy demo 3D: '+(e.message||'không rõ')+', chụp màn hình gửi mình nhé!'; } });
 
 var SOLIDS=[]; // {x0,z0,x1,z1}
 function solid(x0,z0,x1,z1){ SOLIDS.push({x0:x0,z0:z0,x1:x1,z1:z1}); }
@@ -455,7 +455,7 @@ function buildSchool(){
   var deskPos=[[-12.5,-39.8],[-5,-39.8],[-12.5,-37.6],[-5,-37.6],[-12.5,-35.4],[-5,-35.4]];
   for(var di=0; di<deskPos.length; di++){ var dp=deskPos[di]; box(1.9,0.75,1, 0xa8763e, dp[0],0.38,dp[1]); solid(dp[0]-0.95,dp[1]-0.5, dp[0]+0.95,dp[1]+0.5); }
   var clk=makeIcon('🕐',0.9); clk.position.set(-8.5,2.7,-42.2); scene.add(clk);
-  // Học sinh ngồi học tại 6 bàn: có ghế, sách trên bàn, ngồi cao rõ người (em bàn cuối phía đông gục ngủ — cảnh 07:30)
+  // Học sinh ngồi học tại 6 bàn: có ghế, sách trên bàn, ngồi cao rõ người (em bàn cuối phía đông gục ngủ, cảnh 07:30)
   var stuCols=[0x4a3421, 0x191919, 0x5a3a22, 0x2b2b30, 0x6b4a2a, 0x333333];
   var bookCols=[0xd84a4a, 0x3a6ea5, 0x3f9e4d, 0xf2b33d, 0x8e44ad, 0xe2703a];
   for(var sti=0; sti<deskPos.length; sti++){
@@ -602,7 +602,7 @@ function buildHouse(){
 function buildExpansion(){
   var wallC=0xf3e6c8, woodC=0x8a5a28, slabC=0xd8c9a8, pathC=0xb8ab8c;
 
-  // ===== DÃY NHÀ HỌC B — phía tây =====
+  // ===== DÃY NHÀ HỌC B, phía tây =====
   box(8,0.14,25, slabC, -37.5,0.07,-32, scene, false);
   box(6.5,5.2,24, wallC, -38,2.6,-32); solid(-41.2,-44.2, -34.8,-19.8);
   box(8.6,0.3,1, woodC, -37.5,5.35,-44, scene, false);
@@ -622,7 +622,7 @@ function buildExpansion(){
   tree(-30.9,-44.6,1); tree(-30.9,-19.4,1);
   lamp(-33,-38); lamp(-33,-26);
 
-  // ===== SÂN THỂ THAO — phía đông =====
+  // ===== SÂN THỂ THAO, phía đông =====
   var sc=new THREE.Mesh(new THREE.PlaneGeometry(11.5,23), new THREE.MeshStandardMaterial({color:0x6a994e, roughness:1}));
   sc.rotation.x=-Math.PI/2; sc.position.set(36,0.02,-23); sc.receiveShadow=true; scene.add(sc);
   box(11.5,0.03,0.18, 0xffffff, 36,0.045,-34.4, scene, false);
@@ -647,7 +647,7 @@ function buildExpansion(){
   box(0.7,0.5,2.6, 0x9a8a72, 40.6,0.45,-18, scene, false);
   tree(31,-36.5,1.05); tree(31,-9.5,1.05);
 
-  // ===== BÃI XE — đông nam =====
+  // ===== BÃI XE, đông nam =====
   var pk=new THREE.Mesh(new THREE.PlaneGeometry(11,13.5), new THREE.MeshStandardMaterial({color:0xbdb5a2, roughness:1}));
   pk.rotation.x=-Math.PI/2; pk.position.set(35.7,0.018,14.8); pk.receiveShadow=true; scene.add(pk);
   var pkp=new THREE.Mesh(new THREE.PlaneGeometry(2.4,13), new THREE.MeshStandardMaterial({color:pathC, roughness:1}));
@@ -667,7 +667,7 @@ function buildExpansion(){
   var ic2=makeIcon('🚲',1.2); ic2.position.set(38.5,1.6,17.9); scene.add(ic2);
   var lbP=makeLabel('🅿️ BÃI XE', 9); lbP.position.set(35.7,5.6,14.8); scene.add(lbP);
 
-  // ===== VƯỜN SAU — phía bắc =====
+  // ===== VƯỜN SAU, phía bắc =====
   var bp=new THREE.Mesh(new THREE.PlaneGeometry(82,3), new THREE.MeshStandardMaterial({color:pathC, roughness:1}));
   bp.rotation.x=-Math.PI/2; bp.position.set(0,0.02,-49.5); bp.receiveShadow=true; scene.add(bp);
   tree(-36,-52.5,1.1); tree(-24,-52.5,1); tree(24,-52.5,1); tree(36,-52.5,1.1); tree(-14,-53,0.9); tree(14,-53,0.9);
@@ -678,7 +678,7 @@ function buildExpansion(){
   lamp(-20,-49.5); lamp(20,-49.5);
   var lbG=makeLabel('🌿 VƯỜN SAU TRƯỜNG', 9); lbG.position.set(0,6.2,-52.5); scene.add(lbG);
 
-  // ===== VƯỜN HOA — tây nam =====
+  // ===== VƯỜN HOA, tây nam =====
   var bedZ=[1,9,17];
   for(var bei=0; bei<3; bei++){
     box(7,0.18,3.2, 0x8a6d4a, -36,0.09,bedZ[bei], scene, false);
@@ -726,7 +726,7 @@ function buildBeacons(){
 "use strict";
 // ================= KỊCH BẢN TRỌN 13 CẢNH (viết lại bằng lời dễ hiểu, giữ nguyên chỉ số/dấu ấn/kết thúc của bản 2D) =================
 var DLGS=[
-{icon:"⏰", time:"05:00", phase:"Buổi sáng", title:"Chuông báo thức", obj:"🎯 Tới bên giường (Nhà ở) — bắt đầu ngày mới",
+{icon:"⏰", time:"05:00", phase:"Buổi sáng", title:"Chuông báo thức", obj:"🎯 Tới bên giường (Nhà ở), bắt đầu ngày mới",
  text:"Trời chưa sáng. 7 giờ sáng nay bạn có tiết dạy đầu tiên. Tối qua bạn soạn bài gần xong, chỉ còn một ví dụ khó chưa kiểm tra lại.\n\nĐồng hồ báo thức reo lần thứ hai.",
  choices:[
   {t:"Dậy ngay, mở bài giảng ra kiểm tra lại", fx:{en:-10,fi:6}, set:{prepared:true}, badge:"☀️ Chuẩn bị kỹ vì học trò",
@@ -738,11 +738,11 @@ var DLGS=[
  text:"Ở bến xe buýt, một sinh viên khóa trước chạy lại chào bạn. Em vừa được nhận vào công ty em mơ ước, nhờ đúng đồ án tốt nghiệp mà bạn từng hướng dẫn.\n\nXe buýt của bạn sắp tới.",
  choices:[
   {t:"Dừng lại hỏi thăm em ấy, lỡ chuyến xe cũng được", fx:{en:-5,he:8}, set:{alumni:true}, badge:"🌱 Nhìn học trò lớn lên",
-   res:"Em kể hết: làm ở bộ phận nào, tháng đầu được bao nhiêu, còn cảm ơn bạn rối rít. Bạn đi chuyến xe sau, tới trường muộn 10 phút — nhưng vui cả buổi sáng."},
+   res:"Em kể hết: làm ở bộ phận nào, tháng đầu được bao nhiêu, còn cảm ơn bạn rối rít. Bạn đi chuyến xe sau, tới trường muộn 10 phút, nhưng vui cả buổi sáng."},
   {t:"Chúc mừng nhanh rồi chạy cho kịp xe", fx:{en:2},
    res:"Bạn chúc mừng vài câu rồi chạy. Ngồi trên xe, bạn mới nhớ ra mình còn chưa hỏi em đang làm ở bộ phận nào."}
  ]},
-{icon:"😴", time:"07:30", phase:"Buổi sáng", title:"Hàng ghế cuối", obj:"🎯 Vào Phòng học — tới hàng ghế cuối",
+{icon:"😴", time:"07:30", phase:"Buổi sáng", title:"Hàng ghế cuối", obj:"🎯 Vào Phòng học, tới hàng ghế cuối",
  text:"Tiết học đầu ngày. Ở hàng ghế cuối, một sinh viên gục xuống bàn ngủ. Chuyện này đã xảy ra mấy lần.\n\nCả lớp đang nhìn bạn, chờ xem bạn xử lý thế nào.",
  choices:[
   {t:"Đi xuống gọi em dậy, nhắc nhở nghiêm khắc trước cả lớp", fx:{en:-4,he:-6}, set:{strict:true},
@@ -762,7 +762,7 @@ var DLGS=[
   {t:"Cho cả lớp cùng tìm đáp án trong 10 phút", fx:{en:-6,fi:10}, set:{creative:true}, badge:"💡 Biến khó thành hay",
    res:"Lớp học ồn lên hẳn. Cuối cùng, chính sinh viên đã tìm ra đáp án. Em hỏi câu đó là người cười tươi nhất."}
  ]},
-{icon:"📩", time:"10:30", phase:"Buổi trưa", title:"Tin nhắn muốn bỏ học", obj:"🎯 Về Văn phòng — có tin nhắn giờ giải lao",
+{icon:"📩", time:"10:30", phase:"Buổi trưa", title:"Tin nhắn muốn bỏ học", obj:"🎯 Về Văn phòng, có tin nhắn giờ giải lao",
  text:"Giờ giải lao. Điện thoại rung. Một sinh viên học đang sa sút nhắn cho bạn:\n\n“Thầy/cô ơi, chắc em bỏ học thôi. Em học không vào, nhà em cũng đang khó khăn. Em xin lỗi.”",
  choices:[
   {t:"Gọi em lên văn phòng ngay, ngồi nghe em nói hết 30 phút", fx:{en:-10,he:15}, set:{saved:true}, badge:"🌟 Đưa tay đúng lúc",
@@ -786,9 +786,9 @@ var DLGS=[
   {t:"Nhận việc và ghi chú cẩn thận, khoa đang cần người", fx:{en:-10,fi:6}, set:{duty:true},
    res:"Bạn ghi hết vào sổ. Ra khỏi phòng họp, bạn tự hỏi: đây là lần thứ mấy trong tháng mình nói câu “để em lo”."},
   {t:"Xin san sẻ bớt việc vì bạn đang quá tải", fx:{en:6,fi:-6}, set:{declined:true},
-   res:"Trưởng khoa gật đầu đồng ý. Bạn thấy nhẹ nhõm — và hơi áy náy. Cảm giác này quen thuộc với những người hay nhận việc."}
+   res:"Trưởng khoa gật đầu đồng ý. Bạn thấy nhẹ nhõm, và hơi áy náy. Cảm giác này quen thuộc với những người hay nhận việc."}
  ]},
-{icon:"📄", time:"15:00", phase:"Buổi chiều", title:"Bài nộp trễ", obj:"🎯 Ra Hành lang, cửa Phòng học — có sinh viên chờ",
+{icon:"📄", time:"15:00", phase:"Buổi chiều", title:"Bài nộp trễ", obj:"🎯 Ra Hành lang, cửa Phòng học, có sinh viên chờ",
  text:"Một sinh viên mang bài tới nộp, trễ 3 ngày. Em nói mẹ em vừa nhập viện. Theo quy định, bài trễ 3 ngày bị 0 điểm phần này.\n\nEm đứng chờ, hai tay nắm chặt quai cặp.",
  choices:[
   {t:"Cho em thêm 2 ngày làm lại, kèm điều kiện nộp kế hoạch học lại phần đã hổng", fx:{he:12,fi:3}, set:{lenient:true}, badge:"🌿 Bao dung có nguyên tắc",
@@ -796,7 +796,7 @@ var DLGS=[
   {t:"Làm đúng quy định: 0 điểm phần nộp trễ", fx:{he:-6,fi:2}, set:{strict2:true},
    res:"Em gật đầu, không xin thêm câu nào. Bạn đã làm đúng quy định. Chỉ là khi em quay đi, bạn nhìn theo lâu hơn bình thường."}
  ]},
-{icon:"🌤️", time:"16:30", phase:"Buổi chiều", title:"Tiết cuối ngày", obj:"🎯 Vào Phòng học — tiết cuối ngày",
+{icon:"🌤️", time:"16:30", phase:"Buổi chiều", title:"Tiết cuối ngày", obj:"🎯 Vào Phòng học, tiết cuối ngày",
  text:function(S){ return S.flags.unprepared
    ? "Tiết cuối ngày. Ví dụ khó mà sáng nay bạn không kiểm tra đã gây rắc rối thật: một sinh viên hỏi dồn hai câu, bạn trả lời lúng túng. Cả lớp bắt đầu xì xào.\n\nGiờ giải lao giữa tiết, bạn ngồi một mình trong lớp, hơi mệt."
    : "Tiết cuối ngày diễn ra suôn sẻ. Ví dụ bạn kiểm tra từ 5 giờ sáng phát huy tác dụng: sinh viên gật gù đúng những chỗ quan trọng.\n\nTan tiết, còn vài em ở lại hỏi thêm."; },
@@ -806,57 +806,57 @@ var DLGS=[
   {t:"Thu dọn và về đúng giờ, tối còn một chồng bài phải chấm", fx:{en:6},
    res:"Bạn về nhà khi trời còn sáng. Rất hiếm khi có một buổi chiều như vậy. Bạn định dùng nó để nghỉ ngơi."}
  ]},
-{icon:"🍽️", time:"19:00", phase:"Buổi tối", title:"Bữa cơm nhà", obj:"🎯 Về Nhà — bữa cơm đang chờ",
+{icon:"🍽️", time:"19:00", phase:"Buổi tối", title:"Bữa cơm nhà", obj:"🎯 Về Nhà, bữa cơm đang chờ",
  text:"Mâm cơm nhà đã dọn xong. Người thân hỏi hôm nay bạn đi dạy thế nào. Trong túi xách của bạn là 28 bài kiểm tra chưa chấm. Sáng mai là hạn trả điểm.",
  choices:[
   {t:"Úp điện thoại xuống, ăn trọn bữa cơm với gia đình", fx:{en:14}, set:{family2:true}, badge:"🍚 Trọn vẹn một bữa cơm",
    res:"Bữa cơm kéo dài 40 phút, có tiếng cười nói. 28 bài kiểm tra vẫn đang chờ, nhưng bạn đã được nghỉ ngơi và vui vẻ trở lại."},
   {t:"Vừa ăn vừa chấm bài trên điện thoại", fx:{en:-6,he:-4}, set:{workhome:true},
-   res:"Chấm thêm được 5 bài. Đổi lại, bạn bỏ lỡ câu chuyện vui nhất trên mâm cơm — mọi người đã kể xong khi bạn ngẩng đầu lên."}
+   res:"Chấm thêm được 5 bài. Đổi lại, bạn bỏ lỡ câu chuyện vui nhất trên mâm cơm, mọi người đã kể xong khi bạn ngẩng đầu lên."}
  ]},
-{icon:"💬", time:"21:00", phase:"Buổi tối", title:"Tin nhắn lúc 21 giờ", obj:"🎯 Tới bàn làm việc (Nhà) — tin nhắn lúc 21 giờ",
+{icon:"💬", time:"21:00", phase:"Buổi tối", title:"Tin nhắn lúc 21 giờ", obj:"🎯 Tới bàn làm việc (Nhà), tin nhắn lúc 21 giờ",
  text:function(S){ return S.flags.saved
    ? "Điện thoại sáng lên. Là sinh viên sáng nay muốn bỏ học:\n\n“Thầy/cô ơi, em suy nghĩ rồi. Em sẽ tới lớp tiếp. Em cảm ơn vì sáng nay thầy/cô đã nghe em nói hết.”\n\nEm gửi kèm một đoạn bài làm lại. Bài còn vụng, nhưng là bài thật của em."
-   : "Điện thoại sáng lên. Một sinh viên gửi ảnh chụp bài làm lúc 21 giờ, hỏi đúng chỗ khó nhất của bài — chỗ mà nhiều em đang mắc.\n\nĐã 21 giờ. Ngày mai bạn phải dậy lúc 5 giờ."; },
+   : "Điện thoại sáng lên. Một sinh viên gửi ảnh chụp bài làm lúc 21 giờ, hỏi đúng chỗ khó nhất của bài, chỗ mà nhiều em đang mắc.\n\nĐã 21 giờ. Ngày mai bạn phải dậy lúc 5 giờ."; },
  choices:[
   {t:"Trả lời ngay, chỉ dẫn rõ ràng, dù mất 20 phút", fx:{en:-10,he:10,fi:4}, set:{nightreply:true},
    res:"Bạn gõ một tin nhắn dài, kèm cách tự kiểm tra khi gặp lỗi giống vậy. Gửi xong đã 21:27. Nhưng tin nhắn “em hiểu rồi ạ!” đến ngay sau đó khiến bạn mỉm cười."},
   {t:"Đánh dấu lại, để sáng mai trả lời", fx:{en:5},
-   res:"Bạn đặt điện thoại xuống và đi nghỉ. Đó là một giới hạn hợp lý — dù câu hỏi của em vẫn còn trong đầu bạn một lúc."}
+   res:"Bạn đặt điện thoại xuống và đi nghỉ. Đó là một giới hạn hợp lý, dù câu hỏi của em vẫn còn trong đầu bạn một lúc."}
  ]},
 {icon:"📝", time:"23:00", phase:"Ban đêm", title:"Bài cuối cùng", obj:"🎯 Chấm nốt bài cuối cùng ở bàn làm việc",
- text:"23 giờ. Bạn đã chấm 27 bài. Bài thứ 28 — bài cuối cùng — vừa đọc hai dòng bạn đã thấy quen: bài này chép nguyên một bài mẫu trên mạng, chép cả lỗi sai trong bài mẫu.\n\nNgày mai là hạn trả điểm.",
+ text:"23 giờ. Bạn đã chấm 27 bài. Bài thứ 28, bài cuối cùng, vừa đọc hai dòng bạn đã thấy quen: bài này chép nguyên một bài mẫu trên mạng, chép cả lỗi sai trong bài mẫu.\n\nNgày mai là hạn trả điểm.",
  choices:[
   {t:"Cho 0 điểm và hẹn gặp em ngày mai để nói chuyện riêng", fx:{fi:8,he:2}, set:{integrity:true}, badge:"⚖️ Giữ chuẩn đến phút cuối",
-   res:"Bạn ghi vào sổ: “Gặp riêng — hỏi rõ lý do trước khi kết luận.” Bạn xử lý nghiêm, nhưng vẫn để em một cơ hội giải thích."},
+   res:"Bạn ghi vào sổ: “Gặp riêng, hỏi rõ lý do trước khi kết luận.” Bạn xử lý nghiêm, nhưng vẫn để em một cơ hội giải thích."},
   {t:"Bạn quá mệt. Cho qua lần này", fx:{fi:-14}, set:{letgo:true},
    res:"Bạn đặt bút xuống. Trong 27 bài làm tử tế hôm nay, đây là lần duy nhất bạn nhắm mắt cho qua. Chính điều đó làm bạn khó ngủ."},
   {t:"Trừ điểm nặng theo quy định, không cần gặp", fx:{he:-6,fi:3}, set:{harsh:true},
    res:"Xử lý xong trong 2 phút. Đúng quy định và nhanh gọn. Nhưng câu hỏi “vì sao em chép bài” sẽ không có ai hỏi nữa."}
  ]},
-{icon:"🌙", time:"01:00", phase:"Ban đêm", title:"Đèn bàn tắt", obj:"🎯 Về giường — kết thúc một ngày dài",
- text:"1 giờ sáng. Bài đã chấm xong. Bạn đã ghi việc cho ngày mai — ngày mai lại bắt đầu lúc 5 giờ.\n\nTrước khi ngủ, bạn còn có thể làm một việc nhỏ cho chính mình.",
+{icon:"🌙", time:"01:00", phase:"Ban đêm", title:"Đèn bàn tắt", obj:"🎯 Về giường, kết thúc một ngày dài",
+ text:"1 giờ sáng. Bài đã chấm xong. Bạn đã ghi việc cho ngày mai, ngày mai lại bắt đầu lúc 5 giờ.\n\nTrước khi ngủ, bạn còn có thể làm một việc nhỏ cho chính mình.",
  choices:[
   {t:"Viết vài dòng nhật ký về ngày hôm nay", fx:{fi:8,he:4}, set:{journal:true},
    res:"Bạn viết: “Hôm nay mệt. Nhưng có một em đã không bỏ học.” Rồi gấp sổ lại. Một dòng ngắn như vậy cũng đủ giữ một người ở lại với nghề nhiều năm."},
-  {t:"Tắt đèn, ngủ ngay — mai còn một ngày nữa", fx:{en:8},
+  {t:"Tắt đèn, ngủ ngay, mai còn một ngày nữa", fx:{en:8},
    res:"Bạn ngủ thiếp đi rất nhanh. Ngày mai lại là một ngày làm giảng viên."}
  ]}
 ];
-var COLLAPSE={icon:"🪫", time:"—", title:"Bạn gục xuống bàn",
- text:"Năng lượng của bạn đã cạn. Mắt bạn hoa lên, tay hơi run. Cơ thể đang bắt bạn phải dừng lại.\n\nBạn phải nằm nghỉ 20 phút và bỏ bớt một việc trong ngày. Giảng viên cũng là người bình thường — học trò cần một thầy cô còn khỏe vào ngày mai.",
+var COLLAPSE={icon:"🪫", time:"…", title:"Bạn gục xuống bàn",
+ text:"Năng lượng của bạn đã cạn. Mắt bạn hoa lên, tay hơi run. Cơ thể đang bắt bạn phải dừng lại.\n\nBạn phải nằm nghỉ 20 phút và bỏ bớt một việc trong ngày. Giảng viên cũng là người bình thường, học trò cần một thầy cô còn khỏe vào ngày mai.",
  choices:[{t:"Nghỉ 20 phút. Ngày mai tính tiếp", fx:{en:32,fi:-8}, res:"Bạn chợp mắt một lúc và tỉnh dậy. Ngày chưa hết, nhưng bạn đã đỡ hơn và có thể đi tiếp."}]};
 
 function computeEnding(){
   var f=S.flags;
   if(f.saved && f.honest && S.he>=60) return {id:"nho-den", icon:"💛", title:"Kết thúc: Người Thầy Được Nhớ Đến",
-    text:"Nhiều năm sau, trong một buổi họp lớp, sinh viên năm nào suýt bỏ học — giờ đã đi làm — đứng lên nói: “Có một buổi sáng, em đã định bỏ học. Thầy/cô ngồi nghe em nói 30 phút. Nhờ vậy mà em học tiếp đến hôm nay.”\n\nBạn không nhớ hết những bài mình đã chấm. Nhưng học trò nhớ rất lâu những lần được thầy cô lắng nghe."};
+    text:"Nhiều năm sau, trong một buổi họp lớp, sinh viên năm nào suýt bỏ học, giờ đã đi làm, đứng lên nói: “Có một buổi sáng, em đã định bỏ học. Thầy/cô ngồi nghe em nói 30 phút. Nhờ vậy mà em học tiếp đến hôm nay.”\n\nBạn không nhớ hết những bài mình đã chấm. Nhưng học trò nhớ rất lâu những lần được thầy cô lắng nghe."};
   if(S.he<40 || (f.bluff && f.letgo)) return {id:"gia-nhu", icon:"🌧️", title:"Kết thúc: Giá Như Mình Chậm Lại",
     text:"Hôm nay không xảy ra chuyện gì lớn. Chỉ có mấy việc nhỏ bị bỏ qua: câu hỏi khó không ai trả lời, bài chép trên mạng được cho qua, và sinh viên muốn bỏ học vẫn chưa được gặp thầy cô để nói chuyện.\n\nNgười làm thầy ít khi gục vì thiếu kiến thức. Họ gục vì những lần quá bận để dừng lại một chút."};
   if(S.en<=25 && S.he>=55) return {id:"chay", icon:"🔥", title:"Kết thúc: Cháy Hết Mình",
-    text:"Bạn về đến nhà, chân gần như không còn cảm giác. Nhưng trong điện thoại có ba tin nhắn cảm ơn, một lớp học đã hiểu bài, và một sinh viên đã không bỏ học.\n\nBạn ngủ thiếp đi trên ghế — rất mệt, và không hối hận về lựa chọn nào trong ngày hôm nay."};
+    text:"Bạn về đến nhà, chân gần như không còn cảm giác. Nhưng trong điện thoại có ba tin nhắn cảm ơn, một lớp học đã hiểu bài, và một sinh viên đã không bỏ học.\n\nBạn ngủ thiếp đi trên ghế, rất mệt, và không hối hận về lựa chọn nào trong ngày hôm nay."};
   return {id:"binh-thuong", icon:"🌤️", title:"Kết thúc: Một Ngày Bình Thường",
-    text:"Hôm nay không có chuyện gì đặc biệt. Chỉ là một ngày dạy học bình thường: bài được chấm, lớp được dạy, vài sinh viên được giúp đúng lúc.\n\nNhưng một đời đi dạy được làm nên từ hàng nghìn ngày bình thường như vậy. Nhiều thầy cô giỏi không ồn ào — họ chỉ có mặt đều đặn, ngày này qua ngày khác."};
+    text:"Hôm nay không có chuyện gì đặc biệt. Chỉ là một ngày dạy học bình thường: bài được chấm, lớp được dạy, vài sinh viên được giúp đúng lúc.\n\nNhưng một đời đi dạy được làm nên từ hàng nghìn ngày bình thường như vậy. Nhiều thầy cô giỏi không ồn ào, họ chỉ có mặt đều đặn, ngày này qua ngày khác."};
 }
 function loadUnlocked(){ try{ return JSON.parse(localStorage.getItem('mot-ngay-lam-thay-endings')||"[]"); }catch(e){ return []; } }
 function saveUnlocked(id){ var u=loadUnlocked(); if(u.indexOf(id)<0){ u.push(id); try{ localStorage.setItem('mot-ngay-lam-thay-endings', JSON.stringify(u)); }catch(e){} } return u; }
@@ -996,10 +996,10 @@ function showEnding(){
   document.getElementById('end-title').textContent=e.title;
   document.getElementById('end-text').textContent=e.text;
   document.getElementById('end-epilogue').innerHTML=
-    "Bạn vừa sống thử <b>một ngày</b> làm giảng viên. Thầy cô của bạn đã sống khoảng <b>7.000 ngày</b> như vậy — hơn 20 năm — và không có nút chơi lại.<br><br>Nhân Ngày Nhà giáo Việt Nam 20/11, xin cảm ơn thầy cô Bộ môn CNTT — Trường Đại học Tây Nguyên: cảm ơn thầy cô đã luôn có mặt, kể cả những ngày mệt nhất.";
+    "Bạn vừa sống thử <b>một ngày</b> làm giảng viên. Thầy cô của bạn đã sống khoảng <b>7.000 ngày</b> như vậy, hơn 20 năm, và không có nút chơi lại.<br><br>Nhân Ngày Nhà giáo Việt Nam 20/11, xin cảm ơn thầy cô Bộ môn CNTT, Trường Đại học Tây Nguyên: cảm ơn thầy cô đã luôn có mặt, kể cả những ngày mệt nhất.";
   var recap="<b>Chỉ số cuối ngày:</b> ⚡ "+S.en+" · ❤️ "+S.he+" · 🔥 "+S.fi;
-  recap += S.badges.length ? "<br><b>Dấu ấn hôm nay:</b><br>🏅 "+S.badges.join("<br>🏅 ") : "<br>Hôm nay bạn không để lại dấu ấn đặc biệt nào — một ngày bình thường cũng là một ngày làm giảng viên.";
-  if(collapseUsed) recap+="<br>🪫 Bạn đã gục một lần vì kiệt sức — và đã đứng dậy đi tiếp.";
+  recap += S.badges.length ? "<br><b>Dấu ấn hôm nay:</b><br>🏅 "+S.badges.join("<br>🏅 ") : "<br>Hôm nay bạn không để lại dấu ấn đặc biệt nào, một ngày bình thường cũng là một ngày làm giảng viên.";
+  if(collapseUsed) recap+="<br>🪫 Bạn đã gục một lần vì kiệt sức, và đã đứng dậy đi tiếp.";
   document.getElementById('end-recap').innerHTML=recap;
   document.getElementById('unlock-end').textContent="🔓 Bạn đã mở "+u.length+"/4 kết thúc (tính chung với bản 2D). Chơi lại và chọn khác đi nhé!";
   document.getElementById('copy-ok').textContent="";
@@ -1141,7 +1141,7 @@ function animate(){
       pk.sp.position.y=1.25+Math.sin(t*2.4+pk.ph)*0.18;
       if(Math.hypot(pk.x-player.position.x, pk.z-player.position.z)<1.7){
         S[pk.k]+=pk.v; clampStat(); syncStats();
-        showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+' — '+pk.n, 1400);
+        showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+', '+pk.n, 1400);
         scene.remove(pk.sp); pickups.splice(pi,1);
       }
     }
@@ -1198,7 +1198,7 @@ function animate(){
       var ndeg=Math.round((Math.atan2(nfx,nfz)-Math.atan2(ndx,ndz))*180/Math.PI);
       var nm=Math.max(1,Math.round(nd));
       if(ndeg!==_nvDeg){ _nvDeg=ndeg; _nvArrow.style.transform='rotate('+ndeg+'deg)'; }
-      if(nm!==_nvM){ _nvM=nm; _nvTxt.textContent='Còn '+nm+'m — đi theo mũi tên'; }
+      if(nm!==_nvM){ _nvM=nm; _nvTxt.textContent='Còn '+nm+'m, đi theo mũi tên'; }
     } else if(_nvEl.style.display!=='none') _nvEl.style.display='none';
   } else if(_nvEl.style.display!=='none') _nvEl.style.display='none';
   // Beacon + cờ
@@ -1227,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('dlg').addEventListener('click', function(){ if(mode==='dialog') advanceDlg(); });
   document.getElementById('btn-again').addEventListener('click', function(){ location.reload(); });
   document.getElementById('btn-copy').addEventListener('click', function(){
-    var txt="Nhân ngày 20/11, em xin gửi lời cảm ơn chân thành nhất tới thầy cô. Cảm ơn thầy cô đã dạy dỗ, đã kiên nhẫn và đã luôn tin tưởng chúng em — kể cả những lúc chúng em chưa tin vào chính mình. Chúc thầy cô luôn mạnh khỏe và giữ mãi ngọn lửa với nghề. — Từ game 3D “Một Ngày Làm Giảng Viên” (CODE THE THANKS 2026)";
+    var txt="Nhân ngày 20/11, em xin gửi lời cảm ơn chân thành nhất tới thầy cô. Cảm ơn thầy cô đã dạy dỗ, đã kiên nhẫn và đã luôn tin tưởng chúng em, kể cả những lúc chúng em chưa tin vào chính mình. Chúc thầy cô luôn mạnh khỏe và giữ mãi ngọn lửa với nghề. Từ game 3D “Một Ngày Làm Giảng Viên” (CODE THE THANKS 2026)";
     function done(){ document.getElementById('copy-ok').textContent='✅ Đã chép! Dán vào Zalo/Facebook để gửi thầy cô nhé.'; }
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, done); }
     else { var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); done(); }
