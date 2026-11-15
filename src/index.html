@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Demo 3D: Một Ngày Làm Giảng Viên</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"}}
 </script>
@@ -18,7 +19,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
 </head>
 <body>
 <div id="app">
-  <div id="hud" class="panel">🎓 <b>BẢN 3D</b> · Một Ngày Làm Giảng Viên<br>⚡ <span id="st-en">70</span> · ❤️ <span id="st-he">70</span> · 🔥 <span id="st-fi">60</span> · <span id="hud-clock">🕔 05:00</span> · <span id="hud-phase">Buổi sáng</span></div>
+  <div id="hud" class="panel">⚡ <span id="st-en">70</span> · ❤️ <span id="st-he">70</span> · 🔥 <span id="st-fi">60</span> · <span id="hud-clock">🕔 05:00</span> · <span id="hud-phase">Buổi sáng</span></div>
   <div id="objective" class="panel">🎯 Tới cửa Nhà ở, bắt đầu ngày mới</div>
   <div id="navi"><span id="navi-arrow">▲</span><span id="navi-txt"></span></div>
   <div id="toast"></div>
@@ -30,10 +31,9 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
     <div class="card">
       <div style="font-size:2.6rem">🏫</div>
       <h1>MỘT NGÀY LÀM GIẢNG VIÊN</h1>
-      <div class="sub">BẢN 3D · TRỌN CÂU CHUYỆN 13 CẢNH · CODE THE THANKS 2026</div>
       <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề, và quyết định 1 trong 4 kết thúc.</p>
       <p>📖 Câu chuyện hư cấu, mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
-      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản <!--BUILD--></div>
+      <button class="btn" id="btn-start" disabled>⏳ Đang tải game...</button>
     </div>
   </div>
 
