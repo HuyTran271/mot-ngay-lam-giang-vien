@@ -123,7 +123,7 @@ window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.re
       <div class="sub">BẢN 3D · TRỌN CÂU CHUYỆN 13 CẢNH · CODE THE THANKS 2026</div>
       <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề — và quyết định 1 trong 4 kết thúc.</p>
       <p>📖 Câu chuyện hư cấu — mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
-      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 00:01 15/11</div>
+      <button class="btn" id="btn-start">▶ Bắt đầu ngày mới</button><div id="bstamp" style="margin-top:10px;color:#9fb4d8;font-size:11px">bản 10:23 15/11</div>
     </div>
   </div>
 
@@ -195,7 +195,7 @@ window.addEventListener('error', function(e){ var d=document.getElementById('err
 var SOLIDS=[]; // {x0,z0,x1,z1}
 function solid(x0,z0,x1,z1){ SOLIDS.push({x0:x0,z0:z0,x1:x1,z1:z1}); }
 function collideXZ(nx, nz, r){
-  nx=Math.max(-34.5, Math.min(34.5, nx)); nz=Math.max(-51, Math.min(51.5, nz));
+  nx=Math.max(-41.5, Math.min(41.5, nx)); nz=Math.max(-55.5, Math.min(51.5, nz));
   for(var i=0;i<SOLIDS.length;i++){ var o=SOLIDS[i];
     var cx=Math.max(o.x0, Math.min(nx, o.x1)), cz=Math.max(o.z0, Math.min(nz, o.z1));
     var dx=nx-cx, dz=nz-cz, d2=dx*dx+dz*dz;
@@ -335,7 +335,7 @@ function buildPeople(){
 // Sân trường: nền, đường, tường rào, cổng, cột cờ, cây đèn
 function buildCampus(){
   // Nền
-  var grass=new THREE.Mesh(new THREE.PlaneGeometry(76,112), new THREE.MeshStandardMaterial({color:0x69a24b, roughness:1}));
+  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,124), new THREE.MeshStandardMaterial({color:0x69a24b, roughness:1}));
   grass.rotation.x=-Math.PI/2; grass.receiveShadow=true; scene.add(grass);
   var plaza=new THREE.Mesh(new THREE.PlaneGeometry(42,16), new THREE.MeshStandardMaterial({color:0xcfc8b8, roughness:1}));
   plaza.rotation.x=-Math.PI/2; plaza.position.set(0,0.02,-25); plaza.receiveShadow=true; scene.add(plaza);
@@ -349,7 +349,7 @@ function buildCampus(){
   var flowerCols=[0xf28bb4, 0xffd76e, 0xffffff, 0xe2703a];
   for(var i=0;i<14;i++){
     var f=new THREE.Mesh(new THREE.CircleGeometry(0.45+((i*37)%40)/60, 10), new THREE.MeshBasicMaterial({color:flowerCols[i%4]}));
-    f.rotation.x=-Math.PI/2; var fx=-32+((i*53)%64), fz=-14+((i*29)%58);
+    f.rotation.x=-Math.PI/2; var fx=-44+((i*53)%88), fz=-48+((i*29)%92);
     if(Math.abs(fx)<4) fx+=7;
     f.position.set(fx, 0.035, fz); scene.add(f);
   }
@@ -357,20 +357,20 @@ function buildCampus(){
   // ===== Rào + cổng + băng-rôn =====
   // Tường rào bao quanh trường (tường xây có trụ + nắp, chừa cổng chính x -3..3)
   var twC=0xe3d7bd, twCap=0xb08954, twPil=0xcbb489;
-  box(27,2.2,0.4, twC, -16.5,1.1,24); box(27,2.2,0.4, twC, 16.5,1.1,24);
-  box(27.4,0.2,0.62, twCap, -16.5,2.3,24, scene, false); box(27.4,0.2,0.62, twCap, 16.5,2.3,24, scene, false);
-  solid(-30,23.7, -3,24.3); solid(3,23.7, 30,24.3);
-  box(0.4,2.2,42, twC, -30,1.1,3); box(0.4,2.2,42, twC, 30,1.1,3);
-  box(0.62,0.2,42.4, twCap, -30,2.3,3, scene, false); box(0.62,0.2,42.4, twCap, 30,2.3,3, scene, false);
-  solid(-30.3,-18, -29.7,24); solid(29.7,-18, 30.3,24);
-  box(60.4,2.2,0.4, twC, 0,1.1,-47); box(60.8,0.2,0.62, twCap, 0,2.3,-47, scene, false);
-  solid(-30,-47.3, 30,-46.7);
-  var pilX=[-30,-22.5,-15,-7.5,7.5,15,22.5,30];
+  box(39,2.2,0.4, twC, -22.5,1.1,24); box(39,2.2,0.4, twC, 22.5,1.1,24);
+  box(39.4,0.2,0.62, twCap, -22.5,2.3,24, scene, false); box(39.4,0.2,0.62, twCap, 22.5,2.3,24, scene, false);
+  solid(-42,23.7, -3,24.3); solid(3,23.7, 42,24.3);
+  box(0.4,2.2,80, twC, -42,1.1,-16); box(0.4,2.2,80, twC, 42,1.1,-16);
+  box(0.62,0.2,80.4, twCap, -42,2.3,-16, scene, false); box(0.62,0.2,80.4, twCap, 42,2.3,-16, scene, false);
+  solid(-42.3,-56, -41.7,24); solid(41.7,-56, 42.3,24);
+  box(84.4,2.2,0.4, twC, 0,1.1,-56); box(84.8,0.2,0.62, twCap, 0,2.3,-56, scene, false);
+  solid(-42,-56.3, 42,-55.7);
+  var pilX=[-42,-37,-30,-22.5,-15,-7.5,7.5,15,22.5,30,37,42];
   for(var pli=0; pli<pilX.length; pli++) box(0.72,2.55,0.72, twPil, pilX[pli],1.27,24, scene, false);
-  var pilZ=[-18,-11,-4,3,10,17];
-  for(var plz=0; plz<pilZ.length; plz++){ box(0.72,2.55,0.72, twPil, -30,1.27,pilZ[plz], scene, false); box(0.72,2.55,0.72, twPil, 30,1.27,pilZ[plz], scene, false); }
-  var pilN=[-30,-15,0,15,30];
-  for(var pln=0; pln<pilN.length; pln++) box(0.72,2.55,0.72, twPil, pilN[pln],1.27,-47, scene, false);
+  var pilZ=[-50,-43,-36,-29,-22,-15,-8,-1,6,13,20];
+  for(var plz=0; plz<pilZ.length; plz++){ box(0.72,2.55,0.72, twPil, -42,1.27,pilZ[plz], scene, false); box(0.72,2.55,0.72, twPil, 42,1.27,pilZ[plz], scene, false); }
+  var pilN=[-42,-28,-14,0,14,28,42];
+  for(var pln=0; pln<pilN.length; pln++) box(0.72,2.55,0.72, twPil, pilN[pln],1.27,-56, scene, false);
   var schName=makeLabel('🏫 TRƯỜNG ĐẠI HỌC TÂY NGUYÊN', 8.5); schName.position.set(10.5,1.85,23.6); scene.add(schName);
   var post1=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,4.8,8), new THREE.MeshStandardMaterial({color:0x7a4a21}));
   post1.position.set(-3.4,2.4,24); post1.castShadow=true; scene.add(post1);
@@ -399,7 +399,7 @@ function buildCampus(){
   var lb5=makeLabel('🌳 SÂN TRƯỜNG', 10); lb5.position.set(13,6.8,-2); scene.add(lb5);
 
   // Đường nhựa + điểm xe buýt trước cổng
-  var road=new THREE.Mesh(new THREE.PlaneGeometry(76, 5), new THREE.MeshLambertMaterial({color:0x8a8f98}));
+  var road=new THREE.Mesh(new THREE.PlaneGeometry(104, 5), new THREE.MeshLambertMaterial({color:0x8a8f98}));
   road.rotation.x=-Math.PI/2; road.position.set(0, 0.008, 28.75); scene.add(road);
   var bpole=new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 2.2, 6), new THREE.MeshLambertMaterial({color:0x666666}));
   bpole.position.set(22.5, 1.1, 30.6); scene.add(bpole);
@@ -598,6 +598,99 @@ function buildHouse(){
 </script>
 <script>
 "use strict";
+// Mở rộng khuôn viên: dãy nhà học B (tây), sân thể thao + bãi xe (đông), vườn sau (bắc), vườn hoa (tây nam)
+function buildExpansion(){
+  var wallC=0xf3e6c8, woodC=0x8a5a28, slabC=0xd8c9a8, pathC=0xb8ab8c;
+
+  // ===== DÃY NHÀ HỌC B — phía tây =====
+  box(8,0.14,25, slabC, -37.5,0.07,-32, scene, false);
+  box(6.5,5.2,24, wallC, -38,2.6,-32); solid(-41.2,-44.2, -34.8,-19.8);
+  box(8.6,0.3,1, woodC, -37.5,5.35,-44, scene, false);
+  box(8.6,0.3,1, woodC, -37.5,5.35,-20, scene, false);
+  box(1,0.3,25, woodC, -41.5,5.35,-32, scene, false);
+  box(1,0.3,25, woodC, -33.5,5.35,-32, scene, false);
+  var doorZ=[-40,-32,-24];
+  for(var di=0; di<3; di++){
+    box(0.18,2.3,1.25, 0x6d4c41, -34.68,1.15,doorZ[di], scene, false);
+    var lbd=makeLabel('📚 PHÒNG B'+(di+1), 2.6); lbd.position.set(-34.2,2.95,doorZ[di]); scene.add(lbd);
+  }
+  var winZ=[-43,-36,-28,-21];
+  for(var wi=0; wi<4; wi++) box(0.14,1.3,1.7, 0xbfe3ff, -34.68,3.4,winZ[wi], scene, false);
+  var lbB=makeLabel('🏫 DÃY NHÀ HỌC B', 9); lbB.position.set(-33.6,6.6,-32); scene.add(lbB);
+  var wp=new THREE.Mesh(new THREE.PlaneGeometry(3.4,27), new THREE.MeshStandardMaterial({color:pathC, roughness:1}));
+  wp.rotation.x=-Math.PI/2; wp.position.set(-32.3,0.025,-32); wp.receiveShadow=true; scene.add(wp);
+  tree(-30.9,-44.6,1); tree(-30.9,-19.4,1);
+  lamp(-33,-38); lamp(-33,-26);
+
+  // ===== SÂN THỂ THAO — phía đông =====
+  var sc=new THREE.Mesh(new THREE.PlaneGeometry(11.5,23), new THREE.MeshStandardMaterial({color:0x6a994e, roughness:1}));
+  sc.rotation.x=-Math.PI/2; sc.position.set(36,0.02,-23); sc.receiveShadow=true; scene.add(sc);
+  box(11.5,0.03,0.18, 0xffffff, 36,0.045,-34.4, scene, false);
+  box(11.5,0.03,0.18, 0xffffff, 36,0.045,-11.6, scene, false);
+  box(0.18,0.03,23, 0xffffff, 30.35,0.045,-23, scene, false);
+  box(0.18,0.03,23, 0xffffff, 41.65,0.045,-23, scene, false);
+  box(11.5,0.03,0.18, 0xffffff, 36,0.045,-23, scene, false);
+  var cc=new THREE.Mesh(new THREE.RingGeometry(1.8,2.02,28), new THREE.MeshBasicMaterial({color:0xffffff, side:THREE.DoubleSide}));
+  cc.rotation.x=-Math.PI/2; cc.position.set(36,0.045,-23); scene.add(cc);
+  // 2 rổ bóng: cột + bảng + vành
+  var hoopZ=[[-33.6,-33.2,-32.6],[-12.4,-12.8,-13.4]];
+  for(var hi=0; hi<2; hi++){
+    var hp=new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,3.4,8), new THREE.MeshStandardMaterial({color:0x707880, roughness:.6}));
+    hp.position.set(36,1.7,hoopZ[hi][0]); hp.castShadow=true; scene.add(hp);
+    box(1.7,1.05,0.08, 0xffffff, 36,3.05,hoopZ[hi][1], scene, false);
+    var rim=new THREE.Mesh(new THREE.TorusGeometry(0.45,0.04,8,20), new THREE.MeshStandardMaterial({color:0xe2703a, roughness:.5}));
+    rim.rotation.x=Math.PI/2; rim.position.set(36,2.9,hoopZ[hi][2]); scene.add(rim);
+    solid(35.75,hoopZ[hi][0]-0.25, 36.25,hoopZ[hi][0]+0.25);
+  }
+  var lbS=makeLabel('🏀 SÂN THỂ THAO', 9); lbS.position.set(36,6.8,-23); scene.add(lbS);
+  box(0.7,0.5,2.6, 0x9a8a72, 40.6,0.45,-28, scene, false);
+  box(0.7,0.5,2.6, 0x9a8a72, 40.6,0.45,-18, scene, false);
+  tree(31,-36.5,1.05); tree(31,-9.5,1.05);
+
+  // ===== BÃI XE — đông nam =====
+  var pk=new THREE.Mesh(new THREE.PlaneGeometry(11,13.5), new THREE.MeshStandardMaterial({color:0xbdb5a2, roughness:1}));
+  pk.rotation.x=-Math.PI/2; pk.position.set(35.7,0.018,14.8); pk.receiveShadow=true; scene.add(pk);
+  var pkp=new THREE.Mesh(new THREE.PlaneGeometry(2.4,13), new THREE.MeshStandardMaterial({color:pathC, roughness:1}));
+  pkp.rotation.x=-Math.PI/2; pkp.position.set(29.9,0.02,14.8); pkp.receiveShadow=true; scene.add(pkp);
+  box(11,0.16,13, woodC, 35.7,2.7,14.8, scene, false);
+  var postXY=[[31,9],[40.4,9],[31,20.6],[40.4,20.6]];
+  for(var pi2=0; pi2<4; pi2++){
+    var pp=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,2.7,6), new THREE.MeshStandardMaterial({color:0x5a4028, roughness:.8}));
+    pp.position.set(postXY[pi2][0],1.35,postXY[pi2][1]); pp.castShadow=true; scene.add(pp);
+  }
+  var bikeCols=[0xd43a2f,0x2e5fa3,0x3f7a3a,0xe8a13a,0x707880,0x8e44ad];
+  var rowZ=[11.3,17.9];
+  for(var ri=0; ri<2; ri++) for(var bi2=0; bi2<6; bi2++)
+    box(0.55,0.85,1.5, bikeCols[(ri*3+bi2)%6], 32.2+bi2*1.45, 0.45, rowZ[ri], scene, false);
+  solid(31.4,10.4, 40.2,12.2); solid(31.4,17.0, 40.2,18.8);
+  var ic1=makeIcon('🛵',1.2); ic1.position.set(33,1.6,11.3); scene.add(ic1);
+  var ic2=makeIcon('🚲',1.2); ic2.position.set(38.5,1.6,17.9); scene.add(ic2);
+  var lbP=makeLabel('🅿️ BÃI XE', 9); lbP.position.set(35.7,5.6,14.8); scene.add(lbP);
+
+  // ===== VƯỜN SAU — phía bắc =====
+  var bp=new THREE.Mesh(new THREE.PlaneGeometry(82,3), new THREE.MeshStandardMaterial({color:pathC, roughness:1}));
+  bp.rotation.x=-Math.PI/2; bp.position.set(0,0.02,-49.5); bp.receiveShadow=true; scene.add(bp);
+  tree(-36,-52.5,1.1); tree(-24,-52.5,1); tree(24,-52.5,1); tree(36,-52.5,1.1); tree(-14,-53,0.9); tree(14,-53,0.9);
+  box(2.6,0.5,0.8, 0x9a8a72, -8,0.45,-51.5); solid(-9.3,-51.9, -6.7,-51.1);
+  box(2.6,0.5,0.8, 0x9a8a72, 8,0.45,-51.5); solid(6.7,-51.9, 9.3,-51.1);
+  placeModel('flower', -18,-48.4, 0.6, 0); placeModel('flower', 18,-48.4, 0.6, 1);
+  placeModel('flower', -4,-50.9, 0.6, 2); placeModel('flower', 4,-50.9, 0.6, 3);
+  lamp(-20,-49.5); lamp(20,-49.5);
+  var lbG=makeLabel('🌿 VƯỜN SAU TRƯỜNG', 9); lbG.position.set(0,6.2,-52.5); scene.add(lbG);
+
+  // ===== VƯỜN HOA — tây nam =====
+  var bedZ=[1,9,17];
+  for(var bei=0; bei<3; bei++){
+    box(7,0.18,3.2, 0x8a6d4a, -36,0.09,bedZ[bei], scene, false);
+    placeModel('flower', -38,bedZ[bei], 0.7, bei); placeModel('flower', -36,bedZ[bei]+0.8, 0.7, bei+1.3); placeModel('flower', -34,bedZ[bei]-0.6, 0.7, bei+2.1);
+  }
+  tree(-38.5,-5,1.05); tree(-33,22.6,1);
+  box(2.6,0.5,0.8, 0x9a8a72, -36,0.45,-1.5); solid(-37.3,-1.9, -34.7,-1.1);
+  var lbF=makeLabel('🌸 VƯỜN HOA', 9); lbF.position.set(-36,6,9); scene.add(lbF);
+}
+</script>
+<script>
+"use strict";
 // Ghép toàn bộ thế giới 3D từ các module con
 function buildWorld(){
   buildCampus();
@@ -605,6 +698,7 @@ function buildWorld(){
   buildLibrary();
   buildCanteen();
   buildHouse();
+  buildExpansion();
   buildPeople();
   buildBeacons();
 }
@@ -1001,7 +1095,7 @@ function init(){
   var sun=new THREE.DirectionalLight(0xffe3b3, 1.9);
   sun.position.set(34, 48, 22); sun.castShadow=true;
   sun.shadow.mapSize.set(1024,1024);
-  sun.shadow.camera.left=-58; sun.shadow.camera.right=58; sun.shadow.camera.top=58; sun.shadow.camera.bottom=-58;
+  sun.shadow.camera.left=-72; sun.shadow.camera.right=72; sun.shadow.camera.top=72; sun.shadow.camera.bottom=-72;
   sun.shadow.camera.near=5; sun.shadow.camera.far=130; sun.shadow.bias=-0.0006;
   scene.add(sun);
   buildWorld();
@@ -1054,7 +1148,7 @@ function animate(){
     // Hồn deadline
     if(spirit){
       spirit.t-=dt;
-      if(spirit.t<=0){ spirit.tx=-30+Math.random()*60; spirit.tz=-46+Math.random()*94; spirit.t=3+Math.random()*3; }
+      if(spirit.t<=0){ spirit.tx=-40+Math.random()*80; spirit.tz=-54+Math.random()*102; spirit.t=3+Math.random()*3; }
       var sgx=spirit.tx-spirit.sp.position.x, sgz=spirit.tz-spirit.sp.position.z, sgl=Math.hypot(sgx,sgz);
       if(sgl>0.4){ var snx=spirit.sp.position.x+sgx/sgl*3.4*dt, snz=spirit.sp.position.z+sgz/sgl*3.4*dt;
         var sc2=collideXZ(snx, snz, spirit.sp.position.x, spirit.sp.position.z, 0.7);
