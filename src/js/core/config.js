@@ -60,7 +60,7 @@ function updateLabels(){
     var sp=list[i], ud=sp.userData;
     if(hideAll){ if(sp.visible) sp.visible=false; continue; }
     var dx=sp.position.x-player.position.x, dz=sp.position.z-player.position.z;
-    var maxD=ud.tag?26:64;
+    var maxD=ud.tag?26:48;
     if(dx*dx+dz*dz>maxD*maxD){ if(sp.visible) sp.visible=false; continue; }
     _lv.copy(sp.position); _lv.project(camera);
     if(_lv.z>1 || _lv.z<-1){ if(sp.visible) sp.visible=false; continue; }
@@ -69,7 +69,7 @@ function updateLabels(){
     var sx=(_lv.x*0.5+0.5)*W, sy=(-_lv.y*0.5+0.5)*H;
     var r={x1:sx-pxW/2, y1:sy-pxH/2, x2:sx+pxW/2, y2:sy+pxH/2};
     if(r.x2<0 || r.x1>W || r.y2<0 || r.y1>H){ if(sp.visible) sp.visible=false; continue; }
-    var th=sp.visible?0.34:0.22;
+    var th=sp.visible?0.16:0.08;
     var bad=false;
     for(var j=0;j<kept.length;j++){ var k=kept[j];
       var ox=Math.min(r.x2,k.x2)-Math.max(r.x1,k.x1), oy=Math.min(r.y2,k.y2)-Math.max(r.y1,k.y1);
