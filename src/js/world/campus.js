@@ -76,8 +76,8 @@ function buildCampus(){
   var btx=new THREE.CanvasTexture(bc); btx.colorSpace=THREE.SRGBColorSpace;
   var banner=new THREE.Mesh(new THREE.PlaneGeometry(7.2,1.75), new THREE.MeshStandardMaterial({map:btx, side:THREE.DoubleSide, roughness:.9}));
   banner.rotation.y=Math.PI/2; banner.position.set(-37.5,4,-9); scene.add(banner);
-  var schName=makeLabel('🏫 TRƯỜNG ĐẠI HỌC TÂY NGUYÊN', 8.5); schName.position.set(-35.6,2.75,-9); scene.add(schName);
-  var lb4=makeLabel('🎓 CỔNG TRƯỜNG', 10); lb4.position.set(-37.5,6.4,-9); scene.add(lb4);
+  var schName=makeLabel('🏫 TRƯỜNG ĐẠI HỌC', 7); schName.position.set(-35.6,2.75,-9); scene.add(schName);
+  var lb4=makeLabel('🎓 CỔNG TRƯỜNG', 10); lb4.position.set(-37.5,7.2,-9); scene.add(lb4);
   var lbS=makeLabel('🚪 CỔNG NAM', 6); lbS.position.set(2,3.6,33.4); scene.add(lbS);
 
   // ===== BẾN XE BUÝT ngoài cổng chính, trên đường Lê Duẩn (-39.8,-9) =====
@@ -141,7 +141,7 @@ function buildCampus(){
   // Cụm cây bờ Bắc và bờ Đông hồ (ngoài hình chữ nhật solid của hồ)
   tree(6,-46.5,1); tree(12,-47,1.1); tree(18,-46.5,0.95); tree(24,-38,1); tree(23.5,-41,1.05);
   lamp(-14,-11); lamp(10,-11); lamp(-28,-29); lamp(0,-29); lamp(-10,25); lamp(24,25);
-  var lb5=makeLabel('🌳 SÂN TRƯỜNG', 10); lb5.position.set(0,6.8,-8); scene.add(lb5);
+  var lb5=makeLabel('🌳 SÂN TRƯỜNG', 10); lb5.position.set(4,6.6,-3); scene.add(lb5);
   var bushPos=[[-34,-14],[-34,2],[36,-2],[36,32],[-11,50.5],[11,50.5]];
   for(var bui=0; bui<bushPos.length; bui++){
     if(placeModel('bush', bushPos[bui][0], bushPos[bui][1], 1.15, bui*0.7)) continue;

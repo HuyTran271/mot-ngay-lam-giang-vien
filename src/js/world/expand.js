@@ -36,7 +36,7 @@ function buildExpansion(){
     box(3,0.18,3.6, 0x8a6d4a, bedX[bx2],0.09,bedZ[bz2], scene, false);
     // (Đã bỏ các hộp mầm cây nhỏ trên luống để giữ ngân sách vật thể cho hàng cây mới)
   }
-  var lbG=makeLabel('🌱 VƯỜN THỰC NGHIỆM', 10); lbG.position.set(31.5,5.6,-7); scene.add(lbG);
+  var lbG=makeLabel('🌱 VƯỜN THỰC NGHIỆM', 10); lbG.position.set(31.5,5.0,-7); scene.add(lbG);
 
   // ===== NHÀ THI ĐẤU: khối lớn mái trắng (-16,15), cỡ 13x11 =====
   box(13,5.5,11, 0xe8e2d4, -16,2.75,15); box(14,0.4,12, 0xf0f0f0, -16,5.7,15, scene, false); solid(-22.5,9.5, -9.5,20.5);

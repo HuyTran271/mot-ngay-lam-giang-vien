@@ -64,7 +64,7 @@ function buildSchool(){
   box(3.4,0.8,1.6, 0xa8763e, -8,0.4,-40); solid(-9.7,-40.8, -6.3,-39.2);
   var bk=makeIcon('📚',0.85); bk.position.set(-10.5,1.25,-44.5); scene.add(bk);
   var pl=makeIcon('🪴',1.1); pl.position.set(-14.2,0.8,-45.6); scene.add(pl);
-  var lb1=makeLabel('🏫 TRƯỜNG HỌC', 12); lb1.position.set(-16,5.4,-42); scene.add(lb1);
-  var lb1a=makeLabel('📖 PHÒNG HỌC', 6); lb1a.position.set(-24.5,4.3,-42); scene.add(lb1a);
-  var lb1b=makeLabel('🗂️ VĂN PHÒNG KHOA', 6); lb1b.position.set(-7.5,4.3,-42); scene.add(lb1b);
+  var lb1=makeLabel('🏫 TRƯỜNG HỌC', 10); lb1.position.set(-16,6.4,-42); scene.add(lb1);
+  var lb1a=makeLabel('📖 PHÒNG HỌC', 6); lb1a.position.set(-26.5,4.3,-42); scene.add(lb1a);
+  var lb1b=makeLabel('🗂️ VĂN PHÒNG KHOA', 6); lb1b.position.set(-5.5,4.3,-42); scene.add(lb1b);
 }
