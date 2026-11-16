@@ -13,11 +13,59 @@ function tree(x,z,s){
   scene.add(g); solid(x-0.55, z-0.55, x+0.55, z+0.55);
 }
 function lamp(x,z){
-  var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.09,3.1,6), new THREE.MeshStandardMaterial({color:0x5a4632}));
+  var poleMat=new THREE.MeshStandardMaterial({color:0x3f3730, roughness:0.65, metalness:0.25});
+  var base=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.18,0.35,8), poleMat);
+  base.position.set(x,0.175,z); base.castShadow=true; scene.add(base);
+  var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.09,3.1,8), poleMat);
   pole.position.set(x,1.55,z); pole.castShadow=true; scene.add(pole);
-  var bulb=new THREE.Mesh(new THREE.SphereGeometry(0.24,10,8), new THREE.MeshStandardMaterial({color:0xffe9a8, emissive:0xffca55, emissiveIntensity:.7}));
+  var cap=new THREE.Mesh(new THREE.ConeGeometry(0.36,0.22,8), poleMat);
+  cap.position.set(x,3.42,z); scene.add(cap);
+  var bulbMat=new THREE.MeshStandardMaterial({color:0xffe9a8, emissive:0xffbe44, emissiveIntensity:0.35, roughness:0.3});
+  var bulb=new THREE.Mesh(new THREE.SphereGeometry(0.23,12,10), bulbMat);
   bulb.position.set(x,3.2,z); scene.add(bulb);
+  var hc=document.createElement('canvas'); hc.width=hc.height=64;
+  var hg=hc.getContext('2d');
+  hg.fillStyle='rgba(255,214,120,0.32)'; hg.beginPath(); hg.arc(32,32,26,0,Math.PI*2); hg.fill();
+  hg.fillStyle='rgba(255,235,175,0.55)'; hg.beginPath(); hg.arc(32,32,14,0,Math.PI*2); hg.fill();
+  var htx=new THREE.CanvasTexture(hc); htx.colorSpace=THREE.SRGBColorSpace;
+  var haloMat=new THREE.SpriteMaterial({map:htx, transparent:true, opacity:0.25, depthWrite:false});
+  var halo=new THREE.Sprite(haloMat);
+  halo.position.set(x,3.2,z); halo.scale.set(2.8,2.8,1); scene.add(halo);
+  lampLights.push({bulbMat:bulbMat, haloMat:haloMat, halo:halo});
   solid(x-0.2, z-0.2, x+0.2, z+0.2);
+}
+var _grassTex=null, _pathTex=null;
+function grassTexture(){
+  if(_grassTex) return _grassTex;
+  var c=document.createElement('canvas'); c.width=c.height=256;
+  var g=c.getContext('2d');
+  g.fillStyle='#67a349'; g.fillRect(0,0,256,256);
+  var cols=['#5d9740','#72ae52','#619c44','#7ab65a'];
+  for(var i=0;i<320;i++){
+    g.fillStyle=cols[i%4];
+    var x=(i*73)%256, y=(i*137)%256;
+    g.fillRect(x,y,4+((i*11)%6),3+((i*7)%5));
+  }
+  var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
+  tx.wrapS=tx.wrapT=THREE.RepeatWrapping; tx.repeat.set(22,26);
+  _grassTex=tx; return tx;
+}
+function pathTexture(){
+  if(_pathTex) return _pathTex;
+  var c=document.createElement('canvas'); c.width=c.height=128;
+  var g=c.getContext('2d');
+  g.fillStyle='#bfb191'; g.fillRect(0,0,128,128);
+  g.strokeStyle='rgba(145,130,102,0.45)'; g.lineWidth=2;
+  for(var y=0;y<128;y+=32){
+    g.beginPath(); g.moveTo(0,y); g.lineTo(128,y); g.stroke();
+    var off=(y/32)%2? 32 : 0;
+    for(var x=off;x<128;x+=64){ g.beginPath(); g.moveTo(x,y); g.lineTo(x,y+32); g.stroke(); }
+  }
+  g.fillStyle='rgba(255,248,230,0.16)';
+  for(var k=0;k<40;k++) g.fillRect((k*37)%124,(k*53)%124,4,4);
+  var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
+  tx.wrapS=tx.wrapT=THREE.RepeatWrapping;
+  _pathTex=tx; return tx;
 }
 // Mặt đứng nhà học dùng chung: canvas vẽ 1 lần (nền kem + lưới cửa sổ xanh xám có khung),
 // dùng cho các khối nhà trang trí (giảng đường, ký túc xá, nhà điều hành) giống nhà khoa thật:
@@ -64,9 +112,13 @@ function decoBuilding(w,h,d,x,z,roofColor){
 }
 function beacon(x, z, emo){
   var grp=new THREE.Group(); grp.position.set(x, 0, z);
-  var ring=new THREE.Mesh(new THREE.RingGeometry(1.05, 1.45, 36), new THREE.MeshBasicMaterial({color:0xf2b33d, transparent:true, opacity:.9, side:THREE.DoubleSide}));
+  var ring=new THREE.Mesh(new THREE.RingGeometry(1.05, 1.48, 40), new THREE.MeshBasicMaterial({color:0xf2b33d, transparent:true, opacity:.92, side:THREE.DoubleSide}));
   ring.rotation.x=-Math.PI/2; ring.position.y=0.06; grp.add(ring);
-  var icon=makeIcon(emo, 2.1); icon.position.y=2.6; grp.add(icon);
+  var inner=new THREE.Mesh(new THREE.RingGeometry(0.55, 0.78, 24), new THREE.MeshBasicMaterial({color:0xffe9a8, transparent:true, opacity:.7, side:THREE.DoubleSide}));
+  inner.rotation.x=-Math.PI/2; inner.position.y=0.065; grp.add(inner);
+  var beam=new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.32, 6.2, 24, 1, true), new THREE.MeshBasicMaterial({color:0xffd76e, transparent:true, opacity:0.16, side:THREE.DoubleSide, depthWrite:false}));
+  beam.position.y=3.1; grp.add(beam);
+  var icon=makeIcon(emo, 2.2); icon.position.y=2.6; grp.add(icon);
   scene.add(grp);
-  return {grp:grp, ring:ring, icon:icon, x:x, z:z};
+  return {grp:grp, ring:ring, inner:inner, beam:beam, icon:icon, x:x, z:z};
 }

@@ -26,6 +26,7 @@
 
 #choices.show{display:flex}
 
-.vn-choice{width:min(88%,430px);background:rgba(24,34,58,.96);color:#fff;border:2px solid #f2b33d;border-radius:14px;padding:13px 16px;font-size:15.5px;cursor:pointer;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);font-family:inherit}
+.vn-choice{width:min(88%,430px);background:rgba(24,34,58,.94);backdrop-filter:blur(8px);color:#fff;border:2px solid #f2b33d;border-radius:14px;padding:13px 16px;font-size:15.5px;cursor:pointer;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);font-family:inherit;transition:transform .12s ease,background .15s ease}
+.vn-choice:hover{background:#293c66;transform:translateY(-1px)}
 
 .vn-choice:active{background:#2e4470}

@@ -4,10 +4,16 @@
 function buildCampus(){
   var pathC=0xb8ab8c, wallC=0xf3e6c8, roofRed=0xc0392b;
   // Nền cỏ toàn map
-  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,124), new THREE.MeshStandardMaterial({color:0x69a24b, roughness:1}));
+  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,124), new THREE.MeshStandardMaterial({map:grassTexture(), roughness:0.95}));
   grass.rotation.x=-Math.PI/2; grass.receiveShadow=true; scene.add(grass);
   function flat(w,d,color,x,z,y){
-    var m=new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshStandardMaterial({color:color, roughness:1}));
+    var matOpts={color:color, roughness:0.95};
+    if(color===pathC){
+      var pt=pathTexture().clone(); pt.needsUpdate=true; pt.wrapS=pt.wrapT=THREE.RepeatWrapping;
+      pt.repeat.set(Math.max(1,Math.round(w/3.5)), Math.max(1,Math.round(d/3.5)));
+      matOpts={map:pt, roughness:0.9};
+    }
+    var m=new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshStandardMaterial(matOpts));
     m.rotation.x=-Math.PI/2; m.position.set(x,y||0.02,z); m.receiveShadow=true; scene.add(m); return m;
   }
   // Đường Lê Duẩn (ngoài rào phía Tây) + dải đường phía Nam ngoài rào
@@ -100,9 +106,19 @@ function buildCampus(){
   lakeDisc(12,-36, 9*1.12, 7.5*1.12, 0xcbb98a, 0.02, 1);
   lakeDisc(8,-32, 5*1.12, 4*1.12, 0xcbb98a, 0.02, 1);
   lakeDisc(16,-40, 5*1.12, 4*1.12, 0xcbb98a, 0.02, 1);
-  lakeDisc(12,-36, 9, 7.5, 0x2f6f4e, 0.035, .35);
-  lakeDisc(8,-32, 5, 4, 0x2f6f4e, 0.035, .35);
-  lakeDisc(16,-40, 5, 4, 0x2f6f4e, 0.035, .35);
+  var ld1=lakeDisc(12,-36, 9, 7.5, 0x276e66, 0.035, .15); ld1.material.metalness=0.16;
+  var ld2=lakeDisc(8,-32, 5, 4, 0x276e66, 0.035, .15); ld2.material.metalness=0.16;
+  var ld3=lakeDisc(16,-40, 5, 4, 0x276e66, 0.035, .15); ld3.material.metalness=0.16;
+  var rip1=new THREE.Mesh(new THREE.RingGeometry(1.1,1.28,28), new THREE.MeshBasicMaterial({color:0xb8f0ea, transparent:true, opacity:0.45, side:THREE.DoubleSide}));
+  rip1.rotation.x=-Math.PI/2; rip1.position.set(12,0.048,-36); scene.add(rip1);
+  var rip2=new THREE.Mesh(new THREE.RingGeometry(0.7,0.85,24), new THREE.MeshBasicMaterial({color:0xb8f0ea, transparent:true, opacity:0.35, side:THREE.DoubleSide}));
+  rip2.rotation.x=-Math.PI/2; rip2.position.set(15,0.048,-39); scene.add(rip2);
+  lakeMeshes.push(rip1, rip2);
+  var lilyPos=[[9,-34],[10.3,-35.2],[14.5,-38],[13.2,-33.5]];
+  for(var lpi=0;lpi<lilyPos.length;lpi++){
+    var lp=new THREE.Mesh(new THREE.CircleGeometry(0.45,10,0.3,Math.PI*1.85), new THREE.MeshStandardMaterial({color:0x4e9b47, roughness:0.8}));
+    lp.rotation.x=-Math.PI/2; lp.rotation.z=lpi*1.4; lp.position.set(lilyPos[lpi][0],0.046,lilyPos[lpi][1]); scene.add(lp);
+  }
   solid(3,-44, 21,-28);
   box(3,0.18,3, 0xd8c9a8, 0,0.09,-43, scene, false);
   var pvXY=[[-1.3,-44.3],[1.3,-44.3],[-1.3,-41.7],[1.3,-41.7]];

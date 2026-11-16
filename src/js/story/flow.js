@@ -3,13 +3,16 @@
 function setEvent(i){
   cur=i;
   for(var j=0;j<beacons.length;j++) beacons[j].grp.visible=(j===i);
-  document.getElementById('hud-clock').textContent="🕔 "+DLGS[i].time;
+  var clkIco = i===0 ? "🌅 " : (i<8 ? "☀️ " : (i===8 ? "🌇 " : "🌙 "));
+  document.getElementById('hud-clock').textContent=clkIco+DLGS[i].time;
+  var stp=document.getElementById('hud-step'); if(stp) stp.textContent=(i+1)+'/'+DLGS.length;
   document.getElementById('hud-phase').textContent=DLGS[i].phase;
   document.getElementById('objective').textContent=DLGS[i].obj;
   if(i===5 || i===9) spawnSpirit();
 }
 function openScene(i){
   mode='dialog'; inCollapse=false;
+  if(typeof playSfx==='function') playSfx('scene');
   var sc=DLGS[i];
   fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
     pendingNext=i+1;
@@ -36,6 +39,7 @@ function goNext(){
 }
 function showEnding(){
   mode='end';
+  if(typeof playSfx==='function') playSfx('end');
   var e=computeEnding();
   var u=saveUnlocked(e.id);
   document.getElementById('end-icon').textContent=e.icon;
