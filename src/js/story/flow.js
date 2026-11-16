@@ -47,7 +47,7 @@ function showEnding(){
   recap += S.badges.length ? "<br><b>Dấu ấn hôm nay:</b><br>🏅 "+S.badges.join("<br>🏅 ") : "<br>Hôm nay bạn không để lại dấu ấn đặc biệt nào, một ngày bình thường cũng là một ngày làm giảng viên.";
   if(collapseUsed) recap+="<br>🪫 Bạn đã gục một lần vì kiệt sức, và đã đứng dậy đi tiếp.";
   document.getElementById('end-recap').innerHTML=recap;
-  document.getElementById('unlock-end').textContent="🔓 Bạn đã mở "+u.length+"/4 kết thúc (tính chung với bản 2D). Chơi lại và chọn khác đi nhé!";
+  document.getElementById('unlock-end').textContent="🔓 Bạn đã mở "+u.length+"/4 kết thúc. Chơi lại và chọn khác đi nhé!";
   document.getElementById('copy-ok').textContent="";
   document.getElementById('screen-end').style.display='flex';
   document.getElementById('objective').textContent="🌙 Một ngày làm giảng viên đã kết thúc. Cảm ơn bạn đã sống thử nó.";
