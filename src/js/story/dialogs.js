@@ -5,7 +5,7 @@ var DLGS=[
  text:"Trời chưa sáng. 7 giờ sáng nay bạn có tiết dạy đầu tiên. Tối qua bạn soạn bài gần xong, chỉ còn một ví dụ khó chưa kiểm tra lại.\n\nĐồng hồ báo thức reo lần thứ hai.",
  choices:[
   {t:"Dậy ngay, mở bài giảng ra kiểm tra lại", fx:{en:-10,fi:6}, set:{prepared:true}, badge:"☀️ Chuẩn bị kỹ vì học trò",
-   res:"Bạn ngồi vào bàn lúc cả nhà còn ngủ. 40 phút sau, bài giảng rõ ràng đâu vào đấy. Bạn ra khỏi nhà, đầu óc nhẹ hẳn."},
+   res:"Bạn ngồi vào bàn lúc cả nhà còn ngủ. Tới gần 6 giờ, bài giảng rõ ràng đâu vào đấy. Bạn ra khỏi nhà, đầu óc nhẹ hẳn."},
   {t:"Ngủ thêm 30 phút", fx:{en:10}, set:{unprepared:true},
    res:"30 phút ngủ thêm rất ngon. Nhưng ví dụ khó kia vẫn chưa ai kiểm tra. Bạn tự nhủ: lên lớp chắc sẽ ổn thôi."}
  ]},
