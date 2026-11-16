@@ -15,7 +15,8 @@ function buildExpansion(){
   box(0.15,0.03,10, 0xffffff, 6.1,0.045,-17, scene, false);
   box(0.15,0.03,10, 0xffffff, 15.9,0.045,-17, scene, false);
   box(9.6,0.9,0.08, 0x333840, 11,0.45,-17, scene, false); // lưới: chỉ trang trí, không đặt solid để 2 sân thông nhau
-  box(10.4,0.5,0.12, fenceC, 11,0.25,-22.1, scene, false); solid(5.8,-22.22, 16.2,-21.98);
+  box(3.2,0.5,0.12, fenceC, 7.4,0.25,-22.1, scene, false); solid(5.8,-22.22, 9,-21.98);
+  box(3.2,0.5,0.12, fenceC, 14.6,0.25,-22.1, scene, false); solid(13,-22.22, 16.2,-21.98);
   box(3.2,0.5,0.12, fenceC, 7.4,0.25,-11.9, scene, false); solid(5.8,-12.02, 9,-11.78);
   box(3.2,0.5,0.12, fenceC, 14.6,0.25,-11.9, scene, false); solid(13,-12.02, 16.2,-11.78);
   box(0.12,0.5,10.4, fenceC, 5.9,0.25,-17, scene, false); solid(5.78,-22.2, 6.02,-11.8);
