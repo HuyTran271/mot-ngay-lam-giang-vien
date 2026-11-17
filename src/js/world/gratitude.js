@@ -86,7 +86,7 @@ function gardenFallbackTree(x, z, targetH, kind){
   scene.add(g); return g;
 }
 
-function plantTree(row, slotIdx){
+function plantTree(row, slotIdx, animate){
   var slots=gardenSlotList();
   if(slotIdx===undefined || slotIdx<0 || slots[slotIdx].used){
     slotIdx=-1;
@@ -115,6 +115,14 @@ function plantTree(row, slotIdx){
   var treeIcon=row.loai_cay==='pine'?'🌲':(row.loai_cay==='flower'?'🌸':'🌳');
   var lb=makeLabel(treeIcon+' '+ten, 5.5, 30);
   lb.position.set(x, targetH+1.05, z); scene.add(lb);
+  if(animate && made){
+    GROWING.push({g:made, fs:made.scale.x||1, lb:lb, lx:lb.scale.x, ly:lb.scale.y, t:0});
+    made.scale.setScalar((made.scale.x||1)*0.04);
+    lb.scale.set(lb.scale.x*0.04, lb.scale.y*0.04, 1);
+    spawnBurst(x, 1.1, z, 0x8fd45a, 16);
+    if(typeof playSfx==='function') playSfx('pick');
+    buzz(15);
+  }
   gardenTrees.push({x:x, z:z, row:row, slot:slotIdx});
 }
 
@@ -205,7 +213,7 @@ function submitGratitude(){
   }).then(function(rows){
     if(rows && rows[0]){
       gardenRows.push(rows[0]);
-      plantTree(rows[0], gardenFreeSlotNear(anchor.x, anchor.z));
+      plantTree(rows[0], gardenFreeSlotNear(anchor.x, anchor.z), true);
     }
     document.getElementById('gratitude-name').value='';
     document.getElementById('gratitude-class').value='';
@@ -252,6 +260,7 @@ var fxPetals=null, fxFlies=null, fxSpark=null, fxLeaves=null;
 
 // ===== GIÓ: cây đung đưa nhẹ quanh gốc =====
 var WINDY=[];
+var GROWING=[];
 function regWind(obj, amp){
   if(obj) WINDY.push({o:obj, ph:Math.random()*6.28, amp:amp||0.02});
 }
@@ -330,6 +339,15 @@ function updateFx(dt, t){
         if(lm2.emissive){ lm2.emissive.copy(thSun); lm2.emissiveIntensity=glow; }
       }
     }
+  }
+  for(var gi2=GROWING.length-1; gi2>=0; gi2--){
+    var gr=GROWING[gi2]; gr.t+=dt/1.5;
+    var gx2=Math.min(1, gr.t), gc1=1.70158, gc3=gc1+1;
+    var ge=1+gc3*Math.pow(gx2-1,3)+gc1*Math.pow(gx2-1,2);
+    var gs=Math.max(0.02, gr.fs*ge);
+    gr.g.scale.setScalar(gs);
+    if(gr.lb) gr.lb.scale.set(gr.lx*gs/gr.fs, gr.ly*gs/gr.fs, 1);
+    if(gr.t>=1){ gr.g.scale.setScalar(gr.fs); if(gr.lb) gr.lb.scale.set(gr.lx, gr.ly, 1); GROWING.splice(gi2,1); }
   }
   if(fxLeaves){
     var lp=fxLeaves.pos;

@@ -70,8 +70,47 @@ function buildPeople(){
   var stLabel=makeLabel('Sinh viên', 4.6, 40); stLabel.position.set(-24,3.4,-32); scene.add(stLabel);
   var st2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x191919});
   st2.position.set(-32,0,-25); scene.add(st2);
-  students.push({p:st2, a:{x:-32,z:-25}, b:{x:-32,z:-44}, t:0, dir:1, speed:2.3});
+  students.push({p:st2, a:{x:-32,z:-25}, b:{x:-32,z:-33.5}, t:0, dir:1, speed:2.3});
   var gv=makePerson({suit:0x8e2f3c, cloth:0xffffff, hair:0x5a3a22, long:true, longHair:true, glasses:true});
   gv.position.set(-13,0,-20); gv.rotation.y=0.4; scene.add(gv);
   var gvLabel=makeLabel('💻 Khoa CNTT', 5.2, 40); gvLabel.position.set(-13,3.5,-20); scene.add(gvLabel);
+
+  // ===== THÊM NGƯỜI QUANH KHUÔN VIÊN =====
+  // Mọi tuyến đi và điểm đứng dưới đây đều đã kiểm tra không cắt qua công trình;
+  // vòng lặp di chuyển còn áp thêm collideXZ cho từng NPC để không bao giờ xuyên tường.
+  function walker(o, ax, az, bx, bz, speed, phase){
+    var p=makePerson(o); p.position.set(ax,0,az); scene.add(p);
+    var span=Math.hypot(bx-ax, bz-az);
+    students.push({p:p, a:{x:ax,z:az}, b:{x:bx,z:bz}, t:span*(phase||0), dir:1, speed:speed});
+    return p;
+  }
+  function stander(o, x, z, ry, idle){
+    var p=makePerson(o); p.position.set(x,0,z); p.rotation.y=ry; scene.add(p);
+    if(idle) seated.push({g:p, ph:Math.random()*6, base:0});
+    return p;
+  }
+  function sitter(o, x, z, ry){
+    var p=makePerson(o); p.position.set(x,-0.2,z); p.rotation.y=ry; scene.add(p);
+    seated.push({g:p, ph:Math.random()*6, base:-0.2});
+    return p;
+  }
+  // Người đi bộ: ngang sân bóng, trục Nam, trước dãy phòng học, bờ hồ, trục ngang, vườn tri ân
+  walker({suit:0xffffff, cloth:0x33507e, hair:0x2b2b30}, 4,30, 4,-2, 2.0, 0.3);
+  walker({suit:0xf2b33d, cloth:0x3a3f4a, hair:0x191919}, 10,32, 10,6, 2.1, 0.6);
+  walker({suit:0x33507e, cloth:0x3a3f4a, hair:0x3a3a3a, tie:true, glasses:true}, -24,-35.5, -6,-35.5, 1.6, 0.1);
+  walker({suit:0xffffff, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 2,-25.6, 22,-25.6, 1.8, 0.5);
+  walker({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, -30,2, 24,2, 2.4, 0.45);
+  walker({suit:0x9fd6f9, cloth:0x27364f, hair:0x2b2b30}, -10,55.8, 10,55.8, 1.5, 0.2);
+  // Cặp sinh viên trò chuyện trước thư viện
+  stander({suit:0xffffff, cloth:0x27364f, hair:0x191919}, -21,-16.2, 0.9, true);
+  stander({suit:0xf5f0e6, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, -20,-15.4, -2.24, true);
+  // Người đứng: trước căn tin, giảng viên gần cổng Tây, sinh viên ở cổng Nam và trước ký túc xá
+  stander({suit:0xffffff, cloth:0x3a3f4a, hair:0x2b2b30}, -3,-8.3, Math.PI, false);
+  stander({suit:0x5a3a22, cloth:0xffffff, hair:0x3a3a3a, long:true, longHair:true, glasses:true}, -35,-6.8, -Math.PI/2, false);
+  stander({suit:0xffffff, cloth:0x33507e, hair:0x4a3421}, 6.5,32, 0, false);
+  stander({suit:0xd94f6a, cloth:0x27364f, hair:0x191919}, 24,10.5, Math.PI/2, false);
+  // Sinh viên ngắm vườn tri ân và hai người ngồi ghế bờ hồ
+  stander({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, 8.5,58.5, -1.68, true);
+  sitter({suit:0xffffff, cloth:0x27364f, hair:0x2b2b30}, 6,-26.55, Math.PI);
+  sitter({suit:0xffe9a8, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 18,-26.55, Math.PI);
 }
