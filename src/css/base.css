@@ -44,8 +44,12 @@
 .gratitude-card h1{margin:4px 0 8px;text-align:center}
 .gratitude-card p{line-height:1.5}
 .gratitude-card label{display:block;margin:10px 0 5px;font-weight:700;color:#263653}
-.gratitude-card input,.gratitude-card textarea{width:100%;border:1px solid #c9d1df;border-radius:10px;padding:10px;font:inherit;resize:vertical;background:#fff;color:#182238}
+.gratitude-card input,.gratitude-card textarea,.gratitude-card select{width:100%;border:1px solid #c9d1df;border-radius:10px;padding:10px;font:inherit;resize:vertical;background:#fff;color:#182238}
 .gratitude-card input:focus,.gratitude-card textarea:focus{outline:2px solid #e2ad3b;border-color:transparent}
 #gratitude-count{float:right;font-weight:400;color:#64748b}
 #gratitude-status{min-height:20px;margin-top:8px;font-size:13px;color:#8b2d2d}
 .gratitude-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+#garden-action{position:fixed;right:14px;bottom:172px;z-index:60;background:#f2b33d;color:#263653;border:2px solid #263653;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
+#garden-action:active{transform:scale(.96)}
+#card-msg{white-space:pre-wrap;line-height:1.55;background:#fdf6e3;border:1px solid #e2ad3b;border-radius:10px;padding:12px}
