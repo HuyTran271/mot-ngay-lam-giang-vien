@@ -76,5 +76,25 @@
 @keyframes gardenpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 #garden-view{background:linear-gradient(180deg,#3a5c8f,#263653)}
 
+/* ===== CẢM GIÁC CHƠI (Gemini góp ý) ===== */
+#float-layer{position:fixed;top:56px;left:0;right:0;display:flex;justify-content:center;gap:8px;pointer-events:none;z-index:55}
+.stat-chip{font:700 15px "Segoe UI",sans-serif;padding:5px 12px;border-radius:999px;color:#fff;box-shadow:0 4px 10px rgba(13,20,40,.3);animation:floatup 1.5s ease-out forwards}
+.stat-chip.up{background:#3d9e50}
+.stat-chip.down{background:#c0453e}
+@keyframes floatup{0%{opacity:0;transform:translateY(8px)}15%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+#lowstat{position:fixed;inset:0;pointer-events:none;z-index:40;background:radial-gradient(circle,transparent 58%,rgba(180,30,30,.30) 100%);animation:lowpulse 1.6s ease-in-out infinite}
+@keyframes lowpulse{0%,100%{opacity:.45}50%{opacity:1}}
+#scene-fade{position:fixed;inset:0;background:rgba(10,15,28,.9);z-index:90;align-items:center;justify-content:center;text-align:center}
+#scene-fade.on{display:flex;animation:sfbg .3s ease both}
+#scene-fade .sf-in{animation:sfin .8s ease both}
+#sf-time{font-size:42px;font-weight:800;color:#ffd76e}
+#sf-title{font-size:20px;color:#fff;margin-top:6px;font-weight:600}
+@keyframes sfbg{from{opacity:0}to{opacity:1}}
+@keyframes sfin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.vn-choice{animation:choicein .28s ease both}
+.vn-choice:nth-child(2){animation-delay:.06s}
+.vn-choice:nth-child(3){animation-delay:.12s}
+@keyframes choicein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
 #garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-view:active{transform:scale(.96)}
