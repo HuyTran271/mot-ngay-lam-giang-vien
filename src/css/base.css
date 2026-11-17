@@ -54,6 +54,7 @@
 #garden-action:active{transform:scale(.96)}
 #card-msg{white-space:pre-wrap;line-height:1.55;background:#fdf6e3;border:1px solid #e2ad3b;border-radius:10px;padding:12px}
 #card-panel{perspective:700px}
+#gratitude-panel,#card-panel{z-index:80}
 #card-panel .gratitude-card{animation:cardin .45s ease}
 @keyframes cardin{from{transform:rotateY(16deg) translateY(12px);opacity:0}to{transform:rotateY(0) translateY(0);opacity:1}}
 .tap-ripple{position:fixed;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(255,255,255,.35);pointer-events:none;z-index:60;animation:taprip .32s ease-out forwards}
