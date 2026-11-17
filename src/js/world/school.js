@@ -67,4 +67,50 @@ function buildSchool(){
   var lb1=makeLabel('🏫 TRƯỜNG HỌC', 10); lb1.position.set(-16,6.4,-42); scene.add(lb1);
   var lb1a=makeLabel('📖 PHÒNG HỌC', 6); lb1a.position.set(-26.5,4.3,-42); scene.add(lb1a);
   var lb1b=makeLabel('🗂️ VĂN PHÒNG KHOA', 6); lb1b.position.set(-5.5,4.3,-42); scene.add(lb1b);
+  // ===== TRANG TRÍ LẠI PHÒNG HỌC + VĂN PHÒNG KHOA =====
+  var lampMat=new THREE.MeshStandardMaterial({color:0xfff2cc, emissive:0xffdf9e, emissiveIntensity:0.85, roughness:.6});
+  function hangLamp(x,z){
+    var cord=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.5,5), new THREE.MeshStandardMaterial({color:0x555555}));
+    cord.position.set(x,2.85,z); scene.add(cord);
+    var shade=new THREE.Mesh(new THREE.BoxGeometry(1.25,0.09,0.42), lampMat);
+    shade.position.set(x,2.58,z); scene.add(shade);
+  }
+  // Phòng học: khung gỗ quanh bảng đen + khay phấn
+  box(7.3,0.12,0.06, 0x6d4c41, -24.5,2.76,-46.28, scene, false);
+  box(7.3,0.12,0.06, 0x6d4c41, -24.5,0.64,-46.28, scene, false);
+  box(0.12,2.24,0.06, 0x6d4c41, -28.1,1.7,-46.28, scene, false);
+  box(0.12,2.24,0.06, 0x6d4c41, -20.9,1.7,-46.28, scene, false);
+  box(7,0.06,0.2, 0x8a5a28, -24.5,0.58,-46.2, scene, false);
+  // Ốp gỗ chân tường phía Bắc + 2 cửa sổ kính tường Tây của phòng học
+  box(32,0.9,0.05, 0x8a5a28, -16,0.45,-46.44, scene, false);
+  box(0.05,1.6,2.4, 0x6d4c41, -32.46,1.8,-44, scene, false);
+  box(0.06,1.4,2.2, 0xbfd9e8, -32.43,1.8,-44, scene, false);
+  box(0.05,1.6,2.4, 0x6d4c41, -32.46,1.8,-40.5, scene, false);
+  box(0.06,1.4,2.2, 0xbfd9e8, -32.43,1.8,-40.5, scene, false);
+  // Lưng ghế cho 6 ghế sinh viên + ghế và laptop trên bàn giảng viên
+  for(var cbi=0; cbi<deskPos.length; cbi++) box(0.85,0.62,0.08, 0x6b4a2a, deskPos[cbi][0],0.78,deskPos[cbi][1]+1.3, scene, false);
+  box(0.7,0.5,0.7, 0x6b4a2a, -24.5,0.25,-45.65, scene, false);
+  var lapT=makeIcon('💻',0.8); lapT.position.set(-24.5,1.12,-44.6); scene.add(lapT);
+  hangLamp(-24.5,-42); hangLamp(-24.5,-39.6);
+  // Văn phòng khoa: màn hình máy tính trên 2 bàn, gáy sách trên tủ hồ sơ
+  [-10.5,-5].forEach(function(mx){
+    box(0.3,0.32,0.05, 0x333333, mx,1.06,-44.62, scene, false);
+    box(0.95,0.6,0.05, 0x9fc4e8, mx,1.38,-44.64, scene, false);
+  });
+  var bkTex=bookSpineTexture();
+  var cabFace=new THREE.Mesh(new THREE.BoxGeometry(2.9,1.8,0.04), new THREE.MeshStandardMaterial({map:bkTex, roughness:.85}));
+  cabFace.position.set(-1.5,1,-45.72); scene.add(cabFace);
+  // Ghế sofa tiếp khách sát vách ngăn + thảm đỏ dưới bàn họp + cây nước ở góc Đông Nam
+  box(0.95,0.45,2.8, 0x7a4a3a, -14.9,0.23,-41.5, scene, true);
+  box(0.25,0.85,2.8, 0x7a4a3a, -15.32,0.65,-41.5, scene, true);
+  box(0.95,0.3,0.25, 0x7a4a3a, -14.9,0.6,-42.95, scene, false);
+  box(0.95,0.3,0.25, 0x7a4a3a, -14.9,0.6,-40.05, scene, false);
+  solid(-15.4,-42.9, -14.4,-40.1);
+  box(4.4,0.04,3, 0xa33d2a, -8,0.02,-40.5, scene, false);
+  var cool=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,0.9,10), new THREE.MeshStandardMaterial({color:0xf0f0f0, roughness:.5}));
+  cool.position.set(-0.2,0.45,-38.6); cool.castShadow=true; scene.add(cool);
+  var bottle=new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,0.36,10), new THREE.MeshStandardMaterial({color:0x7ab5e8, roughness:.3}));
+  bottle.position.set(-0.2,1.08,-38.6); scene.add(bottle);
+  solid(-0.45,-38.85, 0.05,-38.35);
+  hangLamp(-8,-42);
 }

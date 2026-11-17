@@ -150,3 +150,36 @@ function beacon(x, z, emo){
   scene.add(grp);
   return {grp:grp, ring:ring, inner:inner, beam:beam, icon:icon, x:x, z:z};
 }
+// Hoa tiet gan sach (canvas): hai hang gay sach nhieu mau, dung cho ke sach thu vien va tu ho so
+function bookSpineTexture(){
+  var cv=document.createElement('canvas'); cv.width=256; cv.height=128;
+  var g=cv.getContext('2d');
+  g.fillStyle='#5a4028'; g.fillRect(0,0,256,128);
+  var cols=['#c0392b','#33507e','#2e7d46','#f2b33d','#8e44ad','#e2703a','#16a085','#7f5539','#4a6fa5','#b03a2e'];
+  var seed=7; function rnd(){ seed=(seed*16807)%2147483647; return seed/2147483647; }
+  for(var row=0; row<2; row++){
+    var y0=8+row*60, x=5;
+    while(x<246){
+      var wdt=7+Math.floor(rnd()*9);
+      g.fillStyle=cols[Math.floor(rnd()*cols.length)];
+      g.fillRect(x, y0+Math.floor(rnd()*4), wdt, 46);
+      g.fillStyle='rgba(255,255,255,0.25)'; g.fillRect(x, y0+8, wdt, 3);
+      x+=wdt+2;
+    }
+    g.fillStyle='#3d2b18'; g.fillRect(0, y0+52, 256, 6);
+  }
+  var tx=new THREE.CanvasTexture(cv);
+  tx.colorSpace=THREE.SRGBColorSpace;
+  return tx;
+}
+// Hoa tiet gach o vuong cho san can-tin
+function checkerTexture(){
+  var cv=document.createElement('canvas'); cv.width=128; cv.height=128;
+  var g=cv.getContext('2d');
+  g.fillStyle='#e8dcc0'; g.fillRect(0,0,128,128);
+  g.fillStyle='#c99e67'; g.fillRect(64,0,64,64); g.fillRect(0,64,64,64);
+  var tx=new THREE.CanvasTexture(cv);
+  tx.wrapS=THREE.RepeatWrapping; tx.wrapT=THREE.RepeatWrapping; tx.repeat.set(5,4);
+  tx.colorSpace=THREE.SRGBColorSpace;
+  return tx;
+}
