@@ -50,11 +50,14 @@ var dlgSegs=[], dlgIdx=0, dlgPhase='story', dlgChoices=null, dlgOnPick=null, typ
 function typeSeg(txt){
   var el=document.getElementById('d-text');
   typeFull=txt; typing=true; el.textContent='';
-  var i=0;
+  var i=0, pauseT=0;
   if(typeTimer) clearInterval(typeTimer);
   typeTimer=setInterval(function(){
+    if(pauseT>0){ pauseT--; return; }
     i+=3;
     el.innerHTML=typeFull.slice(0,i).replace(/\n/g,'<br>');
+    var lastCh=typeFull.charAt(i-1);
+    if((lastCh==='.'||lastCh==='!'||lastCh==='?'||lastCh==='…') && i<typeFull.length) pauseT=20;
     if(i>=typeFull.length){ clearInterval(typeTimer); typeTimer=null; typing=false; }
   }, 16);
 }
@@ -80,7 +83,7 @@ function showChoices(){
   var box=document.getElementById('choices'); box.innerHTML='';
   dlgChoices.forEach(function(ch){
     var b=document.createElement('button'); b.className='vn-choice'; b.textContent=ch.t;
-    b.addEventListener('click', function(){ pickChoice(ch); });
+    b.addEventListener('click', function(){ buzz(8); pickChoice(ch); });
     box.appendChild(b);
   });
   box.classList.add('show');
