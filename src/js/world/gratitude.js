@@ -155,6 +155,7 @@ function openGratitude(){
     showToast('🌿 Vườn đã đầy cây tri ân rồi. Cảm ơn bạn!',2600); return;
   }
   mode='gratitude';
+  hideGardenButtons();
   var p=document.getElementById('gratitude-panel');
   p.style.display='flex';
   gardenRefreshCount();
@@ -193,9 +194,15 @@ function openCardAt(idx){
   if(pv) pv.style.display=nav;
   if(nx) nx.style.display=nav;
 }
+function hideGardenButtons(){
+  var b=document.getElementById('garden-action'); if(b) b.style.display='none';
+  var v=document.getElementById('garden-view'); if(v) v.style.display='none';
+  gardenBtnState='__hidden';
+}
 function openCard(row){
-  if(mode!=='play') return;
+  if(mode!=='play' && mode!=='gratitude') return;
   mode='gratitude';
+  hideGardenButtons();
   document.getElementById('card-to').textContent='💌 Gửi tới: '+row.nguoi_nhan;
   document.getElementById('card-msg').textContent=row.loi_tri_an;
   var from='🌱 Người gieo: '+row.ten+(row.lop?' · Lớp '+row.lop:'');
