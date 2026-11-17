@@ -105,6 +105,26 @@ window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:
 @keyframes gardenpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 #garden-view{background:linear-gradient(180deg,#3a5c8f,#263653)}
 
+/* ===== CẢM GIÁC CHƠI (Gemini góp ý) ===== */
+#float-layer{position:fixed;top:56px;left:0;right:0;display:flex;justify-content:center;gap:8px;pointer-events:none;z-index:55}
+.stat-chip{font:700 15px "Segoe UI",sans-serif;padding:5px 12px;border-radius:999px;color:#fff;box-shadow:0 4px 10px rgba(13,20,40,.3);animation:floatup 1.5s ease-out forwards}
+.stat-chip.up{background:#3d9e50}
+.stat-chip.down{background:#c0453e}
+@keyframes floatup{0%{opacity:0;transform:translateY(8px)}15%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+#lowstat{position:fixed;inset:0;pointer-events:none;z-index:40;background:radial-gradient(circle,transparent 58%,rgba(180,30,30,.30) 100%);animation:lowpulse 1.6s ease-in-out infinite}
+@keyframes lowpulse{0%,100%{opacity:.45}50%{opacity:1}}
+#scene-fade{position:fixed;inset:0;background:rgba(10,15,28,.9);z-index:90;align-items:center;justify-content:center;text-align:center}
+#scene-fade.on{display:flex;animation:sfbg .3s ease both}
+#scene-fade .sf-in{animation:sfin .8s ease both}
+#sf-time{font-size:42px;font-weight:800;color:#ffd76e}
+#sf-title{font-size:20px;color:#fff;margin-top:6px;font-weight:600}
+@keyframes sfbg{from{opacity:0}to{opacity:1}}
+@keyframes sfin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.vn-choice{animation:choicein .28s ease both}
+.vn-choice:nth-child(2){animation-delay:.06s}
+.vn-choice:nth-child(3){animation-delay:.12s}
+@keyframes choicein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
 #garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-view:active{transform:scale(.96)}
 </style>
@@ -175,6 +195,9 @@ window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:
   <div id="objective" class="panel">🎯 Tới cửa Nhà ở, bắt đầu ngày mới</div>
   <div id="navi"><span id="navi-arrow">▲</span><span id="navi-txt"></span></div>
   <div id="toast"></div>
+  <div id="float-layer"></div>
+  <div id="lowstat" style="display:none"></div>
+  <div id="scene-fade" style="display:none"><div class="sf-in"><div id="sf-time"></div><div id="sf-title"></div></div></div>
   <div id="hint">🕹️ Kéo nửa trái: joystick · Chạm nửa phải: tự đi tới · WASD/phím mũi tên</div>
   <div id="joy"></div><div id="nub"></div>
   <div id="err"></div>
@@ -218,6 +241,8 @@ window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:
       <p id="card-msg"></p>
       <p id="card-from" style="color:#64748b"></p>
       <div class="gratitude-actions">
+        <button class="btn alt" id="card-prev" style="display:none">⬅ Thiệp trước</button>
+        <button class="btn alt" id="card-next" style="display:none">Thiệp sau ➡</button>
         <button class="btn" id="card-close">Đóng thiệp</button>
       </div>
     </div>
@@ -359,6 +384,7 @@ function playSfx(type){
     else if(type==='hit'){ tone(190,0.22,0.11,'sawtooth',0,95); }
     else if(type==='scene'){ tone(523,0.14,0.07,'sine',0); tone(659,0.18,0.07,'sine',0.09); }
     else if(type==='pick'){ tone(440,0.08,0.06,'triangle',0,554); }
+    else if(type==='blip'){ tone(500+Math.random()*70,0.035,0.018,'square',0); }
     else if(type==='end'){ tone(523,0.18,0.08,'sine',0); tone(659,0.18,0.08,'sine',0.12); tone(784,0.28,0.09,'sine',0.24); tone(1046,0.4,0.08,'sine',0.36); }
   }catch(e){}
 }
@@ -1380,7 +1406,8 @@ function plantTree(row, slotIdx, animate){
     if(typeof playSfx==='function') playSfx('pick');
     buzz(15);
   }
-  gardenTrees.push({x:x, z:z, row:row, slot:slotIdx});
+  gardenTrees.push({x:x, z:z, row:row, slot:slotIdx, lb:lb});
+  if(row && row.id!=null && readIds.indexOf(row.id)>=0) dimLabel(gardenTrees[gardenTrees.length-1]);
 }
 
 function gardenRefreshCount(){
@@ -1424,6 +1451,31 @@ function closeGratitude(){
   if(mode==='gratitude') mode='play';
 }
 
+var cardCur=-1;
+var readIds=[];
+try{ readIds=JSON.parse(localStorage.getItem('gy-read')||'[]'); if(!Array.isArray(readIds)) readIds=[]; }catch(e){}
+function dimLabel(entry){
+  if(entry && entry.lb && entry.lb.material){ entry.lb.material.transparent=true; entry.lb.material.opacity=0.55; }
+}
+function markRead(entry){
+  if(!entry || !entry.row || entry.row.id==null) return;
+  if(readIds.indexOf(entry.row.id)<0){
+    readIds.push(entry.row.id);
+    try{ localStorage.setItem('gy-read', JSON.stringify(readIds)); }catch(e){}
+  }
+  dimLabel(entry);
+}
+function openCardAt(idx){
+  if(!gardenTrees.length) return;
+  cardCur=((idx%gardenTrees.length)+gardenTrees.length)%gardenTrees.length;
+  var entry=gardenTrees[cardCur];
+  openCard(entry.row);
+  markRead(entry);
+  var nav=gardenTrees.length>1?'':'none';
+  var pv=document.getElementById('card-prev'), nx=document.getElementById('card-next');
+  if(pv) pv.style.display=nav;
+  if(nx) nx.style.display=nav;
+}
 function openCard(row){
   if(mode!=='play') return;
   mode='gratitude';
@@ -1625,13 +1677,15 @@ function initGratitude(){
     document.getElementById('gratitude-submit').addEventListener('click',submitGratitude);
     document.getElementById('card-close').addEventListener('click',closeCard);
     document.getElementById('garden-action').addEventListener('click',function(){ if(mode==='play' && gratitudeNear) openGratitude(); });
-    document.getElementById('garden-view').addEventListener('click',function(){ if(mode==='play' && gardenNearest) openCard(gardenNearest.row); });
+    document.getElementById('garden-view').addEventListener('click',function(){ if(mode==='play' && gardenNearest) openCardAt(gardenTrees.indexOf(gardenNearest)); });
+    document.getElementById('card-prev').addEventListener('click',function(){ openCardAt(cardCur-1); });
+    document.getElementById('card-next').addEventListener('click',function(){ openCardAt(cardCur+1); });
     document.getElementById('gratitude-message').addEventListener('input',function(){
       document.getElementById('gratitude-count').textContent=this.value.length+'/300';
     });
     document.addEventListener('keydown',function(e){
       if(!e.key || e.key.toLowerCase()!=='e' || mode!=='play') return;
-      if(gardenNearest) openCard(gardenNearest.row);
+      if(gardenNearest) openCardAt(gardenTrees.indexOf(gardenNearest));
       else if(gratitudeNear) openGratitude();
     });
     loadGarden();
@@ -1798,6 +1852,18 @@ function syncStats(){
   document.getElementById('st-en').textContent=S.en;
   document.getElementById('st-he').textContent=S.he;
   document.getElementById('st-fi').textContent=S.fi;
+  var ls=document.getElementById('lowstat');
+  if(ls) ls.style.display=(S.en<25||S.he<25)?'block':'none';
+}
+function spawnStatChips(fx){
+  var layer=document.getElementById('float-layer'); if(!layer) return;
+  [['⚡',fx.en],['❤️',fx.he],['🔥',fx.fi]].forEach(function(it){
+    if(!it[1]) return;
+    var c=document.createElement('div'); c.className='stat-chip '+(it[1]>0?'up':'down');
+    c.textContent=(it[1]>0?'+':'')+it[1]+' '+it[0];
+    layer.appendChild(c);
+    setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 1500);
+  });
 }
 function clampStat(){ S.en=Math.max(0,Math.min(100,S.en)); S.he=Math.max(0,Math.min(100,S.he)); S.fi=Math.max(0,Math.min(100,S.fi)); }
 var toastTimer=null;
@@ -1845,6 +1911,7 @@ function typeSeg(txt){
     if(pauseT>0){ pauseT--; return; }
     i+=3;
     el.innerHTML=typeFull.slice(0,i).replace(/\n/g,'<br>');
+    if(i%12===0 && i<typeFull.length && typeof playSfx==='function') playSfx('blip');
     var lastCh=typeFull.charAt(i-1);
     if((lastCh==='.'||lastCh==='!'||lastCh==='?'||lastCh==='…') && i<typeFull.length) pauseT=20;
     if(i>=typeFull.length){ clearInterval(typeTimer); typeTimer=null; typing=false; }
@@ -1869,6 +1936,7 @@ function fillDlg(icon, time, title, text, choices, onPick){
   typeSeg(dlgSegs[0]);
 }
 function showChoices(){
+  if(!dlgChoices) return;
   var box=document.getElementById('choices'); box.innerHTML='';
   dlgChoices.forEach(function(ch){
     var b=document.createElement('button'); b.className='vn-choice'; b.textContent=ch.t;
@@ -1885,6 +1953,7 @@ function pickChoice(ch){
   if(ch.set){ for(var k in ch.set) S.flags[k]=ch.set[k]; }
   if(ch.badge && S.badges.indexOf(ch.badge)<0) S.badges.push(ch.badge);
   syncStats();
+  spawnStatChips(fx);
   if(dlgOnPick) dlgOnPick(ch);
   document.getElementById('d-fx').textContent=fxText(fx);
   document.getElementById('d-badge').textContent= ch.badge ? '🏅 Dấu ấn: '+ch.badge : '';
@@ -1892,6 +1961,7 @@ function pickChoice(ch){
   typeSeg(ch.res);
 }
 function advanceDlg(){
+  if(!dlgSegs || !dlgSegs.length) return;
   if(typing){ finishType(); return; }
   if(dlgPhase==='story'){
     if(dlgIdx<dlgSegs.length-1){ dlgIdx++; typeSeg(dlgSegs[dlgIdx]); }
@@ -1916,9 +1986,19 @@ function openScene(i){
   mode='dialog'; inCollapse=false;
   if(typeof playSfx==='function') playSfx('scene');
   var sc=DLGS[i];
-  fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
-    pendingNext=i+1;
-  });
+  var startDlg=function(){
+    fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
+      pendingNext=i+1;
+    });
+  };
+  var fd=document.getElementById('scene-fade');
+  if(fd){
+    document.getElementById('sf-time').textContent=sc.icon+' '+sc.time;
+    document.getElementById('sf-title').textContent=sc.title;
+    fd.style.display='flex'; fd.classList.remove('on'); void fd.offsetWidth; fd.classList.add('on');
+    setTimeout(function(){ fd.classList.remove('on'); fd.style.display='none'; }, 820);
+  }
+  startDlg();
 }
 function openCollapse(savedNext){
   inCollapse=true; mode='dialog';
@@ -2012,7 +2092,7 @@ function bindInput(){
         var rp=document.createElement('div'); rp.className='tap-ripple';
         rp.style.left=e.clientX+'px'; rp.style.top=e.clientY+'px';
         document.body.appendChild(rp);
-        setTimeout(function(){ rp.remove(); }, 340);
+        setTimeout(function(){ if(rp.parentNode) rp.parentNode.removeChild(rp); }, 340);
       }
     }
   });
@@ -2163,7 +2243,8 @@ function animate(){
     lastPX=player.position.x; lastPZ=player.position.z;
     if(mx||mz){
       var l=Math.hypot(mx,mz); mx/=l; mz/=l;
-      var np=collideXZ(player.position.x+mx*11*dt, player.position.z+mz*11*dt, 0.85);
+      var tiredF=(S.en<25||S.he<25)?0.85:1;
+      var np=collideXZ(player.position.x+mx*11*tiredF*dt, player.position.z+mz*11*tiredF*dt, 0.85);
       player.position.x=np.x; player.position.z=np.z;
       faceToward(player, mx, mz, dt);
       moving=true;
