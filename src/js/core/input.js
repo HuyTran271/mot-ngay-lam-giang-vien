@@ -14,13 +14,13 @@ function bindInput(){
     if(e.cancelable) e.preventDefault();
     if(mode!=='play') return;
     if(e.clientX<innerWidth/2){
-      joy.on=true; joy.id=e.pointerId; joy.bx=e.clientX; joy.by=e.clientY; joy.dx=0; joy.dy=0; target=null; targetRing.visible=false;
+      joy.on=true; joy.id=e.pointerId; joy.bx=e.clientX; joy.by=e.clientY; joy.dx=0; joy.dy=0; target=null; pathPts=null; targetRing.visible=false;
       var j=document.getElementById('joy'), n=document.getElementById('nub');
       j.style.display='block'; j.style.left=(joy.bx-58)+'px'; j.style.top=(joy.by-58)+'px';
       n.style.display='block'; n.style.left=(joy.bx-26)+'px'; n.style.top=(joy.by-26)+'px';
     } else {
       var p=pointerGround(e);
-      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z);
+      if(p){ target={x:p.x, z:p.z}; stallT=0; pathPts=(typeof findPath==='function' && player)? findPath(player.position.x, player.position.z, p.x, p.z) : null; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z);
         var rp=document.createElement('div'); rp.className='tap-ripple';
         rp.style.left=e.clientX+'px'; rp.style.top=e.clientY+'px';
         document.body.appendChild(rp);

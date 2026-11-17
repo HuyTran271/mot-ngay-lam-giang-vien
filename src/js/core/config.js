@@ -153,3 +153,119 @@ function makeIcon(emo, s){
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx, transparent:true}));
   sp.scale.set(s||2.2, s||2.2, 1); return sp;
 }
+// ===== NHẠC NỀN PHÁT SINH BẰNG WEBAUDIO (không file nhạc, chạy nhẹ) =====
+var _musicOn=false, _musicGain=null, _musicTimer=null, _chordIdx=0;
+var MUSIC_CHORDS=[[261.63,329.63,392,493.88],[220,261.63,329.63,392],[174.61,220,261.63,349.23],[196,246.94,293.66,392]];
+function startMusic(){
+  if(_musicOn) return; _musicOn=true;
+  try{
+    var AC=window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    if(!_audioCtx) _audioCtx=new AC();
+    if(_audioCtx.state==='suspended') _audioCtx.resume();
+    _musicGain=_audioCtx.createGain();
+    _musicGain.gain.value=sfxMuted?0:0.045;
+    _musicGain.connect(_audioCtx.destination);
+    function chord(){
+      if(!_audioCtx || !_musicGain) return;
+      var now=_audioCtx.currentTime;
+      var ch=MUSIC_CHORDS[_chordIdx%MUSIC_CHORDS.length]; _chordIdx++;
+      for(var i=0;i<ch.length;i++){
+        var o=_audioCtx.createOscillator(), g=_audioCtx.createGain();
+        o.type='triangle'; o.frequency.value=ch[i];
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.linearRampToValueAtTime(0.15, now+0.9);
+        g.gain.linearRampToValueAtTime(0.0001, now+4.3);
+        o.connect(g); g.connect(_musicGain);
+        o.start(now); o.stop(now+4.4);
+      }
+    }
+    chord();
+    _musicTimer=setInterval(chord, 4000);
+  }catch(e){}
+}
+// ===== TÌM ĐƯỜNG A* CHO CHẠM ĐỂ DI CHUYỂN (lưới 0.5 m, phồng vật cản 0.9 m) =====
+var pathPts=null;
+var _nav=null;
+function navBlocked(x, z){
+  for(var i=0;i<SOLIDS.length;i++){ var s=SOLIDS[i];
+    if(x>s.x0-0.55 && x<s.x1+0.55 && z>s.z0-0.55 && z<s.z1+0.55) return true; }
+  return x<-41.5||x>41.5||z<-55.5||z>72.5;
+}
+function buildNav(){
+  if(_nav) return;
+  var cs=0.5, x0=-42, z0=-56, w=168, h=258;
+  var g=new Uint8Array(w*h);
+  for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+    g[j*w+i]=navBlocked(x0+(i+0.5)*cs, z0+(j+0.5)*cs)?1:0;
+  }
+  _nav={cs:cs, x0:x0, z0:z0, w:w, h:h, g:g};
+}
+function navFreeNear(x, z){
+  var n=_nav;
+  var ci=Math.floor((x-n.x0)/n.cs), cj=Math.floor((z-n.z0)/n.cs);
+  function freeAt(i,j){ return i>=0&&j>=0&&i<n.w&&j<n.h&&!n.g[j*n.w+i]; }
+  if(freeAt(ci,cj)) return cj*n.w+ci;
+  for(var r=1;r<=10;r++) for(var dj=-r;dj<=r;dj++) for(var di=-r;di<=r;di++){
+    if(freeAt(ci+di,cj+dj)) return (cj+dj)*n.w+(ci+di);
+  }
+  return -1;
+}
+function navLos(x1, z1, x2, z2){
+  var d=Math.hypot(x2-x1, z2-z1), steps=Math.max(1, Math.ceil(d/0.25));
+  for(var s2=1;s2<steps;s2++){ var t2=s2/steps;
+    if(navBlocked(x1+(x2-x1)*t2, z1+(z2-z1)*t2)) return false; }
+  return true;
+}
+function findPath(sx, sz, tx, tz){
+  try{
+    buildNav();
+    var n=_nav, W=n.w, H=n.h, total=W*H;
+    var start=navFreeNear(sx,sz), goal=navFreeNear(tx,tz);
+    if(start<0 || goal<0 || start===goal) return null;
+    var gScore=new Float32Array(total), fScore=new Float32Array(total), came=new Int32Array(total), closed=new Uint8Array(total);
+    for(var fi=0; fi<total; fi++){ gScore[fi]=Infinity; fScore[fi]=Infinity; came[fi]=-1; }
+    function hx(c){ return (c%W)+0.5; } function hz(c){ return Math.floor(c/W)+0.5; }
+    function heur(c){ return Math.hypot(hx(c)-hx(goal), hz(c)-hz(goal)); }
+    var heap=[];
+    function hpush(v){ heap.push(v); var i=heap.length-1;
+      while(i>0){ var p=(i-1)>>1; if(fScore[heap[p]]<=fScore[heap[i]]) break;
+        var tmp=heap[p]; heap[p]=heap[i]; heap[i]=tmp; i=p; } }
+    function hpop(){ var top=heap[0], last=heap.pop();
+      if(heap.length){ heap[0]=last; var i=0;
+        for(;;){ var l=2*i+1, r=l+1, m=i;
+          if(l<heap.length && fScore[heap[l]]<fScore[heap[m]]) m=l;
+          if(r<heap.length && fScore[heap[r]]<fScore[heap[m]]) m=r;
+          if(m===i) break; var tmp=heap[m]; heap[m]=heap[i]; heap[i]=tmp; i=m; } }
+      return top; }
+    gScore[start]=0; fScore[start]=heur(start); hpush(start);
+    var found=false, iter=0;
+    var DX=[1,-1,0,0,1,1,-1,-1], DZ=[0,0,1,-1,1,-1,1,-1];
+    while(heap.length && iter++<60000){
+      var cur2=hpop(); if(closed[cur2]) continue; closed[cur2]=1;
+      if(cur2===goal){ found=true; break; }
+      var cx=cur2%W, cz=Math.floor(cur2/W);
+      for(var d8=0; d8<8; d8++){
+        var nx2=cx+DX[d8], nz2=cz+DZ[d8];
+        if(nx2<0||nz2<0||nx2>=W||nz2>=H) continue;
+        var nc=nz2*W+nx2; if(n.g[nc]||closed[nc]) continue;
+        if(DX[d8]&&DZ[d8] && (n.g[cz*W+nx2]||n.g[nz2*W+cx])) continue;
+        var tg=gScore[cur2]+((DX[d8]&&DZ[d8])?1.414:1);
+        if(tg<gScore[nc]){ gScore[nc]=tg; fScore[nc]=tg+heur(nc); came[nc]=cur2; hpush(nc); }
+      }
+    }
+    if(!found) return null;
+    var cells=[], c2=goal;
+    while(c2!==-1){ cells.push(c2); c2=came[c2]; }
+    cells.reverse();
+    var all=cells.map(function(cc){ return {x:n.x0+hx(cc)*n.cs, z:n.z0+hz(cc)*n.cs}; });
+    all.push({x:tx, z:tz});
+    var out=[], ax=sx, az=sz, idx=0;
+    while(idx<all.length){
+      var j2=all.length-1;
+      while(j2>idx && !navLos(ax,az,all[j2].x,all[j2].z)) j2--;
+      out.push(all[j2]); ax=all[j2].x; az=all[j2].z; idx=j2+1;
+    }
+    if(out.length) out.pop();
+    return out.length? out : null;
+  }catch(e){ return null; }
+}

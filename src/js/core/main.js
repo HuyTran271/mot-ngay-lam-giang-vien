@@ -108,25 +108,30 @@ function animate(){
   var moving=false, mx=0, mz=0;
   if(mode==='play'){
     if(typeof updateGratitude==='function') updateGratitude();
-    if(joy.on && Math.hypot(joy.dx,joy.dy)>0.22){ mx=joy.dx; mz=joy.dy; target=null; targetRing.visible=false; }
+    if(joy.on && Math.hypot(joy.dx,joy.dy)>0.22){ mx=joy.dx; mz=joy.dy; target=null; pathPts=null; targetRing.visible=false; }
     else {
       if(keys['arrowleft']||keys['a']) mx=-1; else if(keys['arrowright']||keys['d']) mx=1;
       if(keys['arrowup']||keys['w']) mz=-1; else if(keys['arrowdown']||keys['s']) mz=1;
-      if(mx||mz){ target=null; targetRing.visible=false; }
+      if(mx||mz){ target=null; pathPts=null; targetRing.visible=false; }
     }
     if(!mx && !mz && target){
-      var dx=target.x-player.position.x, dz=target.z-player.position.z, d=Math.hypot(dx,dz);
-      if(d<0.6){ target=null; targetRing.visible=false; }
+      var wp=(pathPts && pathPts.length)? pathPts[0] : target;
+      var dx=wp.x-player.position.x, dz=wp.z-player.position.z, d=Math.hypot(dx,dz);
+      if(d<((wp===target)?0.6:0.8)){
+        if(wp===target){ target=null; pathPts=null; targetRing.visible=false; }
+        else pathPts.shift();
+      }
       else {
         mx=dx/d; mz=dz/d;
-        if(Math.hypot(player.position.x-lastPX, player.position.z-lastPZ)<0.01){ stallT+=dt; if(stallT>0.8){ target=null; targetRing.visible=false; } } else stallT=0;
+        if(Math.hypot(player.position.x-lastPX, player.position.z-lastPZ)<0.01){ stallT+=dt; if(stallT>0.8){ target=null; pathPts=null; targetRing.visible=false; } } else stallT=0;
       }
     }
     lastPX=player.position.x; lastPZ=player.position.z;
     if(mx||mz){
       var l=Math.hypot(mx,mz); mx/=l; mz/=l;
       var tiredF=(S.en<25||S.he<25)?0.85:1;
-      var np=collideXZ(player.position.x+mx*11*tiredF*dt, player.position.z+mz*11*tiredF*dt, 0.85);
+      var spd=12.5*tiredF*((pathPts&&target)?1.12:1);
+      var np=collideXZ(player.position.x+mx*spd*dt, player.position.z+mz*spd*dt, 0.85);
       player.position.x=np.x; player.position.z=np.z;
       faceToward(player, mx, mz, dt);
       moving=true;
@@ -269,7 +274,40 @@ function animate(){
   }
   camera.lookAt(player.position.x, 1.4, player.position.z-2);
   if(t-_lblT>0.18){ _lblT=t; updateLabels(); }
+  qualityTick(dt);
   renderer.render(scene, camera);
+}
+
+// ===== CÀI ĐẶT CHẤT LƯỢNG ĐỒ HỌA (Tự động / Thấp / Cao) =====
+var _qMode='auto', _qLevel=0, _qFrames=0, _qTime=0, _qGood=0;
+try{ var _qs=localStorage.getItem('gy-quality'); if(_qs==='low'||_qs==='high'||_qs==='auto') _qMode=_qs; }catch(e){}
+function setShadowSize(sz){
+  if(sunLight && sunLight.shadow && sunLight.shadow.mapSize && sunLight.shadow.mapSize.x!==sz){
+    sunLight.shadow.mapSize.set(sz,sz);
+    if(sunLight.shadow.map){ sunLight.shadow.map.dispose(); sunLight.shadow.map=null; }
+  }
+}
+function applyQuality(){
+  if(!renderer) return;
+  var dpr=window.devicePixelRatio||1;
+  if(_qMode==='low'){ renderer.setPixelRatio(1); setShadowSize(1024); }
+  else if(_qMode==='high'){ renderer.setPixelRatio(Math.min(dpr,1.5)); setShadowSize(1536); }
+  else if(_qLevel===0){ renderer.setPixelRatio(Math.min(dpr,1.5)); setShadowSize(1536); }
+  else if(_qLevel===1){ renderer.setPixelRatio(Math.min(dpr,1.25)); setShadowSize(1536); }
+  else if(_qLevel===2){ renderer.setPixelRatio(1); setShadowSize(1280); }
+  else { renderer.setPixelRatio(1); setShadowSize(1024); }
+  var b=document.getElementById('btn-quality');
+  if(b) b.textContent='⚙️ '+(_qMode==='low'?'Thấp':_qMode==='high'?'Cao':'Tự động');
+}
+function qualityTick(dt){
+  if(_qMode!=='auto' || mode!=='play') return;
+  _qFrames++; _qTime+=dt;
+  if(_qTime>=2){
+    var fps=_qFrames/_qTime; _qFrames=0; _qTime=0;
+    if(fps<38 && _qLevel<3){ _qLevel++; _qGood=0; applyQuality(); }
+    else if(fps>57){ _qGood++; if(_qGood>=3 && _qLevel>0){ _qLevel--; _qGood=0; applyQuality(); } }
+    else _qGood=0;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -278,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function(){
     mode='play';
     setEvent(0);
     playSfx('scene');
+    startMusic();
     showToast('📍 Đi tới vòng sáng ⏰ ở cửa Nhà ở!', 3200);
   });
   var muteBtn=document.getElementById('btn-mute');
@@ -285,6 +324,17 @@ document.addEventListener('DOMContentLoaded', function(){
     muteBtn.addEventListener('click', function(){
       sfxMuted=!sfxMuted;
       muteBtn.textContent=sfxMuted?'🔇':'🔊';
+      if(_musicGain) _musicGain.gain.value=sfxMuted?0:0.045;
+    });
+  }
+  var qBtn=document.getElementById('btn-quality');
+  if(qBtn){
+    qBtn.addEventListener('click', function(){
+      _qMode=(_qMode==='auto')?'low':(_qMode==='low')?'high':'auto';
+      _qLevel=0;
+      try{ localStorage.setItem('gy-quality', _qMode); }catch(e){}
+      applyQuality();
+      showToast('⚙️ Chất lượng đồ họa: '+(_qMode==='low'?'Thấp (nhẹ máy)':_qMode==='high'?'Cao':'Tự động'), 1600);
     });
   }
   document.getElementById('dlg').addEventListener('click', function(){ if(mode==='dialog') advanceDlg(); });
@@ -299,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var _booted=false;
   function boot(){
     if(_booted) return; _booted=true;
-    try { init(); bindInput(); var bs=document.getElementById('btn-start'); if(bs){ bs.disabled=false; bs.textContent='▶ Bắt đầu ngày mới'; } }
+    try { init(); bindInput(); applyQuality(); setTimeout(function(){ try{ buildNav(); }catch(e){} }, 900); var bs=document.getElementById('btn-start'); if(bs){ bs.disabled=false; bs.textContent='▶ Bắt đầu ngày mới'; } }
     catch(err){ var d=document.getElementById('err'); if(d){ d.style.display='block'; d.textContent='⚠️ Thiết bị/trình duyệt này không chạy được WebGL 3D: '+err.message; } }
   }
   if(window.__threeReady){
