@@ -91,6 +91,23 @@ function buildExpansion(){
   tree(-17,45,1); tree(17,45,1); tree(-17,65,1.05); tree(17,65,1.05);
   placeModel('flower', -18,56, 0.65, 1.1); placeModel('flower', 18,56, 0.65, 2.4);
   var lbGarden=makeLabel('🌿 KHU VỰC GỬI LỜI TRI ÂN', 13, 35); lbGarden.position.set(0,6.2,55); scene.add(lbGarden);
+  // Viền hoa hai bên lối đi giữa vườn, hoa ở góc các luống đất, đèn ở cổng Nam của vườn
+  var gfCols=[0xe86a8a, 0xf5f0e6, 0xf2b33d, 0xd94f6a];
+  function gardenFlower(x,z,i){
+    if(!placeModel('flower', x, z, 0.7, i*1.3)) box(0.3,0.32,0.3, gfCols[i%4], x,0.16,z, scene, false);
+  }
+  for(var gfi=0; gfi<8; gfi++){
+    gardenFlower(-2.7, 50+gfi*2.3, gfi);
+    gardenFlower(2.7, 51.1+gfi*2.3, gfi+2);
+  }
+  for(var gbi=0; gbi<gardenX.length; gbi++) for(var gbj=0; gbj<gardenZ.length; gbj++){
+    gardenFlower(gardenX[gbi]-2.6, gardenZ[gbj]-1.7, gbi+gbj);
+    gardenFlower(gardenX[gbi]+2.6, gardenZ[gbj]+1.7, gbi+gbj+1);
+  }
+  lamp(-2.6,67); lamp(2.6,67);
+  // Hoa trang trí bờ hồ phía Nam và hai bên cổng trường phía Nam
+  for(var lfi=0; lfi<6; lfi++) gardenFlower(4+lfi*3.1, -27.4, lfi+1);
+  gardenFlower(5.6,33.2,2); gardenFlower(-1.6,33.2,3);
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
   // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
   tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
