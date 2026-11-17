@@ -123,7 +123,8 @@ function plantTree(row, slotIdx, animate){
     if(typeof playSfx==='function') playSfx('pick');
     buzz(15);
   }
-  gardenTrees.push({x:x, z:z, row:row, slot:slotIdx});
+  gardenTrees.push({x:x, z:z, row:row, slot:slotIdx, lb:lb});
+  if(row && row.id!=null && readIds.indexOf(row.id)>=0) dimLabel(gardenTrees[gardenTrees.length-1]);
 }
 
 function gardenRefreshCount(){
@@ -167,6 +168,31 @@ function closeGratitude(){
   if(mode==='gratitude') mode='play';
 }
 
+var cardCur=-1;
+var readIds=[];
+try{ readIds=JSON.parse(localStorage.getItem('gy-read')||'[]'); if(!Array.isArray(readIds)) readIds=[]; }catch(e){}
+function dimLabel(entry){
+  if(entry && entry.lb && entry.lb.material){ entry.lb.material.transparent=true; entry.lb.material.opacity=0.55; }
+}
+function markRead(entry){
+  if(!entry || !entry.row || entry.row.id==null) return;
+  if(readIds.indexOf(entry.row.id)<0){
+    readIds.push(entry.row.id);
+    try{ localStorage.setItem('gy-read', JSON.stringify(readIds)); }catch(e){}
+  }
+  dimLabel(entry);
+}
+function openCardAt(idx){
+  if(!gardenTrees.length) return;
+  cardCur=((idx%gardenTrees.length)+gardenTrees.length)%gardenTrees.length;
+  var entry=gardenTrees[cardCur];
+  openCard(entry.row);
+  markRead(entry);
+  var nav=gardenTrees.length>1?'':'none';
+  var pv=document.getElementById('card-prev'), nx=document.getElementById('card-next');
+  if(pv) pv.style.display=nav;
+  if(nx) nx.style.display=nav;
+}
 function openCard(row){
   if(mode!=='play') return;
   mode='gratitude';
@@ -368,13 +394,15 @@ function initGratitude(){
     document.getElementById('gratitude-submit').addEventListener('click',submitGratitude);
     document.getElementById('card-close').addEventListener('click',closeCard);
     document.getElementById('garden-action').addEventListener('click',function(){ if(mode==='play' && gratitudeNear) openGratitude(); });
-    document.getElementById('garden-view').addEventListener('click',function(){ if(mode==='play' && gardenNearest) openCard(gardenNearest.row); });
+    document.getElementById('garden-view').addEventListener('click',function(){ if(mode==='play' && gardenNearest) openCardAt(gardenTrees.indexOf(gardenNearest)); });
+    document.getElementById('card-prev').addEventListener('click',function(){ openCardAt(cardCur-1); });
+    document.getElementById('card-next').addEventListener('click',function(){ openCardAt(cardCur+1); });
     document.getElementById('gratitude-message').addEventListener('input',function(){
       document.getElementById('gratitude-count').textContent=this.value.length+'/300';
     });
     document.addEventListener('keydown',function(e){
       if(!e.key || e.key.toLowerCase()!=='e' || mode!=='play') return;
-      if(gardenNearest) openCard(gardenNearest.row);
+      if(gardenNearest) openCardAt(gardenTrees.indexOf(gardenNearest));
       else if(gratitudeNear) openGratitude();
     });
     loadGarden();
