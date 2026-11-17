@@ -83,6 +83,7 @@ window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:
 #garden-action:active{transform:scale(.96)}
 #card-msg{white-space:pre-wrap;line-height:1.55;background:#fdf6e3;border:1px solid #e2ad3b;border-radius:10px;padding:12px}
 #card-panel{perspective:700px}
+#gratitude-panel,#card-panel{z-index:80}
 #card-panel .gratitude-card{animation:cardin .45s ease}
 @keyframes cardin{from{transform:rotateY(16deg) translateY(12px);opacity:0}to{transform:rotateY(0) translateY(0);opacity:1}}
 .tap-ripple{position:fixed;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(255,255,255,.35);pointer-events:none;z-index:60;animation:taprip .32s ease-out forwards}
@@ -1445,6 +1446,7 @@ function openGratitude(){
     showToast('🌿 Vườn đã đầy cây tri ân rồi. Cảm ơn bạn!',2600); return;
   }
   mode='gratitude';
+  hideGardenButtons();
   var p=document.getElementById('gratitude-panel');
   p.style.display='flex';
   gardenRefreshCount();
@@ -1483,9 +1485,15 @@ function openCardAt(idx){
   if(pv) pv.style.display=nav;
   if(nx) nx.style.display=nav;
 }
+function hideGardenButtons(){
+  var b=document.getElementById('garden-action'); if(b) b.style.display='none';
+  var v=document.getElementById('garden-view'); if(v) v.style.display='none';
+  gardenBtnState='__hidden';
+}
 function openCard(row){
-  if(mode!=='play') return;
+  if(mode!=='play' && mode!=='gratitude') return;
   mode='gratitude';
+  hideGardenButtons();
   document.getElementById('card-to').textContent='💌 Gửi tới: '+row.nguoi_nhan;
   document.getElementById('card-msg').textContent=row.loi_tri_an;
   var from='🌱 Người gieo: '+row.ten+(row.lop?' · Lớp '+row.lop:'');
