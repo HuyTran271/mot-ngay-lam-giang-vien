@@ -24,7 +24,7 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
 </script>
 <script>
 // Điền URL project và anon key của Supabase khi triển khai thật.
-window.SUPABASE_CONFIG={url:'', anonKey:'', table:'gratitude_messages'};
+window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkaW5obm16Ymp4bHBhcGJpamxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MzQ4OTQsImV4cCI6MjExMDQxMDg5NH0.ICX5OvQkPc9V2zyHB_fNV78PUYMnMjA5WL9FmIe-7po', table:'cay_tri_an'};
 </script>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/screens.css">
@@ -42,17 +42,43 @@ window.SUPABASE_CONFIG={url:'', anonKey:'', table:'gratitude_messages'};
 
   <div class="overlay" id="gratitude-panel" style="display:none">
     <div class="card gratitude-card">
-      <div style="font-size:2.3rem">💌</div>
-      <h1> BẢNG TRI ÂN </h1>
-      <p>Viết một lời cảm ơn gửi tới thầy cô. Lời nhắn của bạn sẽ được lưu để những người chơi khác cùng đọc.</p>
+      <div style="font-size:2.3rem">🌱</div>
+      <h1> GIEO HẠT TRI ÂN </h1>
+      <p id="gratitude-count-line">Vườn đang chờ hạt tri ân đầu tiên. Hãy là người gieo hạt đầu tiên nhé.</p>
+      <p>Mỗi lời tri ân bạn gửi sẽ mọc thành một cây trong khu vườn chung này, mang theo tấm thiệp của bạn để mọi người cùng đọc.</p>
       <label for="gratitude-name">Tên của bạn (không bắt buộc)</label>
       <input id="gratitude-name" maxlength="60" placeholder="Ví dụ: Một học trò" autocomplete="off">
-      <label for="gratitude-message">Lời tri ân <span id="gratitude-count">0/500</span></label>
-      <textarea id="gratitude-message" maxlength="500" rows="5" placeholder="Cảm ơn thầy cô vì..."></textarea>
+      <label for="gratitude-class">Lớp của bạn (không bắt buộc)</label>
+      <input id="gratitude-class" maxlength="60" placeholder="Ví dụ: CNTT K24" autocomplete="off">
+      <label for="gratitude-to">Gửi tới thầy/cô</label>
+      <input id="gratitude-to" maxlength="80" placeholder="Ví dụ: Thầy cô Bộ môn CNTT" autocomplete="off">
+      <label for="gratitude-tree">Chọn hạt giống</label>
+      <select id="gratitude-tree">
+        <option value="oak">🌳 Cây xanh</option>
+        <option value="pine">🌲 Cây thông</option>
+        <option value="flower">🌼 Bụi hoa</option>
+      </select>
+      <label for="gratitude-message">Lời tri ân <span id="gratitude-count">0/300</span></label>
+      <textarea id="gratitude-message" maxlength="300" rows="4" placeholder="Cảm ơn thầy cô vì..."></textarea>
       <div id="gratitude-status" role="status"></div>
       <div class="gratitude-actions">
         <button class="btn alt" id="gratitude-close">Để sau</button>
-        <button class="btn" id="gratitude-submit">💌 Gửi lời tri ân</button>
+        <button class="btn" id="gratitude-submit">🌱 Gieo hạt tri ân</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="garden-action" style="display:none"></button>
+
+  <div class="overlay" id="card-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">💌</div>
+      <h1> THIỆP TRI ÂN </h1>
+      <p id="card-to" style="font-weight:700"></p>
+      <p id="card-msg"></p>
+      <p id="card-from" style="color:#64748b"></p>
+      <div class="gratitude-actions">
+        <button class="btn" id="card-close">Đóng thiệp</button>
       </div>
     </div>
   </div>
