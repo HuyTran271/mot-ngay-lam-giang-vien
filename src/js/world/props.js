@@ -77,14 +77,27 @@ function facadeTexture(){
   var g=c.getContext('2d');
   g.fillStyle='#f3e6c8'; g.fillRect(0,0,256,256);
   g.fillStyle='#e0cda1'; g.fillRect(0,0,256,12);
+  g.fillStyle='#d9c69c'; g.fillRect(0,244,256,12);
   var cols=4, rows=3, ww=34, wh=40, gx=(256-cols*ww)/(cols+1), gy=(256-rows*wh)/(rows+1);
-  for(var r=0;r<rows;r++) for(var ci=0;ci<cols;ci++){
-    var x=gx+ci*(ww+gx), y=gy+r*(wh+gy);
-    g.fillStyle='#d8c9a3'; g.fillRect(x-3,y-3,ww+6,wh+6);
-    g.fillStyle='#33507e'; g.fillRect(x,y,ww,wh);
-    g.fillStyle='rgba(255,255,255,.28)'; g.fillRect(x,y,ww,11);
-    g.strokeStyle='#f3e6c8'; g.lineWidth=3;
-    g.beginPath(); g.moveTo(x+ww/2,y); g.lineTo(x+ww/2,y+wh); g.moveTo(x,y+wh/2); g.lineTo(x+ww,y+wh/2); g.stroke();
+  for(var r=0;r<rows;r++){
+    if(r>0){ g.fillStyle='#e6d3a8'; g.fillRect(0, gy+r*(wh+gy)-gy*0.55, 256, 5); }
+    for(var ci=0;ci<cols;ci++){
+      var x=gx+ci*(ww+gx), y=gy+r*(wh+gy);
+      g.fillStyle='#8a6d4a'; g.fillRect(x-4,y-4,ww+8,wh+8);
+      g.fillStyle='#cbb489'; g.fillRect(x-1,y-1,ww+2,wh+2);
+      var grad=g.createLinearGradient?g.createLinearGradient(x,y,x,y+wh):null;
+      if(grad && grad.addColorStop){
+        grad.addColorStop(0,'#5b83b4'); grad.addColorStop(0.55,'#33507e'); grad.addColorStop(1,'#27436b');
+        g.fillStyle=grad;
+      } else g.fillStyle='#33507e';
+      g.fillRect(x,y,ww,wh);
+      g.fillStyle='rgba(255,255,255,.30)';
+      g.beginPath(); g.moveTo(x+4,y+wh); g.lineTo(x+15,y); g.lineTo(x+24,y); g.lineTo(x+13,y+wh); g.closePath(); g.fill();
+      g.fillStyle='rgba(255,255,255,.20)'; g.fillRect(x,y,ww,9);
+      g.strokeStyle='#8a6d4a'; g.lineWidth=3;
+      g.beginPath(); g.moveTo(x+ww/2,y); g.lineTo(x+ww/2,y+wh); g.moveTo(x,y+wh/2); g.lineTo(x+ww,y+wh/2); g.stroke();
+      g.fillStyle='rgba(90,70,40,.35)'; g.fillRect(x-4,y+wh+4,ww+8,3);
+    }
   }
   var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
   tx.wrapS=tx.wrapT=THREE.RepeatWrapping;
@@ -108,6 +121,21 @@ function decoBuilding(w,h,d,x,z,roofColor){
   rg.rotateY(Math.PI/2);
   var rm=new THREE.Mesh(rg, [plainM, new THREE.MeshStandardMaterial({color:roofColor, roughness:.85})]);
   rm.position.set(x-(w+0.8)/2, h, z); rm.castShadow=true; rm.receiveShadow=true; scene.add(rm);
+  // Chi tiết hoàn thiện: bệ chân tường, gờ dưới mái, cột góc, bậc thềm mặt trước
+  var trimM=new THREE.MeshStandardMaterial({color:0xe6d3a8, roughness:.9});
+  var base=new THREE.Mesh(new THREE.BoxGeometry(w+0.35,0.55,d+0.35), new THREE.MeshStandardMaterial({color:0xb8a888, roughness:.95}));
+  base.position.set(x,0.27,z); base.receiveShadow=true; scene.add(base);
+  var eave=new THREE.Mesh(new THREE.BoxGeometry(w+0.9,0.2,d+0.9), trimM);
+  eave.position.set(x,h-0.08,z); eave.castShadow=true; scene.add(eave);
+  var pilG=new THREE.BoxGeometry(0.42,h,0.42);
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(sg){
+    var pil=new THREE.Mesh(pilG, trimM);
+    pil.position.set(x+sg[0]*w/2, h/2, z+sg[1]*d/2); pil.castShadow=true; scene.add(pil);
+  });
+  var step1=new THREE.Mesh(new THREE.BoxGeometry(Math.min(3.2,w*0.3),0.16,0.75), base.material);
+  step1.position.set(x,0.08,z+d/2+0.55); step1.receiveShadow=true; scene.add(step1);
+  var step2=new THREE.Mesh(new THREE.BoxGeometry(Math.min(3.2,w*0.3),0.32,0.45), base.material);
+  step2.position.set(x,0.16,z+d/2+0.28); scene.add(step2);
   return m;
 }
 function beacon(x, z, emo){

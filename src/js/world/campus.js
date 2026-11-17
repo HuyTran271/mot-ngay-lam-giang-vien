@@ -109,6 +109,7 @@ function buildCampus(){
   var ld1=lakeDisc(12,-36, 9, 7.5, 0x276e66, 0.035, .15); ld1.material.metalness=0.16;
   var ld2=lakeDisc(8,-32, 5, 4, 0x276e66, 0.035, .15); ld2.material.metalness=0.16;
   var ld3=lakeDisc(16,-40, 5, 4, 0x276e66, 0.035, .15); ld3.material.metalness=0.16;
+  LAKE_MATS.push(ld1.material, ld2.material, ld3.material);
   var rip1=new THREE.Mesh(new THREE.RingGeometry(1.1,1.28,28), new THREE.MeshBasicMaterial({color:0xb8f0ea, transparent:true, opacity:0.45, side:THREE.DoubleSide}));
   rip1.rotation.x=-Math.PI/2; rip1.position.set(12,0.048,-36); scene.add(rip1);
   var rip2=new THREE.Mesh(new THREE.RingGeometry(0.7,0.85,24), new THREE.MeshBasicMaterial({color:0xb8f0ea, transparent:true, opacity:0.35, side:THREE.DoubleSide}));

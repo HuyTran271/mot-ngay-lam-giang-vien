@@ -111,4 +111,46 @@ function buildExpansion(){
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
   // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
   tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
+
+  // ===== TRỤ CỔNG + XÀ NGANG: cổng Nam và cổng Tây =====
+  var gateM=new THREE.MeshStandardMaterial({color:0xcfc4ae, roughness:.85});
+  var gateCapM=new THREE.MeshStandardMaterial({color:0xa33d2a, roughness:.85});
+  function gatePost(x,z){
+    box(0.55,3.4,0.55, 0xcfc4ae, x,1.7,z, scene, true);
+    var cap=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.28,0.8), gateCapM);
+    cap.position.set(x,3.55,z); cap.castShadow=true; scene.add(cap);
+    solid(x-0.3,z-0.3, x+0.3,z+0.3);
+  }
+  gatePost(-0.6,34); gatePost(4.6,34);
+  box(6.2,0.4,0.7, 0xa33d2a, 2,3.85,34, scene, true);
+  gatePost(-37.5,-12.6); gatePost(-37.5,-5.4);
+  box(0.7,0.4,8.2, 0xa33d2a, -37.5,3.85,-9, scene, true);
+
+  // ===== HỒ NƯỚC: cầu gỗ, lau sậy, ghế ngắm hồ =====
+  var dockM=new THREE.MeshStandardMaterial({color:0x9a7448, roughness:.9});
+  var dock=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.16,3.4), dockM);
+  dock.position.set(12,0.34,-27.1); dock.castShadow=true; dock.receiveShadow=true; scene.add(dock);
+  [[10.9,-28.6],[13.1,-28.6],[10.9,-25.6],[13.1,-25.6]].forEach(function(pp){
+    var post=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.8,6), dockM);
+    post.position.set(pp[0],0.05,pp[1]); scene.add(post);
+  });
+  var reedM=new THREE.MeshStandardMaterial({color:0x5d8a44, roughness:.9});
+  var reedPos=[[4.5,-28.2],[7,-27.7],[17,-27.8],[20,-28.2],[3.2,-33],[3.4,-39],[20.8,-33],[20.6,-39]];
+  reedPos.forEach(function(rp, ri){
+    for(var rk=0; rk<3; rk++){
+      var reed=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.045,0.9+((ri+rk)%3)*0.22,5), reedM);
+      reed.position.set(rp[0]+(rk-1)*0.16, 0.45, rp[1]+(rk%2)*0.14); reed.rotation.z=(rk-1)*0.09; scene.add(reed);
+    }
+  });
+  box(2.1,0.45,0.6, 0x9a8a72, 6,0.42,-26.6, scene, true); solid(4.9,-26.9, 7.1,-26.3);
+  box(2.1,0.45,0.6, 0x9a8a72, 18,0.42,-26.6, scene, true); solid(16.9,-26.9, 19.1,-26.3);
+
+  // ===== CỜ GÓC SÂN BÓNG ĐÁ =====
+  var flagM=new THREE.MeshStandardMaterial({color:0xd94f6a, roughness:.7, side:THREE.DoubleSide});
+  [[-4,6],[14,6],[-4,26],[14,26]].forEach(function(fp){
+    var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,1.6,6), new THREE.MeshStandardMaterial({color:0xf0f0f0}));
+    pole.position.set(fp[0],0.8,fp[1]); scene.add(pole);
+    var fl=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.34,0.03), flagM);
+    fl.position.set(fp[0]+0.28,1.42,fp[1]); scene.add(fl);
+  });
 }

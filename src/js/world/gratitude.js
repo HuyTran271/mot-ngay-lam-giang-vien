@@ -319,6 +319,18 @@ function updateFx(dt, t){
     wd.o.rotation.z=Math.sin(t*1.15+wd.ph)*wd.amp;
     wd.o.rotation.x=Math.cos(t*0.85+wd.ph)*wd.amp*0.6;
   }
+  // Mặt hồ bắt ánh sáng theo giờ: rạng đông và hoàng hôn ánh cam, đêm ánh xanh trầm
+  if(typeof LAKE_MATS!=='undefined' && LAKE_MATS.length && typeof TIME_THEMES!=='undefined' && TIME_THEMES[cur]){
+    if(updateFx._lakeCur!==cur){
+      updateFx._lakeCur=cur;
+      var thSun=new THREE.Color(TIME_THEMES[cur].sun);
+      var glow=(cur===0||cur===8)?0.30:(cur>=9?0.13:0.20);
+      for(var lmi2=0;lmi2<LAKE_MATS.length;lmi2++){
+        var lm2=LAKE_MATS[lmi2];
+        if(lm2.emissive){ lm2.emissive.copy(thSun); lm2.emissiveIntensity=glow; }
+      }
+    }
+  }
   if(fxLeaves){
     var lp=fxLeaves.pos;
     for(var li2=0;li2<fxLeaves.n;li2++){
