@@ -14,9 +14,19 @@ function openScene(i){
   mode='dialog'; inCollapse=false;
   if(typeof playSfx==='function') playSfx('scene');
   var sc=DLGS[i];
-  fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
-    pendingNext=i+1;
-  });
+  var startDlg=function(){
+    fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
+      pendingNext=i+1;
+    });
+  };
+  var fd=document.getElementById('scene-fade');
+  if(fd){
+    document.getElementById('sf-time').textContent=sc.icon+' '+sc.time;
+    document.getElementById('sf-title').textContent=sc.title;
+    fd.style.display='flex'; fd.classList.remove('on'); void fd.offsetWidth; fd.classList.add('on');
+    setTimeout(function(){ fd.classList.remove('on'); fd.style.display='none'; }, 820);
+  }
+  startDlg();
 }
 function openCollapse(savedNext){
   inCollapse=true; mode='dialog';

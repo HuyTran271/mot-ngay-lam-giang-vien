@@ -9,6 +9,18 @@ function syncStats(){
   document.getElementById('st-en').textContent=S.en;
   document.getElementById('st-he').textContent=S.he;
   document.getElementById('st-fi').textContent=S.fi;
+  var ls=document.getElementById('lowstat');
+  if(ls) ls.style.display=(S.en<25||S.he<25)?'block':'none';
+}
+function spawnStatChips(fx){
+  var layer=document.getElementById('float-layer'); if(!layer) return;
+  [['⚡',fx.en],['❤️',fx.he],['🔥',fx.fi]].forEach(function(it){
+    if(!it[1]) return;
+    var c=document.createElement('div'); c.className='stat-chip '+(it[1]>0?'up':'down');
+    c.textContent=(it[1]>0?'+':'')+it[1]+' '+it[0];
+    layer.appendChild(c);
+    setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 1500);
+  });
 }
 function clampStat(){ S.en=Math.max(0,Math.min(100,S.en)); S.he=Math.max(0,Math.min(100,S.he)); S.fi=Math.max(0,Math.min(100,S.fi)); }
 var toastTimer=null;
@@ -56,6 +68,7 @@ function typeSeg(txt){
     if(pauseT>0){ pauseT--; return; }
     i+=3;
     el.innerHTML=typeFull.slice(0,i).replace(/\n/g,'<br>');
+    if(i%12===0 && i<typeFull.length && typeof playSfx==='function') playSfx('blip');
     var lastCh=typeFull.charAt(i-1);
     if((lastCh==='.'||lastCh==='!'||lastCh==='?'||lastCh==='…') && i<typeFull.length) pauseT=20;
     if(i>=typeFull.length){ clearInterval(typeTimer); typeTimer=null; typing=false; }
@@ -80,6 +93,7 @@ function fillDlg(icon, time, title, text, choices, onPick){
   typeSeg(dlgSegs[0]);
 }
 function showChoices(){
+  if(!dlgChoices) return;
   var box=document.getElementById('choices'); box.innerHTML='';
   dlgChoices.forEach(function(ch){
     var b=document.createElement('button'); b.className='vn-choice'; b.textContent=ch.t;
@@ -96,6 +110,7 @@ function pickChoice(ch){
   if(ch.set){ for(var k in ch.set) S.flags[k]=ch.set[k]; }
   if(ch.badge && S.badges.indexOf(ch.badge)<0) S.badges.push(ch.badge);
   syncStats();
+  spawnStatChips(fx);
   if(dlgOnPick) dlgOnPick(ch);
   document.getElementById('d-fx').textContent=fxText(fx);
   document.getElementById('d-badge').textContent= ch.badge ? '🏅 Dấu ấn: '+ch.badge : '';
@@ -103,6 +118,7 @@ function pickChoice(ch){
   typeSeg(ch.res);
 }
 function advanceDlg(){
+  if(!dlgSegs || !dlgSegs.length) return;
   if(typing){ finishType(); return; }
   if(dlgPhase==='story'){
     if(dlgIdx<dlgSegs.length-1){ dlgIdx++; typeSeg(dlgSegs[dlgIdx]); }
