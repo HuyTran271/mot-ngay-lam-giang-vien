@@ -82,6 +82,11 @@ window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:
 #garden-action{position:fixed;right:14px;bottom:172px;z-index:60;background:#f2b33d;color:#263653;border:2px solid #263653;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-action:active{transform:scale(.96)}
 #card-msg{white-space:pre-wrap;line-height:1.55;background:#fdf6e3;border:1px solid #e2ad3b;border-radius:10px;padding:12px}
+#card-panel{perspective:700px}
+#card-panel .gratitude-card{animation:cardin .45s ease}
+@keyframes cardin{from{transform:rotateY(16deg) translateY(12px);opacity:0}to{transform:rotateY(0) translateY(0);opacity:1}}
+.tap-ripple{position:fixed;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(255,255,255,.35);pointer-events:none;z-index:60;animation:taprip .32s ease-out forwards}
+@keyframes taprip{from{transform:scale(.4);opacity:.85}to{transform:scale(1.7);opacity:0}}
 
 #garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-view:active{transform:scale(.96)}
@@ -354,6 +359,7 @@ function spawnBurst(x, y, z, color, count){
     burstParticles.push({m:m, vx:Math.cos(ang)*spd, vy:2.5+Math.random()*3.2, vz:Math.sin(ang)*spd, life:0.55+Math.random()*0.25, max:0.8});
   }
 }
+function buzz(p){ try{ if(navigator && navigator.vibrate) navigator.vibrate(p); }catch(e){} }
 var toastTimer=null;
 var cur=0, pendingNext=null, collapseUsed=false, inCollapse=false, invulnT=0;
 var pickups=[], spirit=null;
@@ -647,10 +653,49 @@ function buildPeople(){
   var stLabel=makeLabel('Sinh viên', 4.6, 40); stLabel.position.set(-24,3.4,-32); scene.add(stLabel);
   var st2=makePerson({suit:0xffffff, cloth:0x27364f, hair:0x191919});
   st2.position.set(-32,0,-25); scene.add(st2);
-  students.push({p:st2, a:{x:-32,z:-25}, b:{x:-32,z:-44}, t:0, dir:1, speed:2.3});
+  students.push({p:st2, a:{x:-32,z:-25}, b:{x:-32,z:-33.5}, t:0, dir:1, speed:2.3});
   var gv=makePerson({suit:0x8e2f3c, cloth:0xffffff, hair:0x5a3a22, long:true, longHair:true, glasses:true});
   gv.position.set(-13,0,-20); gv.rotation.y=0.4; scene.add(gv);
   var gvLabel=makeLabel('💻 Khoa CNTT', 5.2, 40); gvLabel.position.set(-13,3.5,-20); scene.add(gvLabel);
+
+  // ===== THÊM NGƯỜI QUANH KHUÔN VIÊN =====
+  // Mọi tuyến đi và điểm đứng dưới đây đều đã kiểm tra không cắt qua công trình;
+  // vòng lặp di chuyển còn áp thêm collideXZ cho từng NPC để không bao giờ xuyên tường.
+  function walker(o, ax, az, bx, bz, speed, phase){
+    var p=makePerson(o); p.position.set(ax,0,az); scene.add(p);
+    var span=Math.hypot(bx-ax, bz-az);
+    students.push({p:p, a:{x:ax,z:az}, b:{x:bx,z:bz}, t:span*(phase||0), dir:1, speed:speed});
+    return p;
+  }
+  function stander(o, x, z, ry, idle){
+    var p=makePerson(o); p.position.set(x,0,z); p.rotation.y=ry; scene.add(p);
+    if(idle) seated.push({g:p, ph:Math.random()*6, base:0});
+    return p;
+  }
+  function sitter(o, x, z, ry){
+    var p=makePerson(o); p.position.set(x,-0.2,z); p.rotation.y=ry; scene.add(p);
+    seated.push({g:p, ph:Math.random()*6, base:-0.2});
+    return p;
+  }
+  // Người đi bộ: ngang sân bóng, trục Nam, trước dãy phòng học, bờ hồ, trục ngang, vườn tri ân
+  walker({suit:0xffffff, cloth:0x33507e, hair:0x2b2b30}, 4,30, 4,-2, 2.0, 0.3);
+  walker({suit:0xf2b33d, cloth:0x3a3f4a, hair:0x191919}, 10,32, 10,6, 2.1, 0.6);
+  walker({suit:0x33507e, cloth:0x3a3f4a, hair:0x3a3a3a, tie:true, glasses:true}, -24,-35.5, -6,-35.5, 1.6, 0.1);
+  walker({suit:0xffffff, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 2,-25.6, 22,-25.6, 1.8, 0.5);
+  walker({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, -30,2, 24,2, 2.4, 0.45);
+  walker({suit:0x9fd6f9, cloth:0x27364f, hair:0x2b2b30}, -10,55.8, 10,55.8, 1.5, 0.2);
+  // Cặp sinh viên trò chuyện trước thư viện
+  stander({suit:0xffffff, cloth:0x27364f, hair:0x191919}, -21,-16.2, 0.9, true);
+  stander({suit:0xf5f0e6, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, -20,-15.4, -2.24, true);
+  // Người đứng: trước căn tin, giảng viên gần cổng Tây, sinh viên ở cổng Nam và trước ký túc xá
+  stander({suit:0xffffff, cloth:0x3a3f4a, hair:0x2b2b30}, -3,-8.3, Math.PI, false);
+  stander({suit:0x5a3a22, cloth:0xffffff, hair:0x3a3a3a, long:true, longHair:true, glasses:true}, -35,-6.8, -Math.PI/2, false);
+  stander({suit:0xffffff, cloth:0x33507e, hair:0x4a3421}, 6.5,32, 0, false);
+  stander({suit:0xd94f6a, cloth:0x27364f, hair:0x191919}, 24,10.5, Math.PI/2, false);
+  // Sinh viên ngắm vườn tri ân và hai người ngồi ghế bờ hồ
+  stander({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, 8.5,58.5, -1.68, true);
+  sitter({suit:0xffffff, cloth:0x27364f, hair:0x2b2b30}, 6,-26.55, Math.PI);
+  sitter({suit:0xffe9a8, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 18,-26.55, Math.PI);
 }
 </script>
 <script>
@@ -1281,7 +1326,7 @@ function gardenFallbackTree(x, z, targetH, kind){
   scene.add(g); return g;
 }
 
-function plantTree(row, slotIdx){
+function plantTree(row, slotIdx, animate){
   var slots=gardenSlotList();
   if(slotIdx===undefined || slotIdx<0 || slots[slotIdx].used){
     slotIdx=-1;
@@ -1310,6 +1355,14 @@ function plantTree(row, slotIdx){
   var treeIcon=row.loai_cay==='pine'?'🌲':(row.loai_cay==='flower'?'🌸':'🌳');
   var lb=makeLabel(treeIcon+' '+ten, 5.5, 30);
   lb.position.set(x, targetH+1.05, z); scene.add(lb);
+  if(animate && made){
+    GROWING.push({g:made, fs:made.scale.x||1, lb:lb, lx:lb.scale.x, ly:lb.scale.y, t:0});
+    made.scale.setScalar((made.scale.x||1)*0.04);
+    lb.scale.set(lb.scale.x*0.04, lb.scale.y*0.04, 1);
+    spawnBurst(x, 1.1, z, 0x8fd45a, 16);
+    if(typeof playSfx==='function') playSfx('pick');
+    buzz(15);
+  }
   gardenTrees.push({x:x, z:z, row:row, slot:slotIdx});
 }
 
@@ -1400,7 +1453,7 @@ function submitGratitude(){
   }).then(function(rows){
     if(rows && rows[0]){
       gardenRows.push(rows[0]);
-      plantTree(rows[0], gardenFreeSlotNear(anchor.x, anchor.z));
+      plantTree(rows[0], gardenFreeSlotNear(anchor.x, anchor.z), true);
     }
     document.getElementById('gratitude-name').value='';
     document.getElementById('gratitude-class').value='';
@@ -1447,6 +1500,7 @@ var fxPetals=null, fxFlies=null, fxSpark=null, fxLeaves=null;
 
 // ===== GIÓ: cây đung đưa nhẹ quanh gốc =====
 var WINDY=[];
+var GROWING=[];
 function regWind(obj, amp){
   if(obj) WINDY.push({o:obj, ph:Math.random()*6.28, amp:amp||0.02});
 }
@@ -1525,6 +1579,15 @@ function updateFx(dt, t){
         if(lm2.emissive){ lm2.emissive.copy(thSun); lm2.emissiveIntensity=glow; }
       }
     }
+  }
+  for(var gi2=GROWING.length-1; gi2>=0; gi2--){
+    var gr=GROWING[gi2]; gr.t+=dt/1.5;
+    var gx2=Math.min(1, gr.t), gc1=1.70158, gc3=gc1+1;
+    var ge=1+gc3*Math.pow(gx2-1,3)+gc1*Math.pow(gx2-1,2);
+    var gs=Math.max(0.02, gr.fs*ge);
+    gr.g.scale.setScalar(gs);
+    if(gr.lb) gr.lb.scale.set(gr.lx*gs/gr.fs, gr.ly*gs/gr.fs, 1);
+    if(gr.t>=1){ gr.g.scale.setScalar(gr.fs); if(gr.lb) gr.lb.scale.set(gr.lx, gr.ly, 1); GROWING.splice(gi2,1); }
   }
   if(fxLeaves){
     var lp=fxLeaves.pos;
@@ -1759,11 +1822,14 @@ var dlgSegs=[], dlgIdx=0, dlgPhase='story', dlgChoices=null, dlgOnPick=null, typ
 function typeSeg(txt){
   var el=document.getElementById('d-text');
   typeFull=txt; typing=true; el.textContent='';
-  var i=0;
+  var i=0, pauseT=0;
   if(typeTimer) clearInterval(typeTimer);
   typeTimer=setInterval(function(){
+    if(pauseT>0){ pauseT--; return; }
     i+=3;
     el.innerHTML=typeFull.slice(0,i).replace(/\n/g,'<br>');
+    var lastCh=typeFull.charAt(i-1);
+    if((lastCh==='.'||lastCh==='!'||lastCh==='?'||lastCh==='…') && i<typeFull.length) pauseT=20;
     if(i>=typeFull.length){ clearInterval(typeTimer); typeTimer=null; typing=false; }
   }, 16);
 }
@@ -1789,7 +1855,7 @@ function showChoices(){
   var box=document.getElementById('choices'); box.innerHTML='';
   dlgChoices.forEach(function(ch){
     var b=document.createElement('button'); b.className='vn-choice'; b.textContent=ch.t;
-    b.addEventListener('click', function(){ pickChoice(ch); });
+    b.addEventListener('click', function(){ buzz(8); pickChoice(ch); });
     box.appendChild(b);
   });
   box.classList.add('show');
@@ -1925,7 +1991,12 @@ function bindInput(){
       n.style.display='block'; n.style.left=(joy.bx-26)+'px'; n.style.top=(joy.by-26)+'px';
     } else {
       var p=pointerGround(e);
-      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z); }
+      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z);
+        var rp=document.createElement('div'); rp.className='tap-ripple';
+        rp.style.left=e.clientX+'px'; rp.style.top=e.clientY+'px';
+        document.body.appendChild(rp);
+        setTimeout(function(){ rp.remove(); }, 340);
+      }
     }
   });
   window.addEventListener('pointermove', function(e){
@@ -2099,7 +2170,7 @@ function animate(){
       pk.sp.position.y=1.25+Math.sin(t*2.4+pk.ph)*0.18;
       if(Math.hypot(pk.x-player.position.x, pk.z-player.position.z)<1.7){
         S[pk.k]+=pk.v; clampStat(); syncStats();
-        playSfx('pickup');
+        playSfx('pickup'); buzz(12);
         spawnBurst(pk.x, 1.3, pk.z, pk.k==='en'?0xffd76e:(pk.k==='he'?0xff7b9c:0xff9045), 14);
         showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+', '+pk.n, 1400);
         scene.remove(pk.sp); pickups.splice(pi,1);
@@ -2117,7 +2188,7 @@ function animate(){
       if(invulnT>0) invulnT-=dt;
       if(Math.hypot(player.position.x-spirit.sp.position.x, player.position.z-spirit.sp.position.z)<1.9 && invulnT<=0){
         S.en=Math.max(0,S.en-5); syncStats();
-        playSfx('hit');
+        playSfx('hit'); buzz([30,40,30]);
         spawnBurst(player.position.x, 1.4, player.position.z, 0xd84a4a, 16);
         camShake=0.35;
         showToast('👻 Deadline dí! −5 ⚡', 1500); invulnT=1.6;
@@ -2126,16 +2197,19 @@ function animate(){
     }
   }
   animPerson(player, moving, dt, t);
-  // Sinh viên đi tuần
+  // Sinh viên đi tuần: áp cùng va chạm AABB như người chơi, NPC không bao giờ xuyên tường;
+  // nhân vật ở xa quá 34 m chỉ cập nhật hoạt ảnh 1/3 số khung hình để nhẹ máy
   for(var i=0;i<students.length;i++){ var st=students[i];
     st.t+=dt*st.speed*st.dir;
     var span=Math.hypot(st.b.x-st.a.x, st.b.z-st.a.z);
     if(st.t>span){ st.t=span; st.dir=-1; } if(st.t<0){ st.t=0; st.dir=1; }
     var k=span? st.t/span : 0;
-    st.p.position.x=st.a.x+(st.b.x-st.a.x)*k;
-    st.p.position.z=st.a.z+(st.b.z-st.a.z)*k;
+    var cc3=collideXZ(st.a.x+(st.b.x-st.a.x)*k, st.a.z+(st.b.z-st.a.z)*k, 0.45);
+    st.p.position.x=cc3.x; st.p.position.z=cc3.z;
     faceToward(st.p, (st.b.x-st.a.x)*st.dir, (st.b.z-st.a.z)*st.dir, dt);
-    animPerson(st.p, true, dt, t);
+    var dxp=st.p.position.x-player.position.x, dzp=st.p.position.z-player.position.z;
+    var farNpc=(dxp*dxp+dzp*dzp)>1156;
+    if(!farNpc || ((i+((t*2)|0))%3===0)) animPerson(st.p, true, farNpc? dt*3: dt, t);
   }
   // Nhân vật ngồi
   for(var sdi=0; sdi<seated.length; sdi++){ var sdo=seated[sdi]; sdo.g.position.y=sdo.base+Math.sin(t*1.7+sdo.ph)*0.03; }
