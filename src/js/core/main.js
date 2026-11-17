@@ -103,6 +103,7 @@ function animate(){
   requestAnimationFrame(animate);
   var dt=Math.min(0.05, clock.getDelta()), t=clock.elapsedTime;
   applyTimeTheme(cur, Math.min(1, dt*1.6));
+  if(typeof updateFx==='function') updateFx(dt, t);
 
   var moving=false, mx=0, mz=0;
   if(mode==='play'){
