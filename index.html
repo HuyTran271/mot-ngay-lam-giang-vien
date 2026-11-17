@@ -15,16 +15,20 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.resolve();
 </script>
 <script>
-window.BUILD_V='5ae87bed11e6';
+window.BUILD_V='4f28988d7e4f';
 (function(){ function chk(){ try{ fetch('version.txt?x='+Date.now(), {cache:'no-store'}).then(function(r){ return r.ok? r.text() : null; }).then(function(v){ if(v){ v=v.trim(); if(v && v!==window.BUILD_V) location.reload(); } }).catch(function(){}); }catch(e){} }
 var _t1=setTimeout(chk, 4000); if(_t1 && _t1.unref) _t1.unref();
 var _t2=setInterval(chk, 60000); if(_t2 && _t2.unref) _t2.unref();
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) chk(); });
 })();
 </script>
-<link rel="stylesheet" href="src/css/base.css?v=5ae87bed11e6">
-<link rel="stylesheet" href="src/css/screens.css?v=5ae87bed11e6">
-<link rel="stylesheet" href="src/css/dialog.css?v=5ae87bed11e6">
+<script>
+// Điền URL project và anon key của Supabase khi triển khai thật.
+window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkaW5obm16Ymp4bHBhcGJpamxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MzQ4OTQsImV4cCI6MjExMDQxMDg5NH0.ICX5OvQkPc9V2zyHB_fNV78PUYMnMjA5WL9FmIe-7po', table:'cay_tri_an'};
+</script>
+<link rel="stylesheet" href="src/css/base.css?v=4f28988d7e4f">
+<link rel="stylesheet" href="src/css/screens.css?v=4f28988d7e4f">
+<link rel="stylesheet" href="src/css/dialog.css?v=4f28988d7e4f">
 </head>
 <body>
 <div id="app">
@@ -35,6 +39,49 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
   <div id="hint">🕹️ Kéo nửa trái: joystick · Chạm nửa phải: tự đi tới · WASD/phím mũi tên</div>
   <div id="joy"></div><div id="nub"></div>
   <div id="err"></div>
+
+  <div class="overlay" id="gratitude-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">🌱</div>
+      <h1> GIEO HẠT TRI ÂN </h1>
+      <p id="gratitude-count-line">Vườn đang chờ hạt tri ân đầu tiên. Hãy là người gieo hạt đầu tiên nhé.</p>
+      <p>Mỗi lời tri ân bạn gửi sẽ mọc thành một cây trong khu vườn chung này, mang theo tấm thiệp của bạn để mọi người cùng đọc.</p>
+      <label for="gratitude-name">Tên của bạn (không bắt buộc)</label>
+      <input id="gratitude-name" maxlength="60" placeholder="Ví dụ: Một học trò" autocomplete="off">
+      <label for="gratitude-class">Lớp của bạn (không bắt buộc)</label>
+      <input id="gratitude-class" maxlength="60" placeholder="Ví dụ: CNTT K24" autocomplete="off">
+      <label for="gratitude-to">Gửi tới thầy/cô</label>
+      <input id="gratitude-to" maxlength="80" placeholder="Ví dụ: Thầy cô Bộ môn CNTT" autocomplete="off">
+      <label for="gratitude-tree">Chọn hạt giống</label>
+      <select id="gratitude-tree">
+        <option value="oak">🌳 Cây xanh</option>
+        <option value="pine">🌲 Cây thông</option>
+        <option value="flower">🌼 Bụi hoa</option>
+      </select>
+      <label for="gratitude-message">Lời tri ân <span id="gratitude-count">0/300</span></label>
+      <textarea id="gratitude-message" maxlength="300" rows="4" placeholder="Cảm ơn thầy cô vì..."></textarea>
+      <div id="gratitude-status" role="status"></div>
+      <div class="gratitude-actions">
+        <button class="btn alt" id="gratitude-close">Để sau</button>
+        <button class="btn" id="gratitude-submit">🌱 Gieo hạt tri ân</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="garden-action" style="display:none"></button>
+
+  <div class="overlay" id="card-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">💌</div>
+      <h1> THIỆP TRI ÂN </h1>
+      <p id="card-to" style="font-weight:700"></p>
+      <p id="card-msg"></p>
+      <p id="card-from" style="color:#64748b"></p>
+      <div class="gratitude-actions">
+        <button class="btn" id="card-close">Đóng thiệp</button>
+      </div>
+    </div>
+  </div>
 
   <div class="overlay" id="start">
     <div class="card">
@@ -73,22 +120,23 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
 </div>
 
 <script>
-var MODEL_DATA={treeOak:"src/assets/tree-oak.glb?v=5ae87bed11e6",treePine:"src/assets/tree-pine.glb?v=5ae87bed11e6",treeDetailed:"src/assets/tree-detailed.glb?v=5ae87bed11e6",rock:"src/assets/rock-large.glb?v=5ae87bed11e6",bush:"src/assets/bush-large.glb?v=5ae87bed11e6",flower:"src/assets/flower-red.glb?v=5ae87bed11e6"};
+var MODEL_DATA={treeOak:"src/assets/tree-oak.glb?v=4f28988d7e4f",treePine:"src/assets/tree-pine.glb?v=4f28988d7e4f",treeDetailed:"src/assets/tree-detailed.glb?v=4f28988d7e4f",rock:"src/assets/rock-large.glb?v=4f28988d7e4f",bush:"src/assets/bush-large.glb?v=4f28988d7e4f",flower:"src/assets/flower-red.glb?v=4f28988d7e4f"};
 </script>
-<script src="src/js/world/models.js?v=5ae87bed11e6"></script>
-<script src="src/js/core/config.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/props.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/people.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/campus.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/school.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/library.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/house.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/expand.js?v=5ae87bed11e6"></script>
-<script src="src/js/world/world.js?v=5ae87bed11e6"></script>
-<script src="src/js/story/dialogs.js?v=5ae87bed11e6"></script>
-<script src="src/js/story/dialog-ui.js?v=5ae87bed11e6"></script>
-<script src="src/js/story/flow.js?v=5ae87bed11e6"></script>
-<script src="src/js/core/input.js?v=5ae87bed11e6"></script>
-<script src="src/js/core/main.js?v=5ae87bed11e6"></script>
+<script src="src/js/world/models.js?v=4f28988d7e4f"></script>
+<script src="src/js/core/config.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/props.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/people.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/campus.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/school.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/library.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/house.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/expand.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/world.js?v=4f28988d7e4f"></script>
+<script src="src/js/world/gratitude.js?v=4f28988d7e4f"></script>
+<script src="src/js/story/dialogs.js?v=4f28988d7e4f"></script>
+<script src="src/js/story/dialog-ui.js?v=4f28988d7e4f"></script>
+<script src="src/js/story/flow.js?v=4f28988d7e4f"></script>
+<script src="src/js/core/input.js?v=4f28988d7e4f"></script>
+<script src="src/js/core/main.js?v=4f28988d7e4f"></script>
 </body>
 </html>
