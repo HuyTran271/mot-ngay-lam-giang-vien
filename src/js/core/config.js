@@ -62,6 +62,7 @@ function playSfx(type){
     else if(type==='hit'){ tone(190,0.22,0.11,'sawtooth',0,95); }
     else if(type==='scene'){ tone(523,0.14,0.07,'sine',0); tone(659,0.18,0.07,'sine',0.09); }
     else if(type==='pick'){ tone(440,0.08,0.06,'triangle',0,554); }
+    else if(type==='blip'){ tone(500+Math.random()*70,0.035,0.018,'square',0); }
     else if(type==='end'){ tone(523,0.18,0.08,'sine',0); tone(659,0.18,0.08,'sine',0.12); tone(784,0.28,0.09,'sine',0.24); tone(1046,0.4,0.08,'sine',0.36); }
   }catch(e){}
 }

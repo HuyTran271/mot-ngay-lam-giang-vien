@@ -24,7 +24,7 @@ function bindInput(){
         var rp=document.createElement('div'); rp.className='tap-ripple';
         rp.style.left=e.clientX+'px'; rp.style.top=e.clientY+'px';
         document.body.appendChild(rp);
-        setTimeout(function(){ rp.remove(); }, 340);
+        setTimeout(function(){ if(rp.parentNode) rp.parentNode.removeChild(rp); }, 340);
       }
     }
   });

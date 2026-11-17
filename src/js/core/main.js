@@ -125,7 +125,8 @@ function animate(){
     lastPX=player.position.x; lastPZ=player.position.z;
     if(mx||mz){
       var l=Math.hypot(mx,mz); mx/=l; mz/=l;
-      var np=collideXZ(player.position.x+mx*11*dt, player.position.z+mz*11*dt, 0.85);
+      var tiredF=(S.en<25||S.he<25)?0.85:1;
+      var np=collideXZ(player.position.x+mx*11*tiredF*dt, player.position.z+mz*11*tiredF*dt, 0.85);
       player.position.x=np.x; player.position.z=np.z;
       faceToward(player, mx, mz, dt);
       moving=true;
