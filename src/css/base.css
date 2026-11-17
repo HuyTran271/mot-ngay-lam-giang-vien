@@ -53,6 +53,11 @@
 #garden-action{position:fixed;right:14px;bottom:172px;z-index:60;background:#f2b33d;color:#263653;border:2px solid #263653;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-action:active{transform:scale(.96)}
 #card-msg{white-space:pre-wrap;line-height:1.55;background:#fdf6e3;border:1px solid #e2ad3b;border-radius:10px;padding:12px}
+#card-panel{perspective:700px}
+#card-panel .gratitude-card{animation:cardin .45s ease}
+@keyframes cardin{from{transform:rotateY(16deg) translateY(12px);opacity:0}to{transform:rotateY(0) translateY(0);opacity:1}}
+.tap-ripple{position:fixed;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(255,255,255,.35);pointer-events:none;z-index:60;animation:taprip .32s ease-out forwards}
+@keyframes taprip{from{transform:scale(.4);opacity:.85}to{transform:scale(1.7);opacity:0}}
 
 #garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-view:active{transform:scale(.96)}
