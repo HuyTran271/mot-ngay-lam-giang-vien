@@ -90,7 +90,7 @@ function buildExpansion(){
   box(4.2,0.5,1.1, 0x9a8a72, 14,0.45,55); solid(11.9,54.4, 16.1,55.6);
   tree(-17,45,1); tree(17,45,1); tree(-17,65,1.05); tree(17,65,1.05);
   placeModel('flower', -18,56, 0.65, 1.1); placeModel('flower', 18,56, 0.65, 2.4);
-  var lbGarden=makeLabel('🌿 VƯỜN CỘNG ĐỒNG', 10); lbGarden.position.set(0,6.2,55); scene.add(lbGarden);
+  var lbGarden=makeLabel('🌿 KHU VỰC GỬI LỜI TRI ÂN', 14); lbGarden.position.set(0,6.2,55); scene.add(lbGarden);
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
   // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
   tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
