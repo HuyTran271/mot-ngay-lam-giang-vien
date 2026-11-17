@@ -149,7 +149,7 @@ function animate(){
       pk.sp.position.y=1.25+Math.sin(t*2.4+pk.ph)*0.18;
       if(Math.hypot(pk.x-player.position.x, pk.z-player.position.z)<1.7){
         S[pk.k]+=pk.v; clampStat(); syncStats();
-        playSfx('pickup');
+        playSfx('pickup'); buzz(12);
         spawnBurst(pk.x, 1.3, pk.z, pk.k==='en'?0xffd76e:(pk.k==='he'?0xff7b9c:0xff9045), 14);
         showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+', '+pk.n, 1400);
         scene.remove(pk.sp); pickups.splice(pi,1);
@@ -167,7 +167,7 @@ function animate(){
       if(invulnT>0) invulnT-=dt;
       if(Math.hypot(player.position.x-spirit.sp.position.x, player.position.z-spirit.sp.position.z)<1.9 && invulnT<=0){
         S.en=Math.max(0,S.en-5); syncStats();
-        playSfx('hit');
+        playSfx('hit'); buzz([30,40,30]);
         spawnBurst(player.position.x, 1.4, player.position.z, 0xd84a4a, 16);
         camShake=0.35;
         showToast('👻 Deadline dí! −5 ⚡', 1500); invulnT=1.6;
@@ -176,16 +176,19 @@ function animate(){
     }
   }
   animPerson(player, moving, dt, t);
-  // Sinh viên đi tuần
+  // Sinh viên đi tuần: áp cùng va chạm AABB như người chơi, NPC không bao giờ xuyên tường;
+  // nhân vật ở xa quá 34 m chỉ cập nhật hoạt ảnh 1/3 số khung hình để nhẹ máy
   for(var i=0;i<students.length;i++){ var st=students[i];
     st.t+=dt*st.speed*st.dir;
     var span=Math.hypot(st.b.x-st.a.x, st.b.z-st.a.z);
     if(st.t>span){ st.t=span; st.dir=-1; } if(st.t<0){ st.t=0; st.dir=1; }
     var k=span? st.t/span : 0;
-    st.p.position.x=st.a.x+(st.b.x-st.a.x)*k;
-    st.p.position.z=st.a.z+(st.b.z-st.a.z)*k;
+    var cc3=collideXZ(st.a.x+(st.b.x-st.a.x)*k, st.a.z+(st.b.z-st.a.z)*k, 0.45);
+    st.p.position.x=cc3.x; st.p.position.z=cc3.z;
     faceToward(st.p, (st.b.x-st.a.x)*st.dir, (st.b.z-st.a.z)*st.dir, dt);
-    animPerson(st.p, true, dt, t);
+    var dxp=st.p.position.x-player.position.x, dzp=st.p.position.z-player.position.z;
+    var farNpc=(dxp*dxp+dzp*dzp)>1156;
+    if(!farNpc || ((i+((t*2)|0))%3===0)) animPerson(st.p, true, farNpc? dt*3: dt, t);
   }
   // Nhân vật ngồi
   for(var sdi=0; sdi<seated.length; sdi++){ var sdo=seated[sdi]; sdo.g.position.y=sdo.base+Math.sin(t*1.7+sdo.ph)*0.03; }

@@ -20,7 +20,12 @@ function bindInput(){
       n.style.display='block'; n.style.left=(joy.bx-26)+'px'; n.style.top=(joy.by-26)+'px';
     } else {
       var p=pointerGround(e);
-      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z); }
+      if(p){ target={x:p.x, z:p.z}; stallT=0; targetRing.visible=true; targetRing.position.set(p.x, 0.05, p.z);
+        var rp=document.createElement('div'); rp.className='tap-ripple';
+        rp.style.left=e.clientX+'px'; rp.style.top=e.clientY+'px';
+        document.body.appendChild(rp);
+        setTimeout(function(){ rp.remove(); }, 340);
+      }
     }
   });
   window.addEventListener('pointermove', function(e){

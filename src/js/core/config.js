@@ -79,6 +79,7 @@ function spawnBurst(x, y, z, color, count){
     burstParticles.push({m:m, vx:Math.cos(ang)*spd, vy:2.5+Math.random()*3.2, vz:Math.sin(ang)*spd, life:0.55+Math.random()*0.25, max:0.8});
   }
 }
+function buzz(p){ try{ if(navigator && navigator.vibrate) navigator.vibrate(p); }catch(e){} }
 var toastTimer=null;
 var cur=0, pendingNext=null, collapseUsed=false, inCollapse=false, invulnT=0;
 var pickups=[], spirit=null;
