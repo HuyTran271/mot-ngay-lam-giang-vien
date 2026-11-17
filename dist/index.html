@@ -425,7 +425,7 @@ function makeIcon(emo, s){
 function tree(x,z,s){
   var _kinds=['treeOak','treePine','treeDetailed'];
   var _kind=_kinds[Math.abs(Math.round(x*7+z*13))%3];
-  if(MODELS[_kind]){ placeModel(_kind, x, z, 4.3*(s||1), (Math.abs(Math.round(x*3+z*5))%6)*1.05); solid(x-0.55, z-0.55, x+0.55, z+0.55); return; }
+  if(MODELS[_kind]){ var _pm=placeModel(_kind, x, z, 4.3*(s||1), (Math.abs(Math.round(x*3+z*5))%6)*1.05); if(_pm && typeof regWind==='function') regWind(_pm, 0.02); solid(x-0.55, z-0.55, x+0.55, z+0.55); return; }
   var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s||1);
   var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,1.6,7), new THREE.MeshStandardMaterial({color:0x8a5a28, roughness:.9}));
   trunk.position.y=0.8; trunk.castShadow=true; g.add(trunk);
@@ -433,7 +433,7 @@ function tree(x,z,s){
   c1.position.y=2.6; c1.castShadow=true; g.add(c1);
   var c2=new THREE.Mesh(new THREE.SphereGeometry(1.05,10,8), new THREE.MeshStandardMaterial({color:0x5d8a44, roughness:.9}));
   c2.position.set(0.7,3.4,0.3); c2.castShadow=true; g.add(c2);
-  scene.add(g); solid(x-0.55, z-0.55, x+0.55, z+0.55);
+  scene.add(g); if(typeof regWind==='function') regWind(g, 0.025); solid(x-0.55, z-0.55, x+0.55, z+0.55);
 }
 function lamp(x,z){
   var poleMat=new THREE.MeshStandardMaterial({color:0x3f3730, roughness:0.65, metalness:0.25});
@@ -1199,6 +1199,7 @@ function plantTree(row, slotIdx){
   }
   else made=placeModel('treeOak', x, z, targetH, rot);
   if(!made) made=gardenFallbackTree(x, z, targetH, row.loai_cay==='flower');
+  regWind(made, row.loai_cay==='flower'?0.035:0.022);
   solid(x-0.45, z-0.45, x+0.45, z+0.45);
   var ten=String(row.ten||'Một người học trò'); if(ten.length>18) ten=ten.slice(0,18)+'…';
   var lb=makeLabel('🌱 '+ten, 5.5, 30);
@@ -1338,6 +1339,12 @@ function updateGratitude(){
 // ===== HIỆU ỨNG: cánh hoa rơi trong vườn, đom đóm buổi tối, mặt hồ lấp lánh =====
 var fxPetals=null, fxFlies=null, fxSpark=null;
 
+// ===== GIÓ: cây đung đưa nhẹ quanh gốc =====
+var WINDY=[];
+function regWind(obj, amp){
+  if(obj) WINDY.push({o:obj, ph:Math.random()*6.28, amp:amp||0.02});
+}
+
 function fxMakePoints(n, color, size, opacity){
   var g=new THREE.BufferGeometry();
   var pos=new Float32Array(n*3);
@@ -1384,6 +1391,11 @@ function updateFx(dt, t){
     m.opacity+=(target-m.opacity)*Math.min(1,dt*2);
   }
   if(fxSpark){ fxSpark.points.material.opacity=0.3+0.25*Math.sin(t*2.1); }
+  for(var w=0;w<WINDY.length;w++){
+    var wd=WINDY[w];
+    wd.o.rotation.z=Math.sin(t*1.15+wd.ph)*wd.amp;
+    wd.o.rotation.x=Math.cos(t*0.85+wd.ph)*wd.amp*0.6;
+  }
 }
 
 function initGratitude(){
