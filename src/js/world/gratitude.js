@@ -228,8 +228,60 @@ function updateGratitude(){
   }
 }
 
+// ===== HIỆU ỨNG: cánh hoa rơi trong vườn, đom đóm buổi tối, mặt hồ lấp lánh =====
+var fxPetals=null, fxFlies=null, fxSpark=null;
+
+function fxMakePoints(n, color, size, opacity){
+  var g=new THREE.BufferGeometry();
+  var pos=new Float32Array(n*3);
+  g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  var m=new THREE.PointsMaterial({color:color, size:size, transparent:true, opacity:opacity, depthWrite:false});
+  var p=new THREE.Points(g,m); p.frustumCulled=false; scene.add(p);
+  return {points:p, pos:pos, n:n};
+}
+
+function buildFx(){
+  var i;
+  fxPetals=fxMakePoints(110, 0xf6c6d9, 0.22, 0.95);
+  for(i=0;i<fxPetals.n;i++){ fxPetals.pos[i*3]=-17+Math.random()*34; fxPetals.pos[i*3+1]=0.3+Math.random()*5.5; fxPetals.pos[i*3+2]=45+Math.random()*23; }
+  fxPetals.points.geometry.attributes.position.needsUpdate=true;
+  fxFlies=fxMakePoints(70, 0xd8f78a, 0.3, 0);
+  for(i=0;i<fxFlies.n;i++){ fxFlies.pos[i*3]=-34+Math.random()*70; fxFlies.pos[i*3+1]=0.6+Math.random()*2.2; fxFlies.pos[i*3+2]=-40+Math.random()*100; }
+  fxFlies.points.geometry.attributes.position.needsUpdate=true;
+  fxSpark=fxMakePoints(50, 0xbfe8d8, 0.16, 0.5);
+  for(i=0;i<fxSpark.n;i++){ fxSpark.pos[i*3]=4+Math.random()*16; fxSpark.pos[i*3+1]=0.12; fxSpark.pos[i*3+2]=-43+Math.random()*14; }
+  fxSpark.points.geometry.attributes.position.needsUpdate=true;
+}
+
+function updateFx(dt, t){
+  var i;
+  if(fxPetals){
+    var p=fxPetals.pos;
+    for(i=0;i<fxPetals.n;i++){
+      p[i*3+1]-=dt*0.45;
+      p[i*3]+=Math.sin(t*1.3+i)*dt*0.35;
+      if(p[i*3+1]<0.15){ p[i*3+1]=5.5+Math.random(); p[i*3]=-17+Math.random()*34; p[i*3+2]=45+Math.random()*23; }
+    }
+    fxPetals.points.geometry.attributes.position.needsUpdate=true;
+  }
+  if(fxFlies){
+    var q=fxFlies.pos;
+    for(i=0;i<fxFlies.n;i++){
+      q[i*3]+=Math.sin(t*0.7+i*1.7)*dt*0.5;
+      q[i*3+1]+=Math.cos(t*0.9+i)*dt*0.25;
+      q[i*3+2]+=Math.cos(t*0.6+i*2.3)*dt*0.5;
+    }
+    fxFlies.points.geometry.attributes.position.needsUpdate=true;
+    var target=(typeof cur!=='undefined' && cur>=9)?0.9:0;
+    var m=fxFlies.points.material;
+    m.opacity+=(target-m.opacity)*Math.min(1,dt*2);
+  }
+  if(fxSpark){ fxSpark.points.material.opacity=0.3+0.25*Math.sin(t*2.1); }
+}
+
 function initGratitude(){
   try{
+    buildFx();
     document.getElementById('gratitude-close').addEventListener('click',closeGratitude);
     document.getElementById('gratitude-submit').addEventListener('click',submitGratitude);
     document.getElementById('card-close').addEventListener('click',closeCard);
