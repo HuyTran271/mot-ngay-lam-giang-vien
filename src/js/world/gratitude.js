@@ -92,6 +92,7 @@ function plantTree(row, slotIdx){
   }
   else made=placeModel('treeOak', x, z, targetH, rot);
   if(!made) made=gardenFallbackTree(x, z, targetH, row.loai_cay==='flower');
+  regWind(made, row.loai_cay==='flower'?0.035:0.022);
   solid(x-0.45, z-0.45, x+0.45, z+0.45);
   var ten=String(row.ten||'Một người học trò'); if(ten.length>18) ten=ten.slice(0,18)+'…';
   var lb=makeLabel('🌱 '+ten, 5.5, 30);
@@ -231,6 +232,12 @@ function updateGratitude(){
 // ===== HIỆU ỨNG: cánh hoa rơi trong vườn, đom đóm buổi tối, mặt hồ lấp lánh =====
 var fxPetals=null, fxFlies=null, fxSpark=null;
 
+// ===== GIÓ: cây đung đưa nhẹ quanh gốc =====
+var WINDY=[];
+function regWind(obj, amp){
+  if(obj) WINDY.push({o:obj, ph:Math.random()*6.28, amp:amp||0.02});
+}
+
 function fxMakePoints(n, color, size, opacity){
   var g=new THREE.BufferGeometry();
   var pos=new Float32Array(n*3);
@@ -277,6 +284,11 @@ function updateFx(dt, t){
     m.opacity+=(target-m.opacity)*Math.min(1,dt*2);
   }
   if(fxSpark){ fxSpark.points.material.opacity=0.3+0.25*Math.sin(t*2.1); }
+  for(var w=0;w<WINDY.length;w++){
+    var wd=WINDY[w];
+    wd.o.rotation.z=Math.sin(t*1.15+wd.ph)*wd.amp;
+    wd.o.rotation.x=Math.cos(t*0.85+wd.ph)*wd.amp*0.6;
+  }
 }
 
 function initGratitude(){

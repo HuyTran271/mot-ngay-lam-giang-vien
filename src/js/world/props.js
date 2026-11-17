@@ -2,7 +2,7 @@
 function tree(x,z,s){
   var _kinds=['treeOak','treePine','treeDetailed'];
   var _kind=_kinds[Math.abs(Math.round(x*7+z*13))%3];
-  if(MODELS[_kind]){ placeModel(_kind, x, z, 4.3*(s||1), (Math.abs(Math.round(x*3+z*5))%6)*1.05); solid(x-0.55, z-0.55, x+0.55, z+0.55); return; }
+  if(MODELS[_kind]){ var _pm=placeModel(_kind, x, z, 4.3*(s||1), (Math.abs(Math.round(x*3+z*5))%6)*1.05); if(_pm && typeof regWind==='function') regWind(_pm, 0.02); solid(x-0.55, z-0.55, x+0.55, z+0.55); return; }
   var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s||1);
   var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,1.6,7), new THREE.MeshStandardMaterial({color:0x8a5a28, roughness:.9}));
   trunk.position.y=0.8; trunk.castShadow=true; g.add(trunk);
@@ -10,7 +10,7 @@ function tree(x,z,s){
   c1.position.y=2.6; c1.castShadow=true; g.add(c1);
   var c2=new THREE.Mesh(new THREE.SphereGeometry(1.05,10,8), new THREE.MeshStandardMaterial({color:0x5d8a44, roughness:.9}));
   c2.position.set(0.7,3.4,0.3); c2.castShadow=true; g.add(c2);
-  scene.add(g); solid(x-0.55, z-0.55, x+0.55, z+0.55);
+  scene.add(g); if(typeof regWind==='function') regWind(g, 0.025); solid(x-0.55, z-0.55, x+0.55, z+0.55);
 }
 function lamp(x,z){
   var poleMat=new THREE.MeshStandardMaterial({color:0x3f3730, roughness:0.65, metalness:0.25});
