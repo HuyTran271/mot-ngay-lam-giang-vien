@@ -11,7 +11,7 @@ function init(){
   camera.position.set(0, 23, 52);
   renderer=new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
   renderer.setSize(innerWidth, innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1, 1.5));
   renderer.shadowMap.enabled=true;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   if(THREE.ACESFilmicToneMapping!==undefined){
@@ -29,7 +29,7 @@ function init(){
   hemiLight=new THREE.HemisphereLight(0xcfe6ff, 0x7a9a5a, 0.95); scene.add(hemiLight);
   sunLight=new THREE.DirectionalLight(0xffe3b3, 1.9);
   sunLight.position.set(34, 48, 22); sunLight.castShadow=true;
-  sunLight.shadow.mapSize.set(2048,2048);
+  sunLight.shadow.mapSize.set(1536,1536);
   sunLight.shadow.camera.left=-72; sunLight.shadow.camera.right=72; sunLight.shadow.camera.top=72; sunLight.shadow.camera.bottom=-72;
   sunLight.shadow.camera.near=5; sunLight.shadow.camera.far=140; sunLight.shadow.bias=-0.0005;
   scene.add(sunLight);

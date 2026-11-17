@@ -22,7 +22,7 @@ var keys={};
 var joy={on:false, id:null, bx:0, by:0, dx:0, dy:0};
 var target=null, targetRing=null, stallT=0, lastPX=0, lastPZ=0;
 var beaconStep=0, beacons=[];
-var flagMesh=null, lampLights=[], lakeMeshes=[], burstParticles=[], dustParticles=[], ambientParticles=null;
+var flagMesh=null, lampLights=[], lakeMeshes=[], LAKE_MATS=[], burstParticles=[], dustParticles=[], ambientParticles=null;
 var skyDome=null, skyMat=null, celestialBody=null, starPoints=null, hemiLight=null, sunLight=null;
 var camShake=0, sfxMuted=false, _audioCtx=null;
 // Bảng màu bầu trời & ánh sáng theo 13 mốc thời gian (05:00 -> 01:00)
