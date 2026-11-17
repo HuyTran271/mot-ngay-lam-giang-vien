@@ -24,14 +24,42 @@ Kiểm tra nhanh bằng lệnh `node tests/harness.js`, chương trình sẽ gi�
 
 ## Cấu trúc thư mục
 
-- `index.html`: tệp trang chính ở thư mục gốc mà GitHub Pages đang phục vụ, nạp mã nguồn từ thư mục `src` khi chạy.
-- `src/index.html`: khung trang và thứ tự nạp các phần của game.
-- `src/css`: giao diện trang, màn hình bắt đầu và kết thúc, hộp thoại.
-- `src/js/core`: cấu hình chung, điều khiển và vòng lặp game.
-- `src/js/world`: bản đồ khuôn viên, các tòa nhà, nhân vật và model 3D.
-- `src/js/story`: kịch bản 13 cảnh, hộp thoại và luồng chơi.
-- `src/assets`: model 3D định dạng glb và giấy phép đi kèm.
-- `tests`: chương trình kiểm tra tự động.
+```
+.
+├── index.html            Trang chính mà GitHub Pages phục vụ, nạp code từ thư mục src
+├── version.txt           Mã phiên bản của bản dựng, phục vụ cơ chế tự cập nhật
+├── build.py              Đóng gói toàn bộ game thành một tệp duy nhất trong thư mục dist
+├── dist/
+│   └── index.html        Bản đóng gói một tệp duy nhất, mang đi đâu cũng chạy được
+├── src/
+│   ├── index.html        Khung trang và thứ tự nạp các phần của game
+│   ├── css/
+│   │   ├── base.css      Giao diện nền, thanh chỉ số HUD, bố cục chung
+│   │   ├── screens.css   Màn hình bắt đầu và màn hình kết thúc
+│   │   └── dialog.css    Hộp thoại kiểu visual novel, bảng tên, nút lựa chọn
+│   ├── js/
+│   │   ├── core/
+│   │   │   ├── config.js     Cấu hình chung, xử lý va chạm, nhãn địa điểm, hàm tiện ích
+│   │   │   ├── input.js      Joystick ảo, chạm để di chuyển, phím WASD và mũi tên
+│   │   │   └── main.js       Khởi tạo game, vòng lặp chính, ánh sáng thay đổi theo giờ trong ngày
+│   │   ├── world/
+│   │   │   ├── models.js     Tải model 3D của Kenney, tự dùng hình khối dự phòng nếu tải lỗi
+│   │   │   ├── props.js      Các khối xây dựng dùng chung: nhà, cây, cột đèn, biển tên
+│   │   │   ├── people.js     Nhân vật: giảng viên, sinh viên, đồng nghiệp
+│   │   │   ├── campus.js     Khuôn viên: cổng trường, hồ nước, đường đi, hàng rào
+│   │   │   ├── school.js     Tòa nhà chính: phòng học và văn phòng khoa
+│   │   │   ├── library.js    Thư viện và căn tin
+│   │   │   ├── house.js      Nhà ở của giảng viên ngoài khuôn viên
+│   │   │   ├── expand.js     Khu mở rộng: sân tennis, sân bóng đá, nhà thi đấu, ký túc xá, vườn thực nghiệm
+│   │   │   └── world.js      Lắp ráp toàn bộ thế giới và vị trí 13 điểm sự kiện
+│   │   └── story/
+│   │       ├── dialogs.js    Kịch bản 13 cảnh, các lựa chọn và điều kiện 4 kết thúc
+│   │       ├── dialog-ui.js  Hiển thị hội thoại, hiệu ứng gõ chữ, nút lựa chọn
+│   │       └── flow.js       Luồng chơi: bắt đầu ngày, chuyển cảnh, tính kết thúc
+│   └── assets/           Model 3D định dạng glb của bộ Kenney Nature Kit (CC0) và giấy phép đi kèm
+└── tests/
+    └── harness.js        Kiểm tra tự động: giả lập chơi trọn một ván và báo kết quả
+```
 
 ## Công nghệ và ghi công
 
