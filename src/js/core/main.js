@@ -51,7 +51,7 @@ function init(){
     var ambGeo=new THREE.BufferGeometry();
     var ambPos=[];
     for(var ai=0; ai<50; ai++){
-      ambPos.push(-38+Math.random()*78, 0.8+Math.random()*5.5, -52+Math.random()*98);
+      ambPos.push(-38+Math.random()*78, 0.8+Math.random()*5.5, -52+Math.random()*122);
     }
     ambGeo.setAttribute('position', new THREE.Float32BufferAttribute(ambPos, 3));
     ambientParticles=new THREE.Points(ambGeo, new THREE.PointsMaterial({color:0xffe99c, size:0.35, transparent:true, opacity:0.55, depthWrite:false}));

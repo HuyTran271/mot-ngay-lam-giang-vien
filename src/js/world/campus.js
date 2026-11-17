@@ -4,7 +4,7 @@
 function buildCampus(){
   var pathC=0xb8ab8c, wallC=0xf3e6c8, roofRed=0xc0392b;
   // Nền cỏ toàn map
-  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,124), new THREE.MeshStandardMaterial({map:grassTexture(), roughness:0.95}));
+  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,148), new THREE.MeshStandardMaterial({map:grassTexture(), roughness:0.95}));
   grass.rotation.x=-Math.PI/2; grass.receiveShadow=true; scene.add(grass);
   function flat(w,d,color,x,z,y){
     var matOpts={color:color, roughness:0.95};

@@ -4,7 +4,8 @@ window.addEventListener('error', function(e){ var d=document.getElementById('err
 var SOLIDS=[]; // {x0,z0,x1,z1}
 function solid(x0,z0,x1,z1){ SOLIDS.push({x0:x0,z0:z0,x1:x1,z1:z1}); }
 function collideXZ(nx, nz, r){
-  nx=Math.max(-41.5, Math.min(41.5, nx)); nz=Math.max(-55.5, Math.min(51.5, nz));
+  // Biên phía Nam được mở rộng cho khu vườn cộng đồng mới.
+  nx=Math.max(-41.5, Math.min(41.5, nx)); nz=Math.max(-55.5, Math.min(72.5, nz));
   for(var i=0;i<SOLIDS.length;i++){ var o=SOLIDS[i];
     var cx=Math.max(o.x0, Math.min(nx, o.x1)), cz=Math.max(o.z0, Math.min(nz, o.z1));
     var dx=nx-cx, dz=nz-cz, d2=dx*dx+dz*dz;

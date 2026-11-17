@@ -73,6 +73,24 @@ function buildExpansion(){
     box(0.14,2.2,1.4, 0x6d4c41, 19.93,1.1,dz2, scene, false);
   }
   var lbD=makeLabel('🛏️ KÝ TÚC XÁ', 10); lbD.position.set(27,8.8,15); scene.add(lbD);
+
+  // ===== VƯỜN CỘNG ĐỒNG PHÍA NAM: khu mới nối từ cổng Nam, z 40..68 =====
+  // Khu này mở rộng không gian chơi ra ngoài dải nhà ở nhưng vẫn giữ lối đi rõ ràng.
+  flat(30,27, 0x78a951, 0,55, 0.015);
+  flat(4,32, 0xb8ab8c, 0,52);
+  flat(24,3, 0xb8ab8c, 0,43);
+  flat(24,3, 0xb8ab8c, 0,67);
+  var gardenX=[-10,-3,4,11], gardenZ=[49,58,63];
+  for(var gxi=0; gxi<gardenX.length; gxi++) for(var gzi=0; gzi<gardenZ.length; gzi++){
+    box(4.6,0.18,2.8, 0x8a6d4a, gardenX[gxi],0.09,gardenZ[gzi], scene, false);
+    var spr=new THREE.Mesh(new THREE.ConeGeometry(0.28,0.9,7), new THREE.MeshStandardMaterial({color:0x4e8f43, roughness:.9}));
+    spr.position.set(gardenX[gxi],0.62,gardenZ[gzi]); spr.castShadow=true; scene.add(spr);
+  }
+  box(4.2,0.5,1.1, 0x9a8a72, -14,0.45,55); solid(-16.1,54.4, -11.9,55.6);
+  box(4.2,0.5,1.1, 0x9a8a72, 14,0.45,55); solid(11.9,54.4, 16.1,55.6);
+  tree(-17,45,1); tree(17,45,1); tree(-17,65,1.05); tree(17,65,1.05);
+  placeModel('flower', -18,56, 0.65, 1.1); placeModel('flower', 18,56, 0.65, 2.4);
+  var lbGarden=makeLabel('🌿 VƯỜN CỘNG ĐỒNG', 10); lbGarden.position.set(0,6.2,55); scene.add(lbGarden);
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
   // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
   tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
