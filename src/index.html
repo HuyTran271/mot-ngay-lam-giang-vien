@@ -22,6 +22,10 @@ var _t2=setInterval(chk, 60000); if(_t2 && _t2.unref) _t2.unref();
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) chk(); });
 })();
 </script>
+<script>
+// Điền URL project và anon key của Supabase khi triển khai thật.
+window.SUPABASE_CONFIG={url:'', anonKey:'', table:'gratitude_messages'};
+</script>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/screens.css">
 <link rel="stylesheet" href="css/dialog.css">
@@ -35,6 +39,23 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
   <div id="hint">🕹️ Kéo nửa trái: joystick · Chạm nửa phải: tự đi tới · WASD/phím mũi tên</div>
   <div id="joy"></div><div id="nub"></div>
   <div id="err"></div>
+
+  <div class="overlay" id="gratitude-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">💌</div>
+      <h1> BẢNG TRI ÂN </h1>
+      <p>Viết một lời cảm ơn gửi tới thầy cô. Lời nhắn của bạn sẽ được lưu để những người chơi khác cùng đọc.</p>
+      <label for="gratitude-name">Tên của bạn (không bắt buộc)</label>
+      <input id="gratitude-name" maxlength="60" placeholder="Ví dụ: Một học trò" autocomplete="off">
+      <label for="gratitude-message">Lời tri ân <span id="gratitude-count">0/500</span></label>
+      <textarea id="gratitude-message" maxlength="500" rows="5" placeholder="Cảm ơn thầy cô vì..."></textarea>
+      <div id="gratitude-status" role="status"></div>
+      <div class="gratitude-actions">
+        <button class="btn alt" id="gratitude-close">Để sau</button>
+        <button class="btn" id="gratitude-submit">💌 Gửi lời tri ân</button>
+      </div>
+    </div>
+  </div>
 
   <div class="overlay" id="start">
     <div class="card">
@@ -83,6 +104,7 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
 <script src="js/world/house.js"></script>
 <script src="js/world/expand.js"></script>
 <script src="js/world/world.js"></script>
+<script src="js/world/gratitude.js"></script>
 <script src="js/story/dialogs.js"></script>
 <script src="js/story/dialog-ui.js"></script>
 <script src="js/story/flow.js"></script>

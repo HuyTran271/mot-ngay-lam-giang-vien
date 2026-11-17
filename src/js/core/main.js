@@ -106,6 +106,7 @@ function animate(){
 
   var moving=false, mx=0, mz=0;
   if(mode==='play'){
+    if(typeof updateGratitude==='function') updateGratitude();
     if(joy.on && Math.hypot(joy.dx,joy.dy)>0.22){ mx=joy.dx; mz=joy.dy; target=null; targetRing.visible=false; }
     else {
       if(keys['arrowleft']||keys['a']) mx=-1; else if(keys['arrowright']||keys['d']) mx=1;

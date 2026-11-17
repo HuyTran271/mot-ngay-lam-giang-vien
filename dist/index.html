@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="color-scheme" content="light only">
-<title>Demo 3D: Một Ngày Làm Giảng Viên</title>
+<title>Một Ngày Làm Giảng Viên</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"}}
@@ -21,6 +21,10 @@ var _t1=setTimeout(chk, 4000); if(_t1 && _t1.unref) _t1.unref();
 var _t2=setInterval(chk, 60000); if(_t2 && _t2.unref) _t2.unref();
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) chk(); });
 })();
+</script>
+<script>
+// Điền URL project và anon key của Supabase khi triển khai thật.
+window.SUPABASE_CONFIG={url:'', anonKey:'', table:'gratitude_messages'};
 </script>
 <style>
 :root{color-scheme:light only}
@@ -64,6 +68,16 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
 #navi{position:absolute;top:150px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:rgba(13,20,40,.84);backdrop-filter:blur(8px);border:1px solid rgba(242,179,61,.55);color:#fff;padding:7px 14px;border-radius:999px;font-size:14px;z-index:5;pointer-events:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28)}
 
 #navi-arrow{display:inline-block;color:#ffd76e;font-size:17px}
+
+.gratitude-card{max-width:520px;text-align:left}
+.gratitude-card h1{margin:4px 0 8px;text-align:center}
+.gratitude-card p{line-height:1.5}
+.gratitude-card label{display:block;margin:10px 0 5px;font-weight:700;color:#263653}
+.gratitude-card input,.gratitude-card textarea{width:100%;border:1px solid #c9d1df;border-radius:10px;padding:10px;font:inherit;resize:vertical;background:#fff;color:#182238}
+.gratitude-card input:focus,.gratitude-card textarea:focus{outline:2px solid #e2ad3b;border-color:transparent}
+#gratitude-count{float:right;font-weight:400;color:#64748b}
+#gratitude-status{min-height:20px;margin-top:8px;font-size:13px;color:#8b2d2d}
+.gratitude-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}
 </style>
 <style>
 
@@ -128,14 +142,30 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
 </head>
 <body>
 <div id="app">
-  <div id="hud" class="panel">⚡ <span id="st-en">70</span> · ❤️ <span id="st-he">70</span> · 🔥 <span id="st-fi">60</span> · <span id="hud-clock">🌅 05:00</span> · <span id="hud-phase">Buổi sáng</span> · <span id="hud-step">1/13</span></div>
-  <button id="btn-mute" class="panel" title="Bật/tắt âm thanh">🔊</button>
+  <div id="hud" class="panel">⚡ <span id="st-en">70</span> · ❤️ <span id="st-he">70</span> · 🔥 <span id="st-fi">60</span> · <span id="hud-clock">🕔 05:00</span> · <span id="hud-phase">Buổi sáng</span></div>
   <div id="objective" class="panel">🎯 Tới cửa Nhà ở, bắt đầu ngày mới</div>
   <div id="navi"><span id="navi-arrow">▲</span><span id="navi-txt"></span></div>
   <div id="toast"></div>
   <div id="hint">🕹️ Kéo nửa trái: joystick · Chạm nửa phải: tự đi tới · WASD/phím mũi tên</div>
   <div id="joy"></div><div id="nub"></div>
   <div id="err"></div>
+
+  <div class="overlay" id="gratitude-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">💌</div>
+      <h1> BẢNG TRI ÂN </h1>
+      <p>Viết một lời cảm ơn gửi tới thầy cô. Lời nhắn của bạn sẽ được lưu để những người chơi khác cùng đọc.</p>
+      <label for="gratitude-name">Tên của bạn (không bắt buộc)</label>
+      <input id="gratitude-name" maxlength="60" placeholder="Ví dụ: Một học trò" autocomplete="off">
+      <label for="gratitude-message">Lời tri ân <span id="gratitude-count">0/500</span></label>
+      <textarea id="gratitude-message" maxlength="500" rows="5" placeholder="Cảm ơn thầy cô vì..."></textarea>
+      <div id="gratitude-status" role="status"></div>
+      <div class="gratitude-actions">
+        <button class="btn alt" id="gratitude-close">Để sau</button>
+        <button class="btn" id="gratitude-submit">💌 Gửi lời tri ân</button>
+      </div>
+    </div>
+  </div>
 
   <div class="overlay" id="start">
     <div class="card">
@@ -215,7 +245,8 @@ window.addEventListener('error', function(e){ var d=document.getElementById('err
 var SOLIDS=[]; // {x0,z0,x1,z1}
 function solid(x0,z0,x1,z1){ SOLIDS.push({x0:x0,z0:z0,x1:x1,z1:z1}); }
 function collideXZ(nx, nz, r){
-  nx=Math.max(-41.5, Math.min(41.5, nx)); nz=Math.max(-55.5, Math.min(51.5, nz));
+  // Biên phía Nam được mở rộng cho khu vườn cộng đồng mới.
+  nx=Math.max(-41.5, Math.min(41.5, nx)); nz=Math.max(-55.5, Math.min(72.5, nz));
   for(var i=0;i<SOLIDS.length;i++){ var o=SOLIDS[i];
     var cx=Math.max(o.x0, Math.min(nx, o.x1)), cz=Math.max(o.z0, Math.min(nz, o.z1));
     var dx=nx-cx, dz=nz-cz, d2=dx*dx+dz*dz;
@@ -567,7 +598,7 @@ function buildPeople(){
 function buildCampus(){
   var pathC=0xb8ab8c, wallC=0xf3e6c8, roofRed=0xc0392b;
   // Nền cỏ toàn map
-  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,124), new THREE.MeshStandardMaterial({map:grassTexture(), roughness:0.95}));
+  var grass=new THREE.Mesh(new THREE.PlaneGeometry(104,148), new THREE.MeshStandardMaterial({map:grassTexture(), roughness:0.95}));
   grass.rotation.x=-Math.PI/2; grass.receiveShadow=true; scene.add(grass);
   function flat(w,d,color,x,z,y){
     var matOpts={color:color, roughness:0.95};
@@ -981,6 +1012,24 @@ function buildExpansion(){
     box(0.14,2.2,1.4, 0x6d4c41, 19.93,1.1,dz2, scene, false);
   }
   var lbD=makeLabel('🛏️ KÝ TÚC XÁ', 10); lbD.position.set(27,8.8,15); scene.add(lbD);
+
+  // ===== VƯỜN CỘNG ĐỒNG PHÍA NAM: khu mới nối từ cổng Nam, z 40..68 =====
+  // Khu này mở rộng không gian chơi ra ngoài dải nhà ở nhưng vẫn giữ lối đi rõ ràng.
+  flat(30,27, 0x78a951, 0,55, 0.015);
+  flat(4,32, 0xb8ab8c, 0,52);
+  flat(24,3, 0xb8ab8c, 0,43);
+  flat(24,3, 0xb8ab8c, 0,67);
+  var gardenX=[-10,-3,4,11], gardenZ=[49,58,63];
+  for(var gxi=0; gxi<gardenX.length; gxi++) for(var gzi=0; gzi<gardenZ.length; gzi++){
+    box(4.6,0.18,2.8, 0x8a6d4a, gardenX[gxi],0.09,gardenZ[gzi], scene, false);
+    var spr=new THREE.Mesh(new THREE.ConeGeometry(0.28,0.9,7), new THREE.MeshStandardMaterial({color:0x4e8f43, roughness:.9}));
+    spr.position.set(gardenX[gxi],0.62,gardenZ[gzi]); spr.castShadow=true; scene.add(spr);
+  }
+  box(4.2,0.5,1.1, 0x9a8a72, -14,0.45,55); solid(-16.1,54.4, -11.9,55.6);
+  box(4.2,0.5,1.1, 0x9a8a72, 14,0.45,55); solid(11.9,54.4, 16.1,55.6);
+  tree(-17,45,1); tree(17,45,1); tree(-17,65,1.05); tree(17,65,1.05);
+  placeModel('flower', -18,56, 0.65, 1.1); placeModel('flower', 18,56, 0.65, 2.4);
+  var lbGarden=makeLabel('🌿 VƯỜN CỘNG ĐỒNG', 10); lbGarden.position.set(0,6.2,55); scene.add(lbGarden);
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
   // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
   tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
@@ -1021,6 +1070,99 @@ function buildBeacons(){
   targetRing=new THREE.Mesh(new THREE.RingGeometry(0.45,0.65,28), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.85, side:THREE.DoubleSide}));
   targetRing.rotation.x=-Math.PI/2; targetRing.position.y=0.05; targetRing.visible=false; scene.add(targetRing);}
 </script>
+<script>
+"use strict";
+
+var GRATITUDE_POS={x:0,z:63};
+var gratitudeBoard=null, gratitudeNear=false, gratitudeBusy=false;
+
+function buildGratitudeBoard(){
+  var wood=0x70452a, gold=0xf2b33d;
+  box(0.45,4.2,0.45,wood,-4.8,2.1,63,scene,false);
+  box(0.45,4.2,0.45,wood,4.8,2.1,63,scene,false);
+  box(11,4.1,0.35,wood,0,3.15,63,scene,false);
+  box(11.5,0.22,0.7,gold,0,5.18,63,scene,false);
+  box(11.5,0.22,0.7,gold,0,1.12,63,scene,false);
+  solid(-5.1,62.65,5.1,63.35);
+  var title=makeLabel('💌 BẢNG TRI ÂN',12,40);
+  title.position.set(0,4.25,62.72);
+  gratitudeBoard=title;
+  var prompt=makeLabel('ĐI TỚI ĐỂ VIẾT LỜI TRI ÂN',10,32);
+  prompt.position.set(0,5.8,63);
+  var flower=makeIcon('🌼',1.5); flower.position.set(-6.2,1.1,63); scene.add(flower);
+  var flower2=makeIcon('🌼',1.5); flower2.position.set(6.2,1.1,63); scene.add(flower2);
+}
+
+function gratitudeConfig(){
+  var c=window.SUPABASE_CONFIG||{};
+  return {url:String(c.url||'').replace(/\/$/,''), key:String(c.anonKey||''), table:c.table||'gratitude_messages'};
+}
+
+function gratitudeSetStatus(text, ok){
+  var el=document.getElementById('gratitude-status');
+  if(el){ el.textContent=text; el.style.color=ok?'#1e7d46':'#8b2d2d'; }
+}
+
+function openGratitude(){
+  if(mode!=='play' || gratitudeBusy) return;
+  var p=document.getElementById('gratitude-panel');
+  p.style.display='flex';
+  document.getElementById('gratitude-message').focus();
+  gratitudeSetStatus('',true);
+}
+
+function closeGratitude(){
+  document.getElementById('gratitude-panel').style.display='none';
+  gratitudeBusy=false;
+}
+
+function submitGratitude(){
+  if(gratitudeBusy) return;
+  var message=document.getElementById('gratitude-message').value.trim();
+  var name=document.getElementById('gratitude-name').value.trim();
+  if(message.length<3){ gratitudeSetStatus('Hãy viết ít nhất 3 ký tự nhé.',false); return; }
+  var c=gratitudeConfig();
+  if(!c.url || !c.key){ gratitudeSetStatus('Chưa cấu hình Supabase. Hãy điền SUPABASE_CONFIG trong src/index.html.',false); return; }
+  gratitudeBusy=true; gratitudeSetStatus('Đang gửi lời tri ân...',true);
+  fetch(c.url+'/rest/v1/'+encodeURIComponent(c.table),{
+    method:'POST',
+    headers:{'apikey':c.key,'Authorization':'Bearer '+c.key,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({name:name||'Một người học trò',message:message})
+  }).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    document.getElementById('gratitude-message').value='';
+    document.getElementById('gratitude-name').value='';
+    gratitudeSetStatus('Đã lưu lời tri ân. Cảm ơn bạn!',true);
+    showToast('💌 Lời tri ân đã được gửi lên bảng!',2200);
+    setTimeout(closeGratitude,1200);
+  }).catch(function(){ gratitudeBusy=false; gratitudeSetStatus('Không thể lưu lúc này. Hãy thử lại sau.',false); });
+}
+
+function updateGratitude(){
+  if(!player || mode!=='play') return;
+  var d=Math.hypot(player.position.x-GRATITUDE_POS.x,player.position.z-GRATITUDE_POS.z);
+  var near=d<4.5;
+  if(near && !gratitudeNear){ showToast('💌 Đứng gần bảng và nhấn E để viết lời tri ân',3000); }
+  gratitudeNear=near;
+  if(gratitudeBoard) gratitudeBoard.material.opacity=near?1:0.9;
+}
+
+function initGratitude(){
+  buildGratitudeBoard();
+  document.getElementById('gratitude-close').addEventListener('click',closeGratitude);
+  document.getElementById('gratitude-submit').addEventListener('click',submitGratitude);
+  document.getElementById('gratitude-message').addEventListener('input',function(){
+    document.getElementById('gratitude-count').textContent=this.value.length+'/500';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key.toLowerCase()==='e' && gratitudeNear && mode==='play') openGratitude(); });
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var oldBuildWorld=window.buildWorld;
+  if(oldBuildWorld){
+    window.buildWorld=function(){ oldBuildWorld(); initGratitude(); };
+  }
+});</script>
 <script>
 "use strict";
 // ================= KỊCH BẢN TRỌN 13 CẢNH (viết lại bằng lời dễ hiểu, giữ nguyên chỉ số/dấu ấn/kết thúc của bản 2D) =================
@@ -1457,7 +1599,7 @@ function init(){
     var ambGeo=new THREE.BufferGeometry();
     var ambPos=[];
     for(var ai=0; ai<50; ai++){
-      ambPos.push(-38+Math.random()*78, 0.8+Math.random()*5.5, -52+Math.random()*98);
+      ambPos.push(-38+Math.random()*78, 0.8+Math.random()*5.5, -52+Math.random()*122);
     }
     ambGeo.setAttribute('position', new THREE.Float32BufferAttribute(ambPos, 3));
     ambientParticles=new THREE.Points(ambGeo, new THREE.PointsMaterial({color:0xffe99c, size:0.35, transparent:true, opacity:0.55, depthWrite:false}));
@@ -1512,6 +1654,7 @@ function animate(){
 
   var moving=false, mx=0, mz=0;
   if(mode==='play'){
+    if(typeof updateGratitude==='function') updateGratitude();
     if(joy.on && Math.hypot(joy.dx,joy.dy)>0.22){ mx=joy.dx; mz=joy.dy; target=null; targetRing.visible=false; }
     else {
       if(keys['arrowleft']||keys['a']) mx=-1; else if(keys['arrowright']||keys['d']) mx=1;

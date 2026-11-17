@@ -39,3 +39,13 @@
 #navi{position:absolute;top:150px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:rgba(13,20,40,.84);backdrop-filter:blur(8px);border:1px solid rgba(242,179,61,.55);color:#fff;padding:7px 14px;border-radius:999px;font-size:14px;z-index:5;pointer-events:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28)}
 
 #navi-arrow{display:inline-block;color:#ffd76e;font-size:17px}
+
+.gratitude-card{max-width:520px;text-align:left}
+.gratitude-card h1{margin:4px 0 8px;text-align:center}
+.gratitude-card p{line-height:1.5}
+.gratitude-card label{display:block;margin:10px 0 5px;font-weight:700;color:#263653}
+.gratitude-card input,.gratitude-card textarea{width:100%;border:1px solid #c9d1df;border-radius:10px;padding:10px;font:inherit;resize:vertical;background:#fff;color:#182238}
+.gratitude-card input:focus,.gratitude-card textarea:focus{outline:2px solid #e2ad3b;border-color:transparent}
+#gratitude-count{float:right;font-weight:400;color:#64748b}
+#gratitude-status{min-height:20px;margin-top:8px;font-size:13px;color:#8b2d2d}
+.gratitude-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}

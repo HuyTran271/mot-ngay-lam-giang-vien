@@ -17,7 +17,7 @@ for name in ['base','screens','dialog']:
     tag='<link rel="stylesheet" href="css/'+name+'.css">'
     assert tag in out, 'missing css tag '+name
     out=out.replace(tag, '<style>\n'+css+'</style>')
-for name in ['world/models','core/config','world/props','world/people','world/campus','world/school','world/library','world/house','world/expand','world/world','story/dialogs','story/dialog-ui','story/flow','core/input','core/main']:
+for name in ['world/models','core/config','world/props','world/people','world/campus','world/school','world/library','world/house','world/expand','world/world','world/gratitude','story/dialogs','story/dialog-ui','story/flow','core/input','core/main']:
     js=open(os.path.join(base,'src','js',name+'.js'),encoding='utf-8').read()
     tag='<script src="js/'+name+'.js"></script>'
     assert tag in out, 'missing js tag '+name
