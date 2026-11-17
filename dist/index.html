@@ -1064,6 +1064,23 @@ function buildExpansion(){
   tree(-17,45,1); tree(17,45,1); tree(-17,65,1.05); tree(17,65,1.05);
   placeModel('flower', -18,56, 0.65, 1.1); placeModel('flower', 18,56, 0.65, 2.4);
   var lbGarden=makeLabel('🌿 KHU VỰC GỬI LỜI TRI ÂN', 13, 35); lbGarden.position.set(0,6.2,55); scene.add(lbGarden);
+  // Viền hoa hai bên lối đi giữa vườn, hoa ở góc các luống đất, đèn ở cổng Nam của vườn
+  var gfCols=[0xe86a8a, 0xf5f0e6, 0xf2b33d, 0xd94f6a];
+  function gardenFlower(x,z,i){
+    if(!placeModel('flower', x, z, 0.7, i*1.3)) box(0.3,0.32,0.3, gfCols[i%4], x,0.16,z, scene, false);
+  }
+  for(var gfi=0; gfi<8; gfi++){
+    gardenFlower(-2.7, 50+gfi*2.3, gfi);
+    gardenFlower(2.7, 51.1+gfi*2.3, gfi+2);
+  }
+  for(var gbi=0; gbi<gardenX.length; gbi++) for(var gbj=0; gbj<gardenZ.length; gbj++){
+    gardenFlower(gardenX[gbi]-2.6, gardenZ[gbj]-1.7, gbi+gbj);
+    gardenFlower(gardenX[gbi]+2.6, gardenZ[gbj]+1.7, gbi+gbj+1);
+  }
+  lamp(-2.6,67); lamp(2.6,67);
+  // Hoa trang trí bờ hồ phía Nam và hai bên cổng trường phía Nam
+  for(var lfi=0; lfi<6; lfi++) gardenFlower(4+lfi*3.1, -27.4, lfi+1);
+  gardenFlower(5.6,33.2,2); gardenFlower(-1.6,33.2,3);
   tree(-6,22,1); tree(-26,22,1.05); tree(36,12,1);
   // Hàng cây dọc phía Tây đường D (cách tim đường 4 đơn vị, ngoài mọi solid)
   tree(16,-24,1); tree(16,-2,1.05); tree(16,10,0.95); tree(16,20,1); tree(16,32.5,1.05);
@@ -1165,15 +1182,30 @@ function gardenHasBadWord(s){
   return false;
 }
 
-function gardenFallbackTree(x, z, targetH, flower){
+function gardenFallbackTree(x, z, targetH, kind){
   var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(targetH/4.3);
   var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.3,1.6,7), new THREE.MeshStandardMaterial({color:0x8a5a28, roughness:.9}));
   trunk.position.y=0.8; trunk.castShadow=true; g.add(trunk);
-  var c1=new THREE.Mesh(new THREE.SphereGeometry(1.5,10,8), new THREE.MeshStandardMaterial({color:flower?0x7a9a4a:0x4e7a3a, roughness:.9}));
-  c1.position.y=2.6; c1.castShadow=true; g.add(c1);
-  if(flower){
-    var c2=new THREE.Mesh(new THREE.SphereGeometry(0.8,8,7), new THREE.MeshStandardMaterial({color:0xd96a8a, roughness:.9}));
-    c2.position.set(0.6,3.2,0.3); c2.castShadow=true; g.add(c2);
+  if(kind==='pine'){
+    var greens=[0x3d6b35,0x477a3c,0x528a44];
+    for(var ci=0; ci<3; ci++){
+      var cone=new THREE.Mesh(new THREE.ConeGeometry(1.35-ci*0.32, 1.5, 8), new THREE.MeshStandardMaterial({color:greens[ci], roughness:.9}));
+      cone.position.y=1.7+ci*0.85; cone.castShadow=true; g.add(cone);
+    }
+  } else if(kind==='flower'){
+    var c1=new THREE.Mesh(new THREE.SphereGeometry(1.5,10,8), new THREE.MeshStandardMaterial({color:0x7a9a4a, roughness:.9}));
+    c1.position.y=2.6; c1.castShadow=true; g.add(c1);
+    var blossomCols=[0xd94f6a,0xe86a8a,0xf2f0f5];
+    var blossomPos=[[0.6,3.2,0.3],[-0.7,3.0,-0.2],[0.1,3.6,-0.5],[-0.3,2.9,0.7],[0.8,2.7,-0.4]];
+    for(var bi=0; bi<blossomPos.length; bi++){
+      var bl=new THREE.Mesh(new THREE.SphereGeometry(0.42,8,7), new THREE.MeshStandardMaterial({color:blossomCols[bi%3], roughness:.8}));
+      bl.position.set(blossomPos[bi][0], blossomPos[bi][1], blossomPos[bi][2]); bl.castShadow=true; g.add(bl);
+    }
+  } else {
+    var o1=new THREE.Mesh(new THREE.SphereGeometry(1.5,10,8), new THREE.MeshStandardMaterial({color:0x4e7a3a, roughness:.9}));
+    o1.position.y=2.6; o1.castShadow=true; g.add(o1);
+    var o2=new THREE.Mesh(new THREE.SphereGeometry(1.05,10,8), new THREE.MeshStandardMaterial({color:0x5d8a44, roughness:.9}));
+    o2.position.set(0.7,3.4,0.3); o2.castShadow=true; g.add(o2);
   }
   scene.add(g); return g;
 }
@@ -1195,14 +1227,17 @@ function plantTree(row, slotIdx){
   else if(row.loai_cay==='flower'){
     made=placeModel('bush', x, z, targetH*0.52, rot);
     placeModel('flower', x+0.34, z+0.22, 0.72, rot+1);
-    if(!made) made=gardenFallbackTree(x, z, targetH*0.6, true);
+    placeModel('flower', x-0.38, z-0.18, 0.62, rot+2.4);
+    placeModel('flower', x+0.05, z+0.45, 0.58, rot+0.6);
+    if(!made) made=gardenFallbackTree(x, z, targetH*0.6, 'flower');
   }
   else made=placeModel('treeOak', x, z, targetH, rot);
-  if(!made) made=gardenFallbackTree(x, z, targetH, row.loai_cay==='flower');
+  if(!made) made=gardenFallbackTree(x, z, targetH, row.loai_cay);
   regWind(made, row.loai_cay==='flower'?0.035:0.022);
   solid(x-0.45, z-0.45, x+0.45, z+0.45);
   var ten=String(row.ten||'Một người học trò'); if(ten.length>18) ten=ten.slice(0,18)+'…';
-  var lb=makeLabel('🌱 '+ten, 5.5, 30);
+  var treeIcon=row.loai_cay==='pine'?'🌲':(row.loai_cay==='flower'?'🌸':'🌳');
+  var lb=makeLabel(treeIcon+' '+ten, 5.5, 30);
   lb.position.set(x, targetH+1.05, z); scene.add(lb);
   gardenTrees.push({x:x, z:z, row:row, slot:slotIdx});
 }
@@ -1337,7 +1372,7 @@ function updateGratitude(){
 }
 
 // ===== HIỆU ỨNG: cánh hoa rơi trong vườn, đom đóm buổi tối, mặt hồ lấp lánh =====
-var fxPetals=null, fxFlies=null, fxSpark=null;
+var fxPetals=null, fxFlies=null, fxSpark=null, fxLeaves=null;
 
 // ===== GIÓ: cây đung đưa nhẹ quanh gốc =====
 var WINDY=[];
@@ -1365,6 +1400,18 @@ function buildFx(){
   fxSpark=fxMakePoints(50, 0xbfe8d8, 0.16, 0.5);
   for(i=0;i<fxSpark.n;i++){ fxSpark.pos[i*3]=4+Math.random()*16; fxSpark.pos[i*3+1]=0.12; fxSpark.pos[i*3+2]=-43+Math.random()*14; }
   fxSpark.points.geometry.attributes.position.needsUpdate=true;
+  // Lá bay khắp khuôn viên, mỗi lá một màu trong bảng màu lá
+  fxLeaves=fxMakePoints(90, 0xffffff, 0.2, 0.9);
+  var leafCols=new Float32Array(fxLeaves.n*3);
+  var leafPal=[[0.55,0.75,0.35],[0.85,0.72,0.28],[0.92,0.58,0.32],[0.62,0.8,0.42],[0.8,0.65,0.3]];
+  for(i=0;i<fxLeaves.n;i++){
+    fxLeaves.pos[i*3]=-36+Math.random()*76; fxLeaves.pos[i*3+1]=0.3+Math.random()*5.5; fxLeaves.pos[i*3+2]=-50+Math.random()*85;
+    var lc=leafPal[i%leafPal.length];
+    leafCols[i*3]=lc[0]; leafCols[i*3+1]=lc[1]; leafCols[i*3+2]=lc[2];
+  }
+  fxLeaves.points.geometry.setAttribute('color', new THREE.BufferAttribute(leafCols,3));
+  fxLeaves.points.material.vertexColors=true;
+  fxLeaves.points.geometry.attributes.position.needsUpdate=true;
 }
 
 function updateFx(dt, t){
@@ -1395,6 +1442,16 @@ function updateFx(dt, t){
     var wd=WINDY[w];
     wd.o.rotation.z=Math.sin(t*1.15+wd.ph)*wd.amp;
     wd.o.rotation.x=Math.cos(t*0.85+wd.ph)*wd.amp*0.6;
+  }
+  if(fxLeaves){
+    var lp=fxLeaves.pos;
+    for(var li2=0;li2<fxLeaves.n;li2++){
+      lp[li2*3+1]-=dt*0.32;
+      lp[li2*3]+=Math.sin(t*0.9+li2*1.3)*dt*0.55;
+      lp[li2*3+2]+=Math.cos(t*0.7+li2)*dt*0.3;
+      if(lp[li2*3+1]<0.12){ lp[li2*3+1]=5.5+Math.random(); lp[li2*3]=-36+Math.random()*76; lp[li2*3+2]=-50+Math.random()*85; }
+    }
+    fxLeaves.points.geometry.attributes.position.needsUpdate=true;
   }
 }
 
