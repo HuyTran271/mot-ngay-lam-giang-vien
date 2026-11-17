@@ -153,7 +153,9 @@ function animate(){
         playSfx('pickup'); buzz(12);
         spawnBurst(pk.x, 1.3, pk.z, pk.k==='en'?0xffd76e:(pk.k==='he'?0xff7b9c:0xff9045), 14);
         showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+', '+pk.n, 1400);
-        scene.remove(pk.sp); pickups.splice(pi,1);
+        scene.remove(pk.sp);
+        if(pk.sp.material){ if(pk.sp.material.map) pk.sp.material.map.dispose(); pk.sp.material.dispose(); }
+        pickups.splice(pi,1);
       }
     }
     // Hồn deadline
@@ -196,12 +198,12 @@ function animate(){
   // Hạt bụi chân & hiệu ứng nổ
   for(var di=dustParticles.length-1; di>=0; di--){
     var dp=dustParticles[di]; dp.life-=dt;
-    if(dp.life<=0){ scene.remove(dp.m); dustParticles.splice(di,1); }
+    if(dp.life<=0){ scene.remove(dp.m); if(dp.m.geometry) dp.m.geometry.dispose(); if(dp.m.material) dp.m.material.dispose(); dustParticles.splice(di,1); }
     else { var dk=dp.life/dp.max; dp.m.scale.setScalar(1+(1-dk)*0.9); dp.m.material.opacity=dk*0.45; dp.m.position.y+=dt*0.4; }
   }
   for(var bi2=burstParticles.length-1; bi2>=0; bi2--){
     var bp=burstParticles[bi2]; bp.life-=dt;
-    if(bp.life<=0){ scene.remove(bp.m); burstParticles.splice(bi2,1); }
+    if(bp.life<=0){ scene.remove(bp.m); if(bp.m.geometry) bp.m.geometry.dispose(); if(bp.m.material) bp.m.material.dispose(); burstParticles.splice(bi2,1); }
     else {
       bp.vy-=dt*9.5;
       bp.m.position.x+=bp.vx*dt; bp.m.position.y=Math.max(0.1, bp.m.position.y+bp.vy*dt); bp.m.position.z+=bp.vz*dt;

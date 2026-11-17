@@ -9,8 +9,14 @@ function collideXZ(nx, nz, r){
   for(var i=0;i<SOLIDS.length;i++){ var o=SOLIDS[i];
     var cx=Math.max(o.x0, Math.min(nx, o.x1)), cz=Math.max(o.z0, Math.min(nz, o.z1));
     var dx=nx-cx, dz=nz-cz, d2=dx*dx+dz*dz;
-    if(d2<r*r){ var d=Math.sqrt(d2)||0.001; if(d2===0){ nz=o.z0-r-0.05; } else { nx=cx+dx/d*r; nz=cz+dz/d*r; } }
+    if(d2<r*r){ var d=Math.sqrt(d2)||0.001;
+      if(d2===0){
+        var pl=nx-o.x0, pr=o.x1-nx, pt2=nz-o.z0, pb=o.z1-nz, pm=Math.min(pl,pr,pt2,pb);
+        if(pm===pl) nx=o.x0-r-0.01; else if(pm===pr) nx=o.x1+r+0.01; else if(pm===pt2) nz=o.z0-r-0.01; else nz=o.z1+r+0.01;
+      } else { nx=cx+dx/d*r; nz=cz+dz/d*r; }
+    }
   }
+  nx=Math.max(-41.5, Math.min(41.5, nx)); nz=Math.max(-55.5, Math.min(72.5, nz));
   return {x:nx, z:nz};
 }
 
@@ -96,8 +102,9 @@ var LABELS=[]; var _lblT=0, _lv=null;
 function makeLabel(text, w, fs){
   var c=document.createElement('canvas'); c.width=512; c.height=112;
   var g=c.getContext('2d');
-  g.fillStyle='rgba(13,20,40,.87)'; g.beginPath(); g.roundRect(6,14,500,84,40); g.fill();
-  g.strokeStyle='rgba(242,179,61,.9)'; g.lineWidth=5; g.beginPath(); g.roundRect(6,14,500,84,40); g.stroke();
+  function boxPath(){ g.beginPath(); if(g.roundRect) g.roundRect(6,14,500,84,40); else g.rect(6,14,500,84); }
+  g.fillStyle='rgba(13,20,40,.87)'; boxPath(); g.fill();
+  g.strokeStyle='rgba(242,179,61,.9)'; g.lineWidth=5; boxPath(); g.stroke();
   g.fillStyle='#fff'; g.font='bold '+(fs||44)+'px "Segoe UI",sans-serif'; g.textAlign='center'; g.textBaseline='middle';
   g.fillText(text, 256, 58);
   var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
