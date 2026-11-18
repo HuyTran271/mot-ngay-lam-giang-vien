@@ -114,6 +114,13 @@ function buildPeople(){
   stander({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, 8.5,58.5, -1.68, true);
   sitter({suit:0xffffff, cloth:0x27364f, hair:0x2b2b30}, 6,-26.55, Math.PI);
   sitter({suit:0xffe9a8, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 18,-26.55, Math.PI);
+  // Ba NPC nhiệm vụ phụ tùy chọn (nội dung ở SIDE_QUESTS trong story/flow.js, tọa độ phải khớp)
+  stander({suit:0xa8c686, cloth:0x27364f, hair:0x191919, long:true, longHair:true}, 24.5,15, -Math.PI/2, true);
+  var sqL1=makeLabel('Sinh viên năm nhất', 4.2, 40); sqL1.position.set(24.5,3.4,15); scene.add(sqL1);
+  stander({suit:0x2e7d46, cloth:0x3a3f4a, hair:0x2b2b30}, -11.5,15, Math.PI/2, true);
+  var sqL2=makeLabel('Đội trưởng đội bóng', 4.2, 40); sqL2.position.set(-11.5,3.4,15); scene.add(sqL2);
+  stander({suit:0xffffff, cloth:0x7a4a63, hair:0x4a3421}, 31,-14, 0, true);
+  var sqL3=makeLabel('Sinh viên thực nghiệm', 4.2, 40); sqL3.position.set(31,3.4,-14); scene.add(sqL3);
 }
 
 // ===== POLISH (gpt-6.1-sol, doi chieu code that): NPC ngoi/dung doi huong nhin nhe + tay tho; NPC vuon quay dau nhin luong hoa =====
