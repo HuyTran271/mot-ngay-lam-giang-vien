@@ -2,7 +2,7 @@
 
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 
-  html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#0e1420;font-family:'Segoe UI',system-ui,sans-serif}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#0e1420;font-family:'Be Vietnam Pro','Segoe UI',system-ui,sans-serif}
 
   #app{position:fixed;inset:0;touch-action:none}
 
@@ -50,7 +50,7 @@
 #gratitude-status{min-height:20px;margin-top:8px;font-size:13px;color:#8b2d2d}
 .gratitude-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}
 
-#garden-action{position:fixed;right:14px;bottom:172px;z-index:60;background:#f2b33d;color:#263653;border:2px solid #263653;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
+#garden-action{position:fixed;right:14px;bottom:172px;z-index:60;background:#f2b33d;color:#263653;border:2px solid #263653;border-radius:999px;padding:12px 18px;font:700 15px "Be Vietnam Pro","Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-action:active{transform:scale(.96)}
 #card-msg{white-space:pre-wrap;line-height:1.55;background:#fdf6e3;border:1px solid #e2ad3b;border-radius:10px;padding:12px}
 #card-panel{perspective:700px}
@@ -79,7 +79,7 @@
 
 /* ===== CẢM GIÁC CHƠI (Gemini góp ý) ===== */
 #float-layer{position:fixed;top:56px;left:0;right:0;display:flex;justify-content:center;gap:8px;pointer-events:none;z-index:55}
-.stat-chip{font:700 15px "Segoe UI",sans-serif;padding:5px 12px;border-radius:999px;color:#fff;box-shadow:0 4px 10px rgba(13,20,40,.3);animation:floatup 1.5s ease-out forwards}
+.stat-chip{font:700 15px "Be Vietnam Pro","Segoe UI",sans-serif;padding:5px 12px;border-radius:999px;color:#fff;box-shadow:0 4px 10px rgba(13,20,40,.3);animation:floatup 1.5s ease-out forwards}
 .stat-chip.up{background:#3d9e50}
 .stat-chip.down{background:#c0453e}
 @keyframes floatup{0%{opacity:0;transform:translateY(8px)}15%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
@@ -97,7 +97,7 @@
 .vn-choice:nth-child(3){animation-delay:.12s}
 @keyframes choicein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-#garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
+#garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Be Vietnam Pro","Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-view:active{transform:scale(.96)}
 #sys-btns{position:fixed;top:10px;right:10px;z-index:60;display:flex;gap:8px}
 #sys-btns button{border:2px solid rgba(242,179,61,.85);background:rgba(13,20,40,.82);color:#fff;border-radius:999px;padding:7px 12px;font-size:15px;font-weight:700;cursor:pointer}
