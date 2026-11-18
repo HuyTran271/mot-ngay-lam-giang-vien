@@ -107,6 +107,7 @@ function animate(){
 
   var moving=false, mx=0, mz=0;
   if(mode==='play'){
+    if(coffeeBoostT>0) coffeeBoostT-=dt;
     if(typeof updateGratitude==='function') updateGratitude();
     if(joy.on && Math.hypot(joy.dx,joy.dy)>0.22){ mx=joy.dx; mz=joy.dy; target=null; pathPts=null; targetRing.visible=false; }
     else {
@@ -130,7 +131,7 @@ function animate(){
     if(mx||mz){
       var l=Math.hypot(mx,mz); mx/=l; mz/=l;
       var tiredF=(S.en<25||S.he<25)?0.85:1;
-      var spd=12.5*tiredF*((pathPts&&target)?1.12:1);
+      var spd=12.5*tiredF*((pathPts&&target)?1.12:1)*(coffeeBoostT>0?1.3:1);
       var np=collideXZ(player.position.x+mx*spd*dt, player.position.z+mz*spd*dt, 0.85);
       player.position.x=np.x; player.position.z=np.z;
       faceToward(player, mx, mz, dt);
@@ -154,32 +155,60 @@ function animate(){
       var pk=pickups[pi];
       pk.sp.position.y=1.25+Math.sin(t*2.4+pk.ph)*0.18;
       if(Math.hypot(pk.x-player.position.x, pk.z-player.position.z)<1.7){
-        S[pk.k]+=pk.v; clampStat(); syncStats();
-        playSfx('pickup'); buzz(12);
-        spawnBurst(pk.x, 1.3, pk.z, pk.k==='en'?0xffd76e:(pk.k==='he'?0xff7b9c:0xff9045), 14);
-        showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+', '+pk.n, 1400);
+        if(pk.k==='boost'){
+          coffeeBoostT=pk.v;
+          playSfx('pickup'); buzz(12);
+          spawnBurst(pk.x, 1.3, pk.z, 0xffd76e, 14);
+          showToast('☕ Cà phê đặc! Chạy nhanh hơn trong '+pk.v+' giây', 1600);
+        } else {
+          S[pk.k]+=pk.v; clampStat(); syncStats();
+          playSfx('pickup'); buzz(12);
+          spawnBurst(pk.x, 1.3, pk.z, pk.k==='en'?0xffd76e:(pk.k==='he'?0xff7b9c:0xff9045), 14);
+          showToast('+'+pk.v+' '+(pk.k==='en'?'⚡':pk.k==='he'?'❤️':'🔥')+', '+pk.n, 1400);
+        }
         scene.remove(pk.sp);
         if(pk.sp.material){ if(pk.sp.material.map) pk.sp.material.map.dispose(); pk.sp.material.dispose(); }
         pickups.splice(pi,1);
       }
     }
-    // Hồn deadline
+    // Hồn deadline: lang thang, vào bán kính phát hiện thì đuổi theo (luôn chậm hơn người chơi),
+    // không vào vùng an toàn trong nhà; người chơi vào nhà là thoát
     if(spirit){
-      spirit.t-=dt;
-      if(spirit.t<=0){ spirit.tx=-40+Math.random()*80; spirit.tz=-54+Math.random()*102; spirit.t=3+Math.random()*3; }
-      var sgx=spirit.tx-spirit.sp.position.x, sgz=spirit.tz-spirit.sp.position.z, sgl=Math.hypot(sgx,sgz);
-      if(sgl>0.4){ var snx=spirit.sp.position.x+sgx/sgl*3.4*dt, snz=spirit.sp.position.z+sgz/sgl*3.4*dt;
-        var sc2=collideXZ(snx, snz, 0.7);
-        spirit.sp.position.x=sc2.x; spirit.sp.position.z=sc2.z; }
-      spirit.sp.position.y=1.7+Math.sin(t*2)*0.15;
+      var spx=spirit.sp.position.x, spz=spirit.sp.position.z;
+      var pdx=player.position.x-spx, pdz=player.position.z-spz, pdist=Math.hypot(pdx,pdz);
+      var wasChasing=spirit.chasing;
+      spirit.chasing=(pdist<spirit.detectR && !inSafeZone(player.position.x, player.position.z, 0));
+      if(spirit.chasing && !wasChasing){
+        showToast(spirit.kind==='msg' ? '📱 Hồn tin nhắn đang đuổi theo bạn!' : '👻 Hồn cuộc họp đang đuổi theo bạn!', 1600);
+        if(spirit.sp.material && spirit.sp.material.color && spirit.sp.material.color.setHex) spirit.sp.material.color.setHex(0xffb3b3);
+      }
+      if(!spirit.chasing && wasChasing && spirit.sp.material && spirit.sp.material.color && spirit.sp.material.color.setHex) spirit.sp.material.color.setHex(0xffffff);
+      var mvx, mvz, mspd;
+      if(spirit.chasing){ mvx=pdx; mvz=pdz; mspd=spirit.chaseSpd; }
+      else {
+        spirit.t-=dt;
+        if(spirit.t<=0){
+          for(var wt=0; wt<12; wt++){ var wx=-40+Math.random()*80, wz=-54+Math.random()*102; if(!inSafeZone(wx, wz, 1)){ spirit.tx=wx; spirit.tz=wz; break; } }
+          spirit.t=3+Math.random()*3;
+        }
+        mvx=spirit.tx-spx; mvz=spirit.tz-spz; mspd=spirit.wanderSpd;
+      }
+      var sgl=Math.hypot(mvx,mvz);
+      if(sgl>0.4){
+        var snx=spx+mvx/sgl*mspd*dt, snz=spz+mvz/sgl*mspd*dt;
+        if(inSafeZone(snx, snz, 0.7)){ spirit.chasing=false; spirit.t=0; }
+        else { var sc2=collideXZ(snx, snz, 0.7); spirit.sp.position.x=sc2.x; spirit.sp.position.z=sc2.z; }
+      }
+      spirit.sp.position.y=1.7+(spirit.chasing ? Math.sin(t*10)*0.08 : Math.sin(t*2)*0.15);
       if(invulnT>0) invulnT-=dt;
-      if(Math.hypot(player.position.x-spirit.sp.position.x, player.position.z-spirit.sp.position.z)<1.9 && invulnT<=0){
+      if(pdist<1.9 && invulnT<=0){
         S.en=Math.max(0,S.en-5); syncStats();
         playSfx('hit'); buzz([30,40,30]);
         spawnBurst(player.position.x, 1.4, player.position.z, 0xd84a4a, 16);
         camShake=0.35;
-        showToast('👻 Deadline dí! −5 ⚡', 1500); invulnT=1.6;
-        spirit.sp.position.set(12, 1.7, -24); spirit.t=0;
+        showToast(spirit.kind==='msg' ? '📱 Hồn tin nhắn dí! −5 ⚡' : '👻 Hồn cuộc họp dí! −5 ⚡', 1500); invulnT=1.6;
+        spirit.sp.position.set(12, 1.7, -24); spirit.t=0; spirit.chasing=false;
+        if(spirit.sp.material && spirit.sp.material.color && spirit.sp.material.color.setHex) spirit.sp.material.color.setHex(0xffffff);
       }
     }
   }
