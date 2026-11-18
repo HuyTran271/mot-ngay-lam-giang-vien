@@ -119,7 +119,7 @@ function plantTree(row, slotIdx, animate){
     GROWING.push({g:made, fs:made.scale.x||1, lb:lb, lx:lb.scale.x, ly:lb.scale.y, t:0});
     made.scale.setScalar((made.scale.x||1)*0.04);
     lb.scale.set(lb.scale.x*0.04, lb.scale.y*0.04, 1);
-    spawnBurst(x, 1.1, z, 0x8fd45a, 16);
+    spawnBurst(x, 1.1, z, gardenPlantColor(row.loai_cay), 16);
     if(typeof playSfx==='function') playSfx('pick');
     buzz(15);
   }
@@ -334,6 +334,7 @@ function buildFx(){
 
 function updateFx(dt, t){
   var i;
+  polishGardenFocus(t);
   if(fxPetals){
     var p=fxPetals.pos;
     for(i=0;i<fxPetals.n;i++){
@@ -422,3 +423,27 @@ document.addEventListener('DOMContentLoaded',function(){
     window.buildWorld=function(){ oldBuildWorld(); initGratitude(); };
   }
 });
+
+// ===== POLISH (gpt-6.1-sol, doi chieu code that): nhan cay gan nhat phong nhe + doi sang am; mau burst theo loai cay =====
+function gardenPlantColor(kind){
+  if(kind==='pine') return 0x8fc7ff;
+  if(kind==='flower') return 0xff9fc2;
+  return 0x8fd45a;
+}
+function polishGardenFocus(t){
+  if(typeof gardenTrees==='undefined' || !gardenTrees) return;
+  var playing=(typeof mode!=='undefined' && mode==='play');
+  for(var i=0;i<gardenTrees.length;i++){
+    var e=gardenTrees[i]; if(!e || !e.lb) continue;
+    var lb=e.lb, ud=lb.userData||{};
+    if(ud.bs===undefined){ ud.bs=lb.scale.x; ud.bsy=lb.scale.y; }
+    var growing=false;
+    for(var j=0;j<GROWING.length;j++){ if(GROWING[j].lb===lb){ growing=true; break; } }
+    if(growing) continue;
+    var near=playing && (typeof gardenNearest!=='undefined') && gardenNearest===e;
+    var s=near? 1.09+Math.sin(t*4)*0.03 : 1;
+    lb.scale.x=ud.bs*s; lb.scale.y=ud.bsy*s;
+    var col=lb.material && lb.material.color;
+    if(col && col.setHex) col.setHex(near? 0xfff1a8 : 0xffffff);
+  }
+}
