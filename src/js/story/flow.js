@@ -72,6 +72,44 @@ function showEnding(){
   document.getElementById('objective').textContent="🌙 Một ngày làm giảng viên đã kết thúc. Cảm ơn bạn đã sống thử nó.";
 }
 
+// ================= NHIỆM VỤ PHỤ TÙY CHỌN (3 NPC, mỗi người một lần, không chặn tuyến chính) =================
+var SIDE_QUESTS=[
+ {id:'dorm', x:24.5, z:15, icon:'🌙', time:'Chiều muộn', title:'Em sinh viên năm nhất ở ký túc',
+  text:'Trước cửa ký túc xá, một em sinh viên năm nhất ngồi ôm điện thoại. Em vừa gọi về nhà xong, mắt còn đỏ.\n\n“Thầy/cô ơi, em nhớ nhà quá. Cuối tuần này em về quê, hay ở lại học nhóm với lớp đây ạ?”',
+  choices:[
+   {t:'Khuyên em về quê một chuyến, học để sau cũng được', fx:{he:5}, badge:'🌙 Lắng nghe nỗi nhớ nhà',
+    res:'Em gật đầu, cười nhẹ: “Dạ, em về với mẹ một chuyến.” Đôi khi lời khuyên tốt nhất không nằm trong sách.'},
+   {t:'Động viên em ở lại học nhóm, tuần sau hẵng về', fx:{fi:4},
+    res:'Em suy nghĩ một lúc rồi gật đầu: “Dạ, em ở lại. Tuần sau em về lâu hơn.” Em đứng dậy, vai nhẹ hẳn.'}
+  ], done:false},
+ {id:'sport', x:-11.5, z:15, icon:'⚽', time:'Chiều muộn', title:'Đội trưởng đội bóng của khoa',
+  text:'Bên hông nhà thi đấu, đội trưởng đội bóng của khoa ngồi một mình, giày còn nguyên bùn đất. Đội vừa thua trận tập chiều nay.\n\n“Em chào thầy/cô. Em đá hỏng quả cuối. Cả đội tin em mà em…”',
+  choices:[
+   {t:'Ngồi xuống cạnh em, nghe em nói hết', fx:{he:5}, badge:'⚽ Có mặt khi em thua',
+    res:'Bạn không nói gì nhiều. Chỉ ngồi đó. Một lúc sau em tự đứng dậy: “Mai đội tập lại, em sẽ có mặt sớm nhất.”'},
+   {t:'Rủ em chạy một vòng sân cho khuây khỏa', fx:{en:3,he:3},
+    res:'Hai thầy trò chạy chậm quanh sân. Hết một vòng, em cười: “Thua một trận tập thôi mà, em làm quá.”'}
+  ], done:false},
+ {id:'gardenlab', x:31, z:-14, icon:'🌱', time:'Buổi chiều', title:'Em sinh viên ở vườn thực nghiệm',
+  text:'Trong vườn thực nghiệm, một em sinh viên đang đứng nhìn luống cây thí nghiệm héo rũ, tay cầm cuốn sổ số liệu đã ướt mép.\n\n“Thầy/cô ơi, cây của nhóm em héo hết rồi. Ba tuần theo dõi coi như bỏ…”',
+  choices:[
+   {t:'Cùng em xem lại đất và cách tưới, cứu được cây nào hay cây đó', fx:{fi:5}, badge:'🌱 Cùng em cứu luống cây',
+    res:'Đất khô nứt ở gốc nhưng rễ còn tươi. Hai thầy trò tưới đẫm lại từng luống. “Còn cứu được thầy/cô ạ!”'},
+   {t:'Nhắc em ghi lại cả phần cây héo vào số liệu, đó cũng là kết quả', fx:{fi:3,he:2},
+    res:'Em khựng lại rồi gật đầu, mở sổ ghi tiếp: “Dạ, cây héo cũng là số liệu. Em suýt thì bỏ mất phần quan trọng nhất.”'}
+  ], done:false}
+];
+var sideActive=null;
+function openSideQuest(q){
+  sideActive=q; mode='dialog';
+  if(typeof playSfx==='function') playSfx('scene');
+  fillDlg(q.icon, q.time, q.title, q.text, q.choices, function(ch){ q.done=true; });
+}
+function closeSideDlg(){
+  document.getElementById('dlg').classList.remove('show');
+  sideActive=null; mode='play';
+}
+
 // ================= VẬT PHẨM + HỒN DEADLINE =================
 var PICK_TYPES=[{emo:"☕",k:"en",v:6,n:"cà phê"},{emo:"🍵",k:"en",v:4,n:"trà"},{emo:"🍎",k:"he",v:4,n:"táo"},{emo:"💐",k:"he",v:6,n:"hoa học trò tặng"},{emo:"📚",k:"fi",v:4,n:"ý tưởng mới"},{emo:"☕",k:"boost",v:4,n:"cà phê đặc",s:1.55}];
 function ptSolid(x,z){
