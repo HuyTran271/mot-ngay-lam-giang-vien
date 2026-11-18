@@ -90,6 +90,19 @@ function buzz(p){ try{ if(navigator && navigator.vibrate) navigator.vibrate(p); 
 var toastTimer=null;
 var cur=0, pendingNext=null, collapseUsed=false, inCollapse=false, invulnT=0;
 var pickups=[], spirit=null;
+var coffeeBoostT=0;
+// Vung an toan: hon deadline khong duoc vao trong nha (phong hoc + van phong, thu vien, can-tin, nha o)
+var SAFE_ZONES=[
+  {x0:-30, z0:-44, x1:-2, z1:-37},
+  {x0:-26, z0:-28, x1:-16, z1:-18},
+  {x0:-8, z0:-18, x1:2, z1:-10},
+  {x0:-7.5, z0:41, x1:7.5, z1:49}
+];
+function inSafeZone(x, z, pad){
+  var p=pad||0;
+  for(var i=0;i<SAFE_ZONES.length;i++){ var r=SAFE_ZONES[i]; if(x>r.x0-p && x<r.x1+p && z>r.z0-p && z<r.z1+p) return true; }
+  return false;
+}
 var guideArrow=null;
 var seated=[];
 
