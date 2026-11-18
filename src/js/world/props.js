@@ -12,6 +12,19 @@ function tree(x,z,s){
   c2.position.set(0.7,3.4,0.3); c2.castShadow=true; g.add(c2);
   scene.add(g); if(typeof regWind==='function') regWind(g, 0.025); solid(x-0.55, z-0.55, x+0.55, z+0.55);
 }
+// Cay phuong do cam: diem nhan am cho san truong (tan phang rong, mau hoa phuong)
+function flameTree(x,z,s){
+  var g=new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s||1);
+  var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.3,1.9,7), new THREE.MeshStandardMaterial({color:0x7a4a26, roughness:.9}));
+  trunk.position.y=0.95; trunk.castShadow=true; g.add(trunk);
+  var cols=[0xd94f1e,0xe86a2a,0xf08c3a];
+  var offs=[[0,2.9,0,1.55],[1.05,2.6,0.35,1.1],[-1.0,2.65,-0.3,1.05]];
+  for(var fi=0; fi<offs.length; fi++){
+    var cm=new THREE.Mesh(new THREE.SphereGeometry(offs[fi][3],10,8), new THREE.MeshStandardMaterial({color:cols[fi%3], roughness:.9}));
+    cm.position.set(offs[fi][0],offs[fi][1],offs[fi][2]); cm.scale.y=0.55; cm.castShadow=true; g.add(cm);
+  }
+  scene.add(g); if(typeof regWind==='function') regWind(g, 0.018); solid(x-0.55, z-0.55, x+0.55, z+0.55);
+}
 function lamp(x,z){
   var poleMat=new THREE.MeshStandardMaterial({color:0x3f3730, roughness:0.65, metalness:0.25});
   var base=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.18,0.35,8), poleMat);
