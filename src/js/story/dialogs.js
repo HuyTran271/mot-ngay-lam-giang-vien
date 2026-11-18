@@ -40,7 +40,7 @@ var DLGS=[
 {icon:"📩", time:"10:30", phase:"Buổi trưa", title:"Tin nhắn muốn bỏ học", obj:"🎯 Về Văn phòng, có tin nhắn giờ giải lao",
  text:"Giờ giải lao. Điện thoại rung. Một sinh viên học đang sa sút nhắn cho bạn:\n\n“Thầy/cô ơi, chắc em bỏ học thôi. Em học không vào, nhà em cũng đang khó khăn. Em xin lỗi.”",
  choices:[
-  {t:"Gọi em lên văn phòng ngay, ngồi nghe em nói hết 30 phút", fx:{en:-10,he:15}, set:{saved:true}, badge:"🌟 Đưa tay đúng lúc",
+  {t:"Gọi em lên văn phòng ngay, ngồi nghe em nói hết 30 phút", fx:{en:-10,he:15}, need:{en:20}, set:{saved:true}, badge:"🌟 Đưa tay đúng lúc",
    res:"Em khóc một lúc, rồi nói hết những chuyện giữ trong lòng cả tháng. Bạn chỉ hẹn một việc nhỏ: “Tuần này em cứ tới lớp. Phần còn lại mình tính tiếp.” Em gật đầu."},
   {t:"Nhắn lại một tin dài để động viên em", fx:{he:5}, set:{texted:true},
    res:"Tin nhắn của bạn rất chân thành. Nhưng máy của em đang có hơn 40 tin chưa đọc. Bạn không chắc em đã mở tin của mình."},
@@ -83,7 +83,7 @@ var DLGS=[
    if(S.flags.strict2) return "Ngoài hành lang, em sinh viên nộp trễ ban trưa đi ngang. Thấy bạn, em khựng lại rồi quay đi hướng khác.\n\n"+base;
    return base; },
  choices:[
-  {t:"Ở lại giải đáp cho các em đến khi hết thắc mắc", fx:{en:-10,he:10}, set:{staylate:true},
+  {t:"Ở lại giải đáp cho các em đến khi hết thắc mắc", fx:{en:-10,he:10}, need:{en:15}, set:{staylate:true},
    res:"Khi bạn khóa cửa lớp, hành lang đã vắng. Một em chạy theo nói: “Nhờ thầy/cô mà em hiểu được chỗ em tắc cả tuần nay.”"},
   {t:"Thu dọn và về đúng giờ, tối còn một chồng bài phải chấm", fx:{en:6},
    res:"Bạn về nhà khi trời còn sáng. Rất hiếm khi có một buổi chiều như vậy. Bạn định dùng nó để nghỉ ngơi."}
@@ -104,7 +104,7 @@ var DLGS=[
    ? "Trước đó một lúc, điện thoại bạn đã rung một lần. Là em sinh viên khóa trước: “Thầy/cô ơi, hôm nay em chính thức đi làm ngày đầu tiên. Em cảm ơn thầy/cô nhiều lắm.”\n\n"+base
    : base; },
  choices:[
-  {t:"Trả lời ngay, chỉ dẫn rõ ràng, dù mất 20 phút", fx:{en:-10,he:10,fi:4}, set:{nightreply:true},
+  {t:"Trả lời ngay, chỉ dẫn rõ ràng, dù mất 20 phút", fx:{en:-10,he:10,fi:4}, need:{en:15}, set:{nightreply:true},
    res:"Bạn gõ một tin nhắn dài, kèm cách tự kiểm tra khi gặp lỗi giống vậy. Gửi xong đã 21:27. Nhưng tin nhắn “em hiểu rồi ạ!” đến ngay sau đó khiến bạn mỉm cười."},
   {t:"Đánh dấu lại, để sáng mai trả lời", fx:{en:5},
    res:"Bạn đặt điện thoại xuống và đi nghỉ. Đó là một giới hạn hợp lý, dù câu hỏi của em vẫn còn trong đầu bạn một lúc."}
