@@ -14,6 +14,11 @@ function openScene(i){
   mode='dialog'; inCollapse=false;
   if(typeof playSfx==='function') playSfx('scene');
   var sc=DLGS[i];
+  // Callback: em sinh vien ngu gat (flag empathy) tang ca phe o canh bua trua, cong mot lan duy nhat
+  if(i===5 && S.flags.empathy && !S.flags._cbCoffee){
+    S.flags._cbCoffee=true; S.fi=Math.min(100, S.fi+4); syncStats();
+    setTimeout(function(){ showToast('☕ Ly cà phê em sinh viên tặng: +4 🔥', 2400); }, 900);
+  }
   var startDlg=function(){
     fillDlg(sc.icon, sc.time, sc.title, (typeof sc.text==="function" ? sc.text(S) : sc.text), sc.choices, function(ch){
       pendingNext=i+1;
@@ -68,7 +73,7 @@ function showEnding(){
 }
 
 // ================= VẬT PHẨM + HỒN DEADLINE =================
-var PICK_TYPES=[{emo:"☕",k:"en",v:6,n:"cà phê"},{emo:"🍵",k:"en",v:4,n:"trà"},{emo:"🍎",k:"he",v:4,n:"táo"},{emo:"💐",k:"he",v:6,n:"hoa học trò tặng"},{emo:"📚",k:"fi",v:4,n:"ý tưởng mới"}];
+var PICK_TYPES=[{emo:"☕",k:"en",v:6,n:"cà phê"},{emo:"🍵",k:"en",v:4,n:"trà"},{emo:"🍎",k:"he",v:4,n:"táo"},{emo:"💐",k:"he",v:6,n:"hoa học trò tặng"},{emo:"📚",k:"fi",v:4,n:"ý tưởng mới"},{emo:"☕",k:"boost",v:4,n:"cà phê đặc",s:1.55}];
 function ptSolid(x,z){
   for(var i=0;i<SOLIDS.length;i++){ var o=SOLIDS[i]; if(x>o.x0-1.3 && x<o.x1+1.3 && z>o.z0-1.3 && z<o.z1+1.3) return true; }
   return false;
@@ -80,15 +85,23 @@ function spawnPickups(n){
       if(ptSolid(x,z)) continue;
       if(Math.hypot(x-player.position.x, z-player.position.z)<5) continue;
       var pt=PICK_TYPES[Math.floor(Math.random()*PICK_TYPES.length)];
-      var sp=makeIcon(pt.emo, 1.15); sp.position.set(x, 1.25, z); scene.add(sp);
+      var sp=makeIcon(pt.emo, pt.s||1.15); sp.position.set(x, 1.25, z); scene.add(sp);
       pickups.push({sp:sp, x:x, z:z, k:pt.k, v:pt.v, n:pt.n, ph:Math.random()*6});
       break;
     }
   }
 }
 function spawnSpirit(){
-  // Hồn deadline xuất hiện ở đầu Đông đường C, sát bờ Nam hồ nước (map mới)
-  if(spirit){ spirit.sp.position.set(12, 1.7, -24); spirit.t=0; return; }
-  var sp=makeIcon("👻", 2); sp.position.set(12, 1.7, -24); scene.add(sp);
-  spirit={sp:sp, tx:0, tz:0, t:0};
+  // Hồn deadline xuất hiện ở đầu Đông đường C, sát bờ Nam hồ nước (map mới).
+  // Hai biến thể: cảnh index 5 là Hồn cuộc họp (chậm), cảnh index 9 là Hồn tin nhắn (nhanh hơn, đuổi thẳng)
+  var kind=(cur===9)?'msg':'meet';
+  var emo=(kind==='msg')?'📱':'👻';
+  if(spirit && spirit.kind===kind){ spirit.sp.position.set(12, 1.7, -24); spirit.t=0; spirit.chasing=false; return; }
+  if(spirit && spirit.sp){
+    scene.remove(spirit.sp);
+    if(spirit.sp.material){ if(spirit.sp.material.map) spirit.sp.material.map.dispose(); spirit.sp.material.dispose(); }
+  }
+  var sp=makeIcon(emo, 2); sp.position.set(12, 1.7, -24); scene.add(sp);
+  spirit={sp:sp, tx:0, tz:0, t:0, kind:kind, chasing:false,
+    chaseSpd:(kind==='msg')?9.0:6.0, wanderSpd:(kind==='msg')?3.8:3.0, detectR:(kind==='msg')?13:11};
 }
