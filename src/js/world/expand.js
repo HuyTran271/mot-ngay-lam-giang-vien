@@ -188,4 +188,9 @@ function buildExpansion(){
     gardenFlower(pp[0]-0.35, pp[1], pi+2);
     gardenFlower(pp[0]+0.35, pp[1], pi+3);
   });
+  // Cay phuong diem nhan: cong Nam hai phia, tay thu vien, dong san truong
+  flameTree(11, 32.5, 1.1);
+  flameTree(-24, 32, 1.0);
+  flameTree(-29, -13.5, 0.95);
+  flameTree(2.5, -33, 1.05);
 }
