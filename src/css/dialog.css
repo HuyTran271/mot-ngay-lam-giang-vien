@@ -30,3 +30,6 @@
 .vn-choice:hover{background:#293c66;transform:translateY(-1px)}
 
 .vn-choice:active{background:#2e4470}
+/* Lua chon bi khoa vi thieu chi so (need) */
+.vn-choice.vn-locked{opacity:.55;border-style:dashed;cursor:not-allowed}
+.vn-choice .vn-need{display:block;margin-top:5px;font-size:12px;font-weight:600;color:#ffb3b3}
