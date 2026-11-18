@@ -361,6 +361,7 @@ document.addEventListener('DOMContentLoaded', function(){
       sfxMuted=!sfxMuted;
       muteBtn.textContent=sfxMuted?'🔇':'🔊';
       if(_musicGain) _musicGain.gain.value=sfxMuted?0:0.045;
+      if(_bgAudio) _bgAudio.volume=sfxMuted?0:0.15;
     });
   }
   var qBtn=document.getElementById('btn-quality');
