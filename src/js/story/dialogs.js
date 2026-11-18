@@ -48,7 +48,10 @@ var DLGS=[
    res:"Bạn gõ “tuần sau nhé em” rồi quay lại làm việc. Với một người đang muốn bỏ cuộc hôm nay, “tuần sau” là rất lâu."}
  ]},
 {icon:"🍚", time:"12:00", phase:"Buổi trưa", title:"Bữa trưa 15 phút", obj:"🎯 Xuống Căn-tin ăn trưa",
- text:"Căn-tin đông người. Chiều nay bạn còn hai tiết dạy và một buổi họp. Bữa trưa của giảng viên thường chỉ có khoảng 15 phút.",
+ text:function(S){ var base="Căn-tin đông người. Chiều nay bạn còn hai tiết dạy và một buổi họp. Bữa trưa của giảng viên thường chỉ có khoảng 15 phút.";
+   return S.flags.empathy
+   ? "Vừa ngồi xuống, em sinh viên ngủ gật ở tiết đầu ghé lại, đặt lên bàn bạn một ly cà phê: “Em cảm ơn thầy/cô, sáng nay thầy/cô đã không mắng em trước lớp.”\n\n"+base
+   : base; },
  choices:[
   {t:"Ăn chậm rãi, gọi điện về nhà hỏi thăm một câu", fx:{en:10}, set:{family1:true}, badge:"🏠 Không quên người nhà",
    res:"Cuộc gọi chỉ 3 phút. Nhưng vào tiết chiều, bạn thấy người đỡ mỏi hơn hẳn."},
@@ -72,9 +75,13 @@ var DLGS=[
    res:"Em gật đầu, không xin thêm câu nào. Bạn đã làm đúng quy định. Chỉ là khi em quay đi, bạn nhìn theo lâu hơn bình thường."}
  ]},
 {icon:"🌤️", time:"16:30", phase:"Buổi chiều", title:"Tiết cuối ngày", obj:"🎯 Vào Phòng học, tiết cuối ngày",
- text:function(S){ return S.flags.unprepared
+ text:function(S){ var base=S.flags.unprepared
    ? "Tiết cuối ngày. Ví dụ khó mà sáng nay bạn không kiểm tra đã gây rắc rối thật: một sinh viên hỏi dồn hai câu, bạn trả lời lúng túng. Cả lớp bắt đầu xì xào.\n\nGiờ giải lao giữa tiết, bạn ngồi một mình trong lớp, hơi mệt."
-   : "Tiết cuối ngày diễn ra suôn sẻ. Ví dụ bạn kiểm tra từ 5 giờ sáng phát huy tác dụng: sinh viên gật gù đúng những chỗ quan trọng.\n\nTan tiết, còn vài em ở lại hỏi thêm."; },
+   : "Tiết cuối ngày diễn ra suôn sẻ. Ví dụ bạn kiểm tra từ 5 giờ sáng phát huy tác dụng: sinh viên gật gù đúng những chỗ quan trọng.\n\nTan tiết, còn vài em ở lại hỏi thêm.";
+   if(S.flags.postponed) return "Chiều nay bạn nhìn xuống dãy bàn của em sinh viên đang sa sút. Em không tới lớp, chiếc ghế của em trống đúng chỗ em vẫn ngồi.\n\n"+base;
+   if(S.flags.strict) return "Cậu sinh viên ngủ gật sáng nay cũng có mặt. Cả buổi em ngồi thẳng lưng, nhưng không ngẩng lên nhìn bảng lần nào.\n\n"+base;
+   if(S.flags.strict2) return "Ngoài hành lang, em sinh viên nộp trễ ban trưa đi ngang. Thấy bạn, em khựng lại rồi quay đi hướng khác.\n\n"+base;
+   return base; },
  choices:[
   {t:"Ở lại giải đáp cho các em đến khi hết thắc mắc", fx:{en:-10,he:10}, set:{staylate:true},
    res:"Khi bạn khóa cửa lớp, hành lang đã vắng. Một em chạy theo nói: “Nhờ thầy/cô mà em hiểu được chỗ em tắc cả tuần nay.”"},
@@ -90,9 +97,12 @@ var DLGS=[
    res:"Chấm thêm được 5 bài. Đổi lại, bạn bỏ lỡ câu chuyện vui nhất trên mâm cơm, mọi người đã kể xong khi bạn ngẩng đầu lên."}
  ]},
 {icon:"💬", time:"21:00", phase:"Buổi tối", title:"Tin nhắn lúc 21 giờ", obj:"🎯 Tới bàn làm việc (Nhà), tin nhắn lúc 21 giờ",
- text:function(S){ return S.flags.saved
+ text:function(S){ var base=S.flags.saved
    ? "Điện thoại sáng lên. Là sinh viên sáng nay muốn bỏ học:\n\n“Thầy/cô ơi, em suy nghĩ rồi. Em sẽ tới lớp tiếp. Em cảm ơn vì sáng nay thầy/cô đã nghe em nói hết.”\n\nEm gửi kèm một đoạn bài làm lại. Bài còn vụng, nhưng là bài thật của em."
-   : "Điện thoại sáng lên. Một sinh viên gửi ảnh chụp bài làm lúc 21 giờ, hỏi đúng chỗ khó nhất của bài, chỗ mà nhiều em đang mắc.\n\nĐã 21 giờ. Ngày mai bạn phải dậy lúc 5 giờ."; },
+   : "Điện thoại sáng lên. Một sinh viên gửi ảnh chụp bài làm lúc 21 giờ, hỏi đúng chỗ khó nhất của bài, chỗ mà nhiều em đang mắc.\n\nĐã 21 giờ. Ngày mai bạn phải dậy lúc 5 giờ.";
+   return S.flags.alumni
+   ? "Trước đó một lúc, điện thoại bạn đã rung một lần. Là em sinh viên khóa trước: “Thầy/cô ơi, hôm nay em chính thức đi làm ngày đầu tiên. Em cảm ơn thầy/cô nhiều lắm.”\n\n"+base
+   : base; },
  choices:[
   {t:"Trả lời ngay, chỉ dẫn rõ ràng, dù mất 20 phút", fx:{en:-10,he:10,fi:4}, set:{nightreply:true},
    res:"Bạn gõ một tin nhắn dài, kèm cách tự kiểm tra khi gặp lỗi giống vậy. Gửi xong đã 21:27. Nhưng tin nhắn “em hiểu rồi ạ!” đến ngay sau đó khiến bạn mỉm cười."},
@@ -110,7 +120,10 @@ var DLGS=[
    res:"Xử lý xong trong 2 phút. Đúng quy định và nhanh gọn. Nhưng câu hỏi “vì sao em chép bài” sẽ không có ai hỏi nữa."}
  ]},
 {icon:"🌙", time:"01:00", phase:"Ban đêm", title:"Đèn bàn tắt", obj:"🎯 Về giường, kết thúc một ngày dài",
- text:"1 giờ sáng. Bài đã chấm xong. Bạn đã ghi việc cho ngày mai, ngày mai lại bắt đầu lúc 5 giờ.\n\nTrước khi ngủ, bạn còn có thể làm một việc nhỏ cho chính mình.",
+ text:function(S){ var base="1 giờ sáng. Bài đã chấm xong. Bạn đã ghi việc cho ngày mai, ngày mai lại bắt đầu lúc 5 giờ.\n\nTrước khi ngủ, bạn còn có thể làm một việc nhỏ cho chính mình.";
+   return S.flags.harsh
+   ? "Trước khi tắt đèn, bạn chợt nhớ tới bài chép hồi 23 giờ. Em ấy sẽ nhận điểm trừ nặng, mà không ai hỏi em một câu vì sao.\n\n"+base
+   : base; },
  choices:[
   {t:"Viết vài dòng nhật ký về ngày hôm nay", fx:{fi:8,he:4}, set:{journal:true},
    res:"Bạn viết: “Hôm nay mệt. Nhưng có một em đã không bỏ học.” Rồi gấp sổ lại. Một dòng ngắn như vậy cũng đủ giữ một người ở lại với nghề nhiều năm."},
