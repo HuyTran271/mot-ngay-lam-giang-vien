@@ -100,7 +100,8 @@ function buildPeople(){
   walker({suit:0x33507e, cloth:0x3a3f4a, hair:0x3a3a3a, tie:true, glasses:true}, -24,-35.5, -6,-35.5, 1.6, 0.1);
   walker({suit:0xffffff, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 2,-25.6, 22,-25.6, 1.8, 0.5);
   walker({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, -30,2, 24,2, 2.4, 0.45);
-  walker({suit:0x9fd6f9, cloth:0x27364f, hair:0x2b2b30}, -10,55.8, 10,55.8, 1.5, 0.2);
+  var gwVisitor=walker({suit:0x9fd6f9, cloth:0x27364f, hair:0x2b2b30}, -10,55.8, 10,55.8, 1.5, 0.2);
+  if(gwVisitor) gwVisitor.userData.gardenVisitor=true;
   // Cặp sinh viên trò chuyện trước thư viện
   stander({suit:0xffffff, cloth:0x27364f, hair:0x191919}, -21,-16.2, 0.9, true);
   stander({suit:0xf5f0e6, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, -20,-15.4, -2.24, true);
@@ -113,4 +114,21 @@ function buildPeople(){
   stander({suit:0xffffff, cloth:0x2e7d46, hair:0x5a3a22}, 8.5,58.5, -1.68, true);
   sitter({suit:0xffffff, cloth:0x27364f, hair:0x2b2b30}, 6,-26.55, Math.PI);
   sitter({suit:0xffe9a8, cloth:0x7a4a63, hair:0x4a3421, long:true, longHair:true}, 18,-26.55, Math.PI);
+}
+
+// ===== POLISH (gpt-6.1-sol, doi chieu code that): NPC ngoi/dung doi huong nhin nhe + tay tho; NPC vuon quay dau nhin luong hoa =====
+function polishPersonIdle(p, dt, t){
+  if(!p || !p.userData) return;
+  var u=p.userData;
+  if(u.polishPhase===undefined){ u.polishPhase=Math.random()*6.28; u.polishNext=2+Math.random()*4; u.polishLook=0; }
+  u.polishNext-=dt;
+  if(u.polishNext<=0){ u.polishNext=3.5+Math.random()*5; u.polishLook=(Math.random()*2-1)*0.12; }
+  if(u.head) u.head.rotation.y+=(u.polishLook-u.head.rotation.y)*Math.min(1, dt*2.5);
+  if(u.armL && u.armR){ var br=Math.sin(t*1.6+u.polishPhase)*0.03; u.armL.rotation.z=br; u.armR.rotation.z=-br; }
+}
+function polishGardenVisitor(p, dt, dir){
+  if(!p || !p.userData || !p.userData.gardenVisitor || !p.userData.head) return;
+  var x=p.position.x;
+  var target=(x>-8 && x<8)? -0.3*(dir||1) : 0;
+  p.userData.head.rotation.y+=(target-p.userData.head.rotation.y)*Math.min(1, dt*2);
 }
