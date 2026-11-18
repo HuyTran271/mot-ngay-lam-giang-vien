@@ -97,7 +97,18 @@ function showChoices(){
   var box=document.getElementById('choices'); box.innerHTML='';
   dlgChoices.forEach(function(ch){
     var b=document.createElement('button'); b.className='vn-choice'; b.textContent=ch.t;
-    b.addEventListener('click', function(){ buzz(8); pickChoice(ch); });
+    // Lua chon ton suc (need dang {en:N}): chi so thap hon muc can thi nut mo, khong bam duoc, kem ly do
+    var nk=ch.need? Object.keys(ch.need)[0] : null;
+    var locked=ch.need && (S[nk]||0)<ch.need[nk];
+    if(locked){
+      b.classList.add('vn-locked'); b.dataset.need='1';
+      var rs=document.createElement('span'); rs.className='vn-need';
+      rs.textContent='🔒 Cần '+(nk==='en'?'⚡':nk==='he'?'❤️':'🔥')+' từ '+ch.need[nk]+' trở lên. '+(nk==='en'?'Bạn quá mệt để làm việc này.':nk==='he'?'Bạn đang quá nặng lòng lúc này.':'Bạn đang cạn nhiệt huyết lúc này.');
+      b.appendChild(rs);
+      b.addEventListener('click', function(){ buzz(30); });
+    } else {
+      b.addEventListener('click', function(){ buzz(8); pickChoice(ch); });
+    }
     box.appendChild(b);
   });
   box.classList.add('show');
@@ -123,5 +134,5 @@ function advanceDlg(){
   if(dlgPhase==='story'){
     if(dlgIdx<dlgSegs.length-1){ dlgIdx++; typeSeg(dlgSegs[dlgIdx]); }
     else { dlgPhase='choice'; showChoices(); }
-  } else if(dlgPhase==='response'){ goNext(); }
+  } else if(dlgPhase==='response'){ if(typeof sideActive!=='undefined' && sideActive) closeSideDlg(); else goNext(); }
 }
