@@ -150,6 +150,12 @@ function animate(){
       var b=beacons[cur];
       if(b && Math.hypot(b.x-player.position.x, b.z-player.position.z)<2.2) openScene(cur);
     }
+    // Nhiệm vụ phụ tùy chọn: tới gần NPC phụ thì mở hội thoại ngắn, mỗi NPC một lần duy nhất
+    if(mode==='play' && typeof SIDE_QUESTS!=='undefined'){
+      for(var sqi=0; sqi<SIDE_QUESTS.length; sqi++){ var sq=SIDE_QUESTS[sqi];
+        if(!sq.done && Math.hypot(sq.x-player.position.x, sq.z-player.position.z)<2.2){ openSideQuest(sq); break; }
+      }
+    }
     // Vật phẩm hồi chỉ số
     for(var pi=pickups.length-1; pi>=0; pi--){
       var pk=pickups[pi];
