@@ -194,12 +194,13 @@ function animate(){
     var cc3=collideXZ(st.a.x+(st.b.x-st.a.x)*k, st.a.z+(st.b.z-st.a.z)*k, 0.45);
     st.p.position.x=cc3.x; st.p.position.z=cc3.z;
     faceToward(st.p, (st.b.x-st.a.x)*st.dir, (st.b.z-st.a.z)*st.dir, dt);
+    if(typeof polishGardenVisitor==='function') polishGardenVisitor(st.p, dt, st.dir);
     var dxp=st.p.position.x-player.position.x, dzp=st.p.position.z-player.position.z;
     var farNpc=(dxp*dxp+dzp*dzp)>1156;
     if(!farNpc || ((i+((t*2)|0))%3===0)) animPerson(st.p, true, farNpc? dt*3: dt, t);
   }
   // Nhân vật ngồi
-  for(var sdi=0; sdi<seated.length; sdi++){ var sdo=seated[sdi]; sdo.g.position.y=sdo.base+Math.sin(t*1.7+sdo.ph)*0.03; }
+  for(var sdi=0; sdi<seated.length; sdi++){ var sdo=seated[sdi]; sdo.g.position.y=sdo.base+Math.sin(t*1.7+sdo.ph)*0.03; if(typeof polishPersonIdle==='function') polishPersonIdle(sdo.g, dt, t); }
   // Hạt bụi chân & hiệu ứng nổ
   for(var di=dustParticles.length-1; di>=0; di--){
     var dp=dustParticles[di]; dp.life-=dt;
