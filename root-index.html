@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="color-scheme" content="light only">
+<title>Một Ngày Làm Giảng Viên</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+window.THREE=THREE; window.GLTFLoader=GLTFLoader; window.__threeReady=Promise.resolve();
+</script>
+<script>
+window.BUILD_V='7c7c39562b89';
+(function(){ function chk(){ try{ fetch('version.txt?x='+Date.now(), {cache:'no-store'}).then(function(r){ return r.ok? r.text() : null; }).then(function(v){ if(v){ v=v.trim(); if(v && v!==window.BUILD_V) location.reload(); } }).catch(function(){}); }catch(e){} }
+var _t1=setTimeout(chk, 4000); if(_t1 && _t1.unref) _t1.unref();
+var _t2=setInterval(chk, 60000); if(_t2 && _t2.unref) _t2.unref();
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) chk(); });
+})();
+</script>
+<script>
+// Điền URL project và anon key của Supabase khi triển khai thật.
+window.SUPABASE_CONFIG={url:'https://qdinhnmzbjxlpapbijlf.supabase.co', anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkaW5obm16Ymp4bHBhcGJpamxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MzQ4OTQsImV4cCI6MjExMDQxMDg5NH0.ICX5OvQkPc9V2zyHB_fNV78PUYMnMjA5WL9FmIe-7po', table:'cay_tri_an'};
+</script>
+<link rel="stylesheet" href="src/css/base.css?v=7c7c39562b89">
+<link rel="stylesheet" href="src/css/screens.css?v=7c7c39562b89">
+<link rel="stylesheet" href="src/css/dialog.css?v=7c7c39562b89">
+</head>
+<body>
+<div id="app">
+  <div id="hud" class="panel">⚡ <span id="st-en">70</span> · ❤️ <span id="st-he">70</span> · 🔥 <span id="st-fi">60</span> · <span id="hud-clock">🕔 05:00</span> · <span id="hud-phase">Buổi sáng</span></div>
+  <div id="sys-btns"><button id="btn-mute" title="Bật hoặc tắt âm thanh">🔊</button><button id="btn-quality" title="Chất lượng đồ họa">⚙️ Tự động</button></div>
+  <div id="objective" class="panel">🎯 Tới cửa Nhà ở, bắt đầu ngày mới</div>
+  <div id="navi"><span id="navi-arrow">▲</span><span id="navi-txt"></span></div>
+  <div id="toast"></div>
+  <div id="float-layer"></div>
+  <div id="lowstat" style="display:none"></div>
+  <div id="scene-fade" style="display:none"><div class="sf-in"><div id="sf-time"></div><div id="sf-title"></div></div></div>
+  <div id="hint">🕹️ Kéo nửa trái: joystick · Chạm nửa phải: tự đi tới · WASD/phím mũi tên</div>
+  <div id="joy"></div><div id="nub"></div>
+  <div id="err"></div>
+
+  <div class="overlay" id="gratitude-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">🌱</div>
+      <h1> GIEO HẠT TRI ÂN </h1>
+      <p id="gratitude-count-line">Vườn đang chờ hạt tri ân đầu tiên. Hãy là người gieo hạt đầu tiên nhé.</p>
+      <p>Mỗi lời tri ân bạn gửi sẽ mọc thành một cây trong khu vườn chung này, mang theo tấm thiệp của bạn để mọi người cùng đọc.</p>
+      <label for="gratitude-name">Tên của bạn (không bắt buộc)</label>
+      <input id="gratitude-name" maxlength="60" placeholder="Ví dụ: Một học trò" autocomplete="off">
+      <label for="gratitude-class">Lớp của bạn (không bắt buộc)</label>
+      <input id="gratitude-class" maxlength="60" placeholder="Ví dụ: CNTT K24" autocomplete="off">
+      <label for="gratitude-to">Gửi tới thầy/cô</label>
+      <input id="gratitude-to" maxlength="80" placeholder="Ví dụ: Thầy cô Bộ môn CNTT" autocomplete="off">
+      <label for="gratitude-tree">Chọn hạt giống</label>
+      <select id="gratitude-tree">
+        <option value="oak">🌳 Cây xanh</option>
+        <option value="pine">🌲 Cây thông</option>
+        <option value="flower">🌼 Bụi hoa</option>
+      </select>
+      <label for="gratitude-message">Lời tri ân <span id="gratitude-count">0/300</span></label>
+      <textarea id="gratitude-message" maxlength="300" rows="4" placeholder="Cảm ơn thầy cô vì..."></textarea>
+      <div id="gratitude-status" role="status"></div>
+      <div class="gratitude-actions">
+        <button class="btn alt" id="gratitude-close">Để sau</button>
+        <button class="btn" id="gratitude-submit">🌱 Gieo hạt tri ân</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="garden-action" style="display:none"></button>
+  <button id="garden-view" style="display:none"></button>
+
+  <div class="overlay" id="card-panel" style="display:none">
+    <div class="card gratitude-card">
+      <div style="font-size:2.3rem">💌</div>
+      <h1> THIỆP TRI ÂN </h1>
+      <p id="card-to" style="font-weight:700"></p>
+      <p id="card-msg"></p>
+      <p id="card-from" style="color:#64748b"></p>
+      <div class="gratitude-actions">
+        <button class="btn alt" id="card-prev" style="display:none">⬅ Thiệp trước</button>
+        <button class="btn alt" id="card-next" style="display:none">Thiệp sau ➡</button>
+        <button class="btn" id="card-close">Đóng thiệp</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="start">
+    <div class="card">
+      <div style="font-size:2.6rem">🏫</div>
+      <h1>MỘT NGÀY LÀM GIẢNG VIÊN</h1>
+      <p>Sống trọn một ngày của giảng viên qua 13 cảnh có thật trong đời đi dạy: dậy từ 5 giờ sáng, đứng lớp, trả lời tin nhắn lúc nửa đêm. Mỗi lựa chọn đổi chỉ số ⚡ Năng lượng · ❤️ Kiên nhẫn · 🔥 Lửa nghề, và quyết định 1 trong 4 kết thúc.</p>
+      <p>📖 Câu chuyện hư cấu, mọi nhân vật và sự kiện trong game đều là giả tưởng, không dựa trên câu chuyện có thật.</p>
+      <button class="btn" id="btn-start" disabled>⏳ Đang tải game...</button>
+    </div>
+  </div>
+
+  <div id="choices"></div>
+  <div id="dlg">
+    <div id="d-plate"><span id="d-icon">⏰</span><span id="d-title"></span><span id="d-time">05:00</span></div>
+    <div id="dlg-main">
+      <canvas id="d-face" width="72" height="72"></canvas>
+      <div class="d-text" id="d-text"></div>
+    </div>
+    <div id="d-fx"></div>
+    <div id="d-badge"></div>
+    <div id="d-next">▼ chạm để tiếp tục</div>
+  </div>
+  <div class="overlay" id="screen-end" style="display:none">
+    <div class="card">
+      <div style="font-size:44px" id="end-icon">🌤️</div>
+      <h1 id="end-title" style="font-size:20px"></h1>
+      <p id="end-text"></p>
+      <p id="end-epilogue"></p>
+      <p id="end-recap"></p>
+      <p id="unlock-end"></p>
+      <button class="btn alt" id="btn-copy">📋 Chép lời cảm ơn gửi thầy cô</button>
+      <div id="copy-ok"></div>
+      <button class="btn" id="btn-again">↻ Chơi lại từ đầu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var MODEL_DATA={treeOak:"src/assets/tree-oak.glb?v=7c7c39562b89",treePine:"src/assets/tree-pine.glb?v=7c7c39562b89",treeDetailed:"src/assets/tree-detailed.glb?v=7c7c39562b89",rock:"src/assets/rock-large.glb?v=7c7c39562b89",bush:"src/assets/bush-large.glb?v=7c7c39562b89",flower:"src/assets/flower-red.glb?v=7c7c39562b89"};
+</script>
+<script src="src/js/world/models.js?v=7c7c39562b89"></script>
+<script src="src/js/core/config.js?v=7c7c39562b89"></script>
+<script src="src/js/world/props.js?v=7c7c39562b89"></script>
+<script src="src/js/world/people.js?v=7c7c39562b89"></script>
+<script src="src/js/world/campus.js?v=7c7c39562b89"></script>
+<script src="src/js/world/school.js?v=7c7c39562b89"></script>
+<script src="src/js/world/library.js?v=7c7c39562b89"></script>
+<script src="src/js/world/house.js?v=7c7c39562b89"></script>
+<script src="src/js/world/expand.js?v=7c7c39562b89"></script>
+<script src="src/js/world/world.js?v=7c7c39562b89"></script>
+<script src="src/js/world/gratitude.js?v=7c7c39562b89"></script>
+<script src="src/js/story/dialogs.js?v=7c7c39562b89"></script>
+<script src="src/js/story/dialog-ui.js?v=7c7c39562b89"></script>
+<script src="src/js/story/flow.js?v=7c7c39562b89"></script>
+<script src="src/js/core/input.js?v=7c7c39562b89"></script>
+<script src="src/js/core/main.js?v=7c7c39562b89"></script>
+</body>
+</html>
