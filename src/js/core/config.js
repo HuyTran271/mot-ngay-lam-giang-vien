@@ -115,11 +115,27 @@ var LABELS=[]; var _lblT=0, _lv=null;
 function makeLabel(text, w, fs){
   var c=document.createElement('canvas'); c.width=512; c.height=112;
   var g=c.getContext('2d');
-  function boxPath(){ g.beginPath(); if(g.roundRect) g.roundRect(6,14,500,84,40); else g.rect(6,14,500,84); }
-  g.fillStyle='rgba(13,20,40,.87)'; boxPath(); g.fill();
-  g.strokeStyle='rgba(242,179,61,.9)'; g.lineWidth=5; boxPath(); g.stroke();
-  g.fillStyle='#fff'; g.font='bold '+(fs||44)+'px "Segoe UI",sans-serif'; g.textAlign='center'; g.textBaseline='middle';
-  g.fillText(text, 256, 58);
+  // Phong game hien dai: bo han hop nen, chi chu trang bong mem tren nen mo toa tron,
+  // duoi chu co gach vang mong voi cham kim cuong o giua lam dau hieu dia diem
+  g.font='700 '+(fs||44)+'px "Be Vietnam Pro","Segoe UI",sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+  try{ g.letterSpacing='1px'; }catch(e){}
+  var tw=300; try{ tw=g.measureText(text).width||300; }catch(e){}
+  var rg=null;
+  try{ rg=g.createRadialGradient(256,54,10,256,54,Math.max(95,tw*0.62)); }catch(e){ rg=null; }
+  if(rg && rg.addColorStop){ rg.addColorStop(0,'rgba(8,12,24,.36)'); rg.addColorStop(1,'rgba(8,12,24,0)'); g.fillStyle=rg; g.fillRect(0,0,512,112); }
+  g.fillStyle='rgba(9,13,25,.9)';
+  g.fillText(text,256,58); g.fillText(text,258,56); g.fillText(text,254,56);
+  g.fillStyle='#ffffff';
+  try{ g.shadowColor='rgba(8,12,24,.55)'; g.shadowBlur=5; g.shadowOffsetY=2; }catch(e){}
+  g.fillText(text,256,56);
+  try{ g.shadowColor='transparent'; g.shadowBlur=0; g.shadowOffsetY=0; }catch(e){}
+  var ly=56+(fs||44)*0.74, lw=Math.min(190, Math.max(90, tw*0.55));
+  var lg=null;
+  try{ lg=g.createLinearGradient(256-lw/2,0,256+lw/2,0); }catch(e){ lg=null; }
+  if(lg && lg.addColorStop){ lg.addColorStop(0,'rgba(242,179,61,0)'); lg.addColorStop(0.5,'rgba(242,179,61,.95)'); lg.addColorStop(1,'rgba(242,179,61,0)'); g.fillStyle=lg; }
+  else g.fillStyle='rgba(242,179,61,.9)';
+  g.fillRect(256-lw/2, ly, lw, 3);
+  try{ g.save(); g.translate(256, ly+1.5); g.rotate(Math.PI/4); g.fillStyle='#f2b33d'; g.fillRect(-4.5,-4.5,9,9); g.restore(); }catch(e){}
   var tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace;
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx, transparent:true}));
   sp.scale.set(w||11, (w||11)*0.219, 1);
@@ -166,11 +182,29 @@ function makeIcon(emo, s){
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx, transparent:true}));
   sp.scale.set(s||2.2, s||2.2, 1); return sp;
 }
-// ===== NHẠC NỀN PHÁT SINH BẰNG WEBAUDIO (không file nhạc, chạy nhẹ) =====
-var _musicOn=false, _musicGain=null, _musicTimer=null, _chordIdx=0;
+// ===== NHẠC NỀN: FILE MP3 CHILL (vòng lặp, âm lượng nhỏ) + PAD PHÁT SINH WEBAUDIO LÀM DỰ PHÒNG =====
+var _musicOn=false, _musicGain=null, _musicTimer=null, _chordIdx=0, _bgAudio=null;
 var MUSIC_CHORDS=[[261.63,329.63,392,493.88],[220,261.63,329.63,392],[174.61,220,261.63,349.23],[196,246.94,293.66,392]];
 function startMusic(){
   if(_musicOn) return; _musicOn=true;
+  // Ưu tiên phát file nhạc chill; nếu tải lỗi (hoặc môi trường test không có Audio) thì lui về pad tự sinh
+  if(typeof Audio==='undefined'){ startPadMusic(); return; }
+  try{
+    var a=new Audio(); a.loop=true; a.volume=sfxMuted?0:0.15;
+    var paths=['src/assets/music-chill.mp3','../src/assets/music-chill.mp3'];
+    var pi=0;
+    a.addEventListener('error', function(){
+      pi++;
+      if(pi<paths.length){ a.src=paths[pi]; }
+      else { _bgAudio=null; startPadMusic(); }
+    });
+    a.src=paths[0];
+    var pr=a.play();
+    if(pr && pr.catch) pr.catch(function(){});
+    _bgAudio=a;
+  }catch(e){ _bgAudio=null; startPadMusic(); }
+}
+function startPadMusic(){
   try{
     var AC=window.AudioContext || window.webkitAudioContext; if(!AC) return;
     if(!_audioCtx) _audioCtx=new AC();
