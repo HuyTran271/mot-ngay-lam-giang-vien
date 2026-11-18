@@ -10,7 +10,7 @@
 
   .panel{background:rgba(13,20,40,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1.5px solid rgba(242,179,61,.75);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.28)}
 
-  #hud{position:absolute;top:10px;left:10px;right:56px;padding:8px 12px;font-size:13px;line-height:1.5;pointer-events:none;z-index:5;width:fit-content;max-width:calc(100vw - 72px)}
+  #hud{position:absolute;top:10px;left:10px;right:10px;padding:8px 12px;font-size:13px;line-height:1.5;pointer-events:none;z-index:5;width:fit-content;max-width:calc(100vw - 20px)}
 
   #hud b{color:#ffd76e}
 
@@ -20,7 +20,7 @@
 
   #btn-mute:active{transform:scale(0.92)}
 
-  #objective{position:absolute;top:66px;left:10px;right:10px;padding:8px 14px;font-size:14px;text-align:center;z-index:5;pointer-events:none}
+  #objective{position:absolute;top:102px;left:10px;right:10px;padding:8px 14px;font-size:14px;text-align:center;z-index:5;pointer-events:none}
 
   #toast{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(20,90,50,.93);backdrop-filter:blur(6px);color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;display:none;z-index:6;text-align:center;max-width:92vw;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 
@@ -99,8 +99,8 @@
 
 #garden-view{position:fixed;right:14px;bottom:230px;z-index:60;background:#263653;color:#ffd76e;border:2px solid #f2b33d;border-radius:999px;padding:12px 18px;font:700 15px "Be Vietnam Pro","Segoe UI",sans-serif;box-shadow:0 4px 14px rgba(13,20,40,.35);cursor:pointer}
 #garden-view:active{transform:scale(.96)}
-#sys-btns{position:fixed;top:10px;right:10px;z-index:60;display:flex;gap:8px}
-#sys-btns button{border:2px solid rgba(242,179,61,.85);background:rgba(13,20,40,.82);color:#fff;border-radius:999px;padding:7px 12px;font-size:15px;font-weight:700;cursor:pointer}
+#sys-btns{position:fixed;top:56px;right:10px;z-index:60;display:flex;gap:8px;align-items:center}
+#sys-btns button{border:2px solid rgba(242,179,61,.85);background:rgba(13,20,40,.82);backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:7px 12px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);line-height:1.2}
 #sys-btns button:active{transform:scale(.95)}
 #sys-btns #btn-mute{position:static;width:auto;height:auto;padding:7px 12px}
-@media (max-width:560px){ #sys-btns button{font-size:13px;padding:6px 9px} }
+@media (max-width:560px){ #sys-btns button{font-size:13px;padding:6px 9px} #hud{font-size:12.5px;padding:7px 10px} }
