@@ -62,9 +62,8 @@ function buildCanteen(){
   box(0.45,2.6,4, 0xf3e6c8, -7.8,1.3,-15.8); solid(-8.02,-17.8, -7.58,-13.8);
   box(0.45,2.6,4, 0xf3e6c8, 1.8,1.3,-15.8); solid(1.58,-17.8, 2.02,-13.8);
   box(10.5,0.3,1, 0xb07a3f, -3,3.05,-17.8, scene, false);
-  box(10.5,0.3,1, 0xb07a3f, -3,3.05,-10.2, scene, false);
-  box(1,0.3,8.6, 0xb07a3f, -8.1,3.05,-14, scene, false);
-  box(1,0.3,8.6, 0xb07a3f, 2.1,3.05,-14, scene, false);
+  box(1,0.3,4.5, 0xb07a3f, -8.1,3.05,-15.9, scene, false);
+  box(1,0.3,4.5, 0xb07a3f, 2.1,3.05,-15.9, scene, false);
   box(6,1.05,1.2, 0x8a5a28, -3,0.53,-16.3); solid(-6,-16.9, 0,-15.7);
   var fd1=makeIcon('🍜',0.9); fd1.position.set(-4.7,1.5,-16.3); scene.add(fd1);
   var fd2=makeIcon('🍚',0.9); fd2.position.set(-3,1.5,-16.3); scene.add(fd2);
