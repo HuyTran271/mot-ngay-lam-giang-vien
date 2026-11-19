@@ -33,3 +33,19 @@
 /* Lua chon bi khoa vi thieu chi so (need) */
 .vn-choice.vn-locked{opacity:.55;border-style:dashed;cursor:not-allowed}
 .vn-choice .vn-need{display:block;margin-top:5px;font-size:12px;font-weight:600;color:#ffb3b3}
+
+/* Man hinh lon (desktop, may chieu): phong to hoi thoai va lua chon de kh an gia doc duoc */
+@media (min-width:900px){
+  #dlg{width:min(1060px,94vw);padding:66px 30px 20px;border-top-width:4px;border-radius:26px 26px 0 0}
+  #d-text{font-size:24px;line-height:1.6;min-height:118px}
+  #d-face{width:84px;height:84px;border-width:4px}
+  #d-plate{font-size:20px;padding:8px 20px;top:12px;left:26px}
+  #d-plate #d-time{font-size:17px}
+  #dlg-main{gap:16px}
+  #d-fx{font-size:19px;margin-top:9px}
+  #d-badge{font-size:19px}
+  #d-next{font-size:17px}
+  #choices{gap:16px}
+  .vn-choice{width:min(80%,640px);padding:20px 26px;font-size:23px;border-radius:18px;border-width:3px}
+  .vn-choice .vn-need{font-size:16px;margin-top:7px}
+}
