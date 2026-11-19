@@ -45,7 +45,7 @@
   #d-fx{font-size:19px;margin-top:9px}
   #d-badge{font-size:19px}
   #d-next{font-size:17px}
-  #choices{gap:16px}
+  #choices{gap:16px;justify-content:flex-start;padding-top:19vh}
   .vn-choice{width:min(80%,640px);padding:20px 26px;font-size:23px;border-radius:18px;border-width:3px}
   .vn-choice .vn-need{font-size:16px;margin-top:7px}
 }
